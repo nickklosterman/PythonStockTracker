@@ -17,7 +17,7 @@ def isLeapYear(year):
 def getSharePrices(tickerlist):
 #tickerlist should be a set of ticker symbols with '+' in between
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %tickerlist + '&f=l1'
-#            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=AAPL&f=l1'
+#            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=AAPL&f=l1' l1=>last trade without time.
     days = urllib.urlopen(url).read() #lines()
     data = [day[:-2].split(',') for day in days]
     return data
@@ -28,6 +28,8 @@ class Stock:
         percentgainloss=0.0
         pricegainloss=0.0
         annualizedgainloss=0.0
+        shareopenprice=0.0
+        shareprevcloseprice=0.0
 
         def __init__(self, data): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission):
             self.ticker=data[0]
@@ -46,7 +48,7 @@ class Stock:
             self.percentGain=self.percentGain_func()
             self.annualizedReturn=self.annualizedReturn_func()
 
-        def percentGain_func(self):
+        def percentGain_func(self): 
             return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
         def dollarGain_func(self):
             return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
@@ -62,29 +64,31 @@ class Stock:
             print "Percent Gain:"+str(self.percentGain)
             print "Annualized Return:"+str(self.annualizedReturn)
             print "Current Value:"+str(self.sharequantity*self.currentshareprice)
+            print "Current Share Price:"+str(self.currentshareprice)
+            print "Current Open  Price:"+str(self.shareopenprice)
+        def PrintCompact2(self):
+            print " %8s %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
         def PrintCompact(self):
 #            print "-----------------=======================-----------------"
 #            print self.ticker+"\t"+str(self.dollarGain)+"\t"+str(self.annualizedReturn)+"\t"+str(self.sharequantity*self.currentshareprice)
             print " %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice )
                 
         def getSharePrice(self):
-            #http://download.finance.yahoo.com/d/quotes.csv?s=${symbol}&f=sl1
+# data format found in GetStockQutoesv2.sh
 #the date goes month(jan=0) day year
             url = 'http://ichart.yahoo.com/table.csv?s=%s&' % self.ticker + \
                 'f=l1' #&ignore.csv'
+#we actually need to get the prev close to compute gain for the day. we don't compute the gain from the open
+            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1op'
 
-            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1'
-#            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=AAPL&f=l1'
             days = urllib.urlopen(url).read() #lines()
-#            data = [day[:-2].split(',') for day in days]
- #           print data
-#            print url
-#            print days
-           # print days
-            if float(days)==0.0:
+            data = days[:-2].split(',') 
+            if float(data[0])==0.0:
                 print "Uhh bad stock ticker"
-            self.currentshareprice=float(days)
-  #          return data
+            self.currentshareprice=float(data[0])
+            self.shareopenprice=float(data[1])
+            self.shareprevcloseprice=float(data[2])
+
         def yearsSincePurchase(self):
             now=datetime.datetime.now()
             daysElapsed=(now-self.purchasedate).days
@@ -97,9 +101,6 @@ class Stock:
                 daysCalc=datetime.datetime(now.year-1,self.purchasedate.month,self.purchasedate.day)
                 days2=(now-daysCalc).days
                 
-#            print days2
-#            print self.purchasedate.year
-#            print yearsElapsed
             daysinyear=365.0 #force to be float so the division works as we would expect
             yr=now.year
             if isLeapYear(yr): #now.year):
@@ -149,7 +150,8 @@ stock.PrintData()
 
 input=open("StockData.txt")
 #    print " %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
-print " %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
+#print " %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
+print " %8s %8s %8s %8s %11s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today $ chg" )
 for line in input:
     data=""
     if line.strip(): #skip blank lines
@@ -157,7 +159,7 @@ for line in input:
             data=line[:-1].split(',')
             stock=Stock(data)
             #print data[0],data[3]
-#            stock.PrintData()
-            stock.PrintCompact()
+#           stock.PrintData()
+            stock.PrintCompact2()
 
 #    print data
