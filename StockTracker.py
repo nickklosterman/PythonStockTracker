@@ -70,26 +70,26 @@ class Stock:
         def annualizedReturn_func(self):
             return (((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
         def PrintData(self):
-            print "-----------------=======================-----------------"
-            print "Ticker:"+self.ticker
-            print "Shares:"+str(self.sharequantity)
-            print "Total Purchase Price:"+str(self.totalpurchaseprice)
-            print "Purchase Date:"+str(self.purchasedate)
-            print "Dollar Gain:"+str(self.dollarGain)
-            print "Percent Gain:"+str(self.percentGain)
-            print "Annualized Return:"+str(self.annualizedReturn)
-            print "Current Value:"+str(self.sharequantity*self.currentshareprice)
-            print "Current Share Price:"+str(self.currentshareprice)
-            print "Current Open  Price:"+str(self.shareopenprice)
+            print("-----------------=======================-----------------")
+            print("Ticker:"+self.ticker)
+            print("Shares:"+str(self.sharequantity))
+            print("Total Purchase Price:"+str(self.totalpurchaseprice))
+            print("Purchase Date:"+str(self.purchasedate))
+            print("Dollar Gain:"+str(self.dollarGain))
+            print("Percent Gain:"+str(self.percentGain))
+            print("Annualized Return:"+str(self.annualizedReturn))
+            print("Current Value:"+str(self.sharequantity*self.currentshareprice))
+            print("Current Share Price:"+str(self.currentshareprice))
+            print("Current Open  Price:"+str(self.shareopenprice))
         def PrintCompact2(self):
-            print " %8s %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
+            print(" %8s %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  )))
         def PrintForTxtMessage(self):
             message="Ticker: %8s $+-: %8.2f AnnlRet: %8.2f Worth:%8.2f DayChange:%8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
             return  message
         def PrintCompact(self):
-#            print "-----------------=======================-----------------"
+#            print("-----------------=======================-----------------"
 #            print self.ticker+"\t"+str(self.dollarGain)+"\t"+str(self.annualizedReturn)+"\t"+str(self.sharequantity*self.currentshareprice)
-            print " %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice )
+            print(" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice ))
                 
         def getSharePrice(self):
 # data format found in GetStockQutoesv2.sh
@@ -102,7 +102,7 @@ class Stock:
             days = urllib.urlopen(url).read() #lines()
             data = days[:-2].split(',') 
             if float(data[0])==0.0:
-                print "Uhh bad stock ticker"
+                print("Uhh bad stock ticker")
             self.currentshareprice=float(data[0])
             self.shareopenprice=float(data[1])
             self.shareprevcloseprice=float(data[2])
@@ -168,9 +168,9 @@ stock.PrintData()
 
 """
 input=open("StockData.txt")
-#    print " %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
-#print " %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
-print " %8s %8s %8s %8s %11s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today $ chg" )
+#    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
+#print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
+print(" %8s %8s %8s %8s %11s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today $ chg" )
 for line in input:
     data=""
     if line.strip(): #skip blank lines
