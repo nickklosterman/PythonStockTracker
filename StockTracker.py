@@ -1,6 +1,7 @@
 #!/usr/bin/python
 import datetime
 import urllib
+import smtplib #for emailing reports
 #now=datetime.datetime.now()
 #'nick':datetime.datetime(1978,7,2)
 #days_ago=(now-when).days
@@ -21,7 +22,21 @@ def getSharePrices(tickerlist):
     days = urllib.urlopen(url).read() #lines()
     data = [day[:-2].split(',') for day in days]
     return data
+def emailReport(Host,Port,User,Password,From,To,Subject,Message):
+    try:
+        server=smtplib.SMTP(Host,Port)
+        server.login(User,Password)
+        server.sendmail(From,[To],Message)
+        server.quit()
+        print("Successfully sent email")
+    except SMTPException:
+        print("Error: unable to send email")
 
+def txtReport(Host,User,Password,From,To,Subject,Message):
+    server=smtplib.SMTP(Host)
+    server.login(User,Password)
+    server.sendmail(From,[To],Message)
+    server.quit()
     
 class Stock:
         currentshareprice=0.0
@@ -68,6 +83,9 @@ class Stock:
             print "Current Open  Price:"+str(self.shareopenprice)
         def PrintCompact2(self):
             print " %8s %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
+        def PrintForTxtMessage(self):
+            message="Ticker: %8s $+-: %8.2f AnnlRet: %8.2f Worth:%8.2f DayChange:%8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
+            return  message
         def PrintCompact(self):
 #            print "-----------------=======================-----------------"
 #            print self.ticker+"\t"+str(self.dollarGain)+"\t"+str(self.annualizedReturn)+"\t"+str(self.sharequantity*self.currentshareprice)
@@ -148,6 +166,7 @@ stock.PrintData()
 
 #def Portfolio:
 
+"""
 input=open("StockData.txt")
 #    print " %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print " %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
@@ -161,5 +180,11 @@ for line in input:
             #print data[0],data[3]
 #           stock.PrintData()
             stock.PrintCompact2()
-
+            message=stock.PrintForTxtMessage()
+            print(message)
+            emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff",stock.PrintForTxtMessage())
 #    print data
+"""
+emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly")
+emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","nickklosterman@gmail.com","stuff","hello McFly")
+#emailReport("mail.djinnius.com",587,"dals","backctry","NAK","5079909052@tmomail.net","stuff","hello McFly")
