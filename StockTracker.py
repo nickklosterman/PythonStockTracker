@@ -8,6 +8,8 @@ import smtplib #for emailing reports
 
 #class StockList:
 #    def __init__(self,
+def DefaultColorCoding():
+    print("\033[49m \033[39m "), #set to default color coding, suppress newline
 
 def isLeapYear(year):
     leapyear=0
@@ -24,19 +26,36 @@ def getSharePrices(tickerlist):
     return data
 def emailReport(Host,Port,User,Password,From,To,Subject,Message):
     try:
-        server=smtplib.SMTP(Host,Port)
+        server=smtplib.SMTP()
+        server.connect(Host,Port)
+        server.starttls()
+#        server.set_debuglevel(1)   
         server.login(User,Password)
         server.sendmail(From,[To],Message)
         server.quit()
         print("Successfully sent email")
-    except SMTPException:
+    except smtp.SMTPException:
         print("Error: unable to send email")
+
+#use ansi color codes to color fg and bg : http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html; curses is an alternative
+def ColorCode10pt2f(number):
+    if number>0: 
+        print("\033[32m %10.2f"% (number)), #suppress newline
+    else:
+        print("\033[31m %10.2f"% (number)), 
+def ColorCode8s(string):
+        print("\033[31m %8s"% (string))
 
 def txtReport(Host,User,Password,From,To,Subject,Message):
     server=smtplib.SMTP(Host)
     server.login(User,Password)
     server.sendmail(From,[To],Message)
     server.quit()
+
+def PrintHeader():
+    print("%10s %10s %10s %10s %10s %10s %10s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today chg$","Curr Price", "Prev Close" ) )
+#    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
+#print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
     
 class Stock:
         currentshareprice=0.0
@@ -82,7 +101,8 @@ class Stock:
             print("Current Share Price:"+str(self.currentshareprice))
             print("Current Open  Price:"+str(self.shareopenprice))
         def PrintCompact2(self):
-            print(" %8s %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  )))
+            print(" %8s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice),self.currentshareprice,self.shareprevcloseprice))
+            
         def PrintForTxtMessage(self):
             message="Ticker: %8s $+-: %8.2f AnnlRet: %8.2f Worth:%8.2f DayChange:%8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
             return  message
@@ -91,11 +111,23 @@ class Stock:
 #            print self.ticker+"\t"+str(self.dollarGain)+"\t"+str(self.annualizedReturn)+"\t"+str(self.sharequantity*self.currentshareprice)
             print(" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice ))
                 
+        def PrintColorized(self):
+            print(" %10s"  % (self.ticker)),
+            ColorCode10pt2f(self.dollarGain)
+            ColorCode10pt2f(self.annualizedReturn)
+            print("\033[49m \033[39m"),
+            print(self.sharequantity*self.currentshareprice ),
+            ColorCode10pt2f(self.sharequantity*(self.currentshareprice - self.shareprevcloseprice))
+            #ColorCode10pt2f(self.currentshareprice)
+            print("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)),
+            #ColorCode10pt2f(self.shareprevcloseprice)
+            print("\033[49m \033[39m") #reset color to default
+                
         def getSharePrice(self):
 # data format found in GetStockQutoesv2.sh
 #the date goes month(jan=0) day year
             url = 'http://ichart.yahoo.com/table.csv?s=%s&' % self.ticker + \
-                'f=l1' #&ignore.csv'
+                'f=l1' #
 #we actually need to get the prev close to compute gain for the day. we don't compute the gain from the open
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1op'
 
@@ -164,13 +196,16 @@ stock.PrintData()
 
 """
 
-#def Portfolio:
+############ Main 
 
-"""
+#use ncurses, ansi color codes
+
+
 input=open("StockData.txt")
-#    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
-#print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
-print(" %8s %8s %8s %8s %11s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today $ chg" )
+
+DefaultColorCoding()
+PrintHeader()
+
 for line in input:
     data=""
     if line.strip(): #skip blank lines
@@ -179,12 +214,22 @@ for line in input:
             stock=Stock(data)
             #print data[0],data[3]
 #           stock.PrintData()
-            stock.PrintCompact2()
+#            stock.PrintCompact2()
+            stock.PrintColorized()
             message=stock.PrintForTxtMessage()
-            print(message)
-            emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff",stock.PrintForTxtMessage())
+ #           print(message)
+ #            emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff",stock.PrintForTxtMessage())
+#            emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","p51mustang","NAK","5079909052@tmomail.net","testnick",stock.PrintForTxtMessage())
+#            emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","p51mustang","NAK","nick_klosterman@yahoo.com","testnick",stock.PrintForTxtMessage()) #this sends a message but there is no subject or body
 #    print data
+
+DefaultColorCoding()
+
 """
-emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly")
-emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","nickklosterman@gmail.com","stuff","hello McFly")
+emailReport("smtp.djinnius.com","587","deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly")
+emailReport("smtp.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly2")
+emailReport("djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly3")
 #emailReport("mail.djinnius.com",587,"dals","backctry","NAK","5079909052@tmomail.net","stuff","hello McFly")
+# this guy works: emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","p51mustang","NAK","5079909052@tmomail.net","testnick","test subjetct")
+
+"""
