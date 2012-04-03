@@ -56,7 +56,21 @@ def PrintHeader():
     print("%10s %10s %10s %10s %10s %10s %10s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today chg$","Curr Price", "Prev Close" ) )
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
-    
+
+class Accumulator:
+    def __init__(self):
+        self.totalpurchaseprice=0.0
+        self.totalcommission=0.0
+        self.totaldollargain=0.0
+    def Add(self,purchaseprice, commission, dollargain):
+        self.totalpurchaseprice+=purchaseprice
+        self.totalcommission+=commission
+        self.totaldollargain+=dollargain
+    def Print(self):
+        print("Total Purchase Price: %s" % (self.totalpurchaseprice))
+        print("Total Commission Paid: %10.2f" % (self.totalcommission))
+        print("Total Dollar Gain/Loss: %10.2f" % (self.totaldollargain))
+
 class Stock:
         currentshareprice=0.0
         percentgainloss=0.0
@@ -65,7 +79,7 @@ class Stock:
         shareopenprice=0.0
         shareprevcloseprice=0.0
 
-        def __init__(self, data): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission):
+        def __init__(self, data): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell):
             self.ticker=data[0]
             self.sharequantity=int(data[1])
             self.totalpurchaseprice=float(data[2])
@@ -75,13 +89,15 @@ class Stock:
             self.purchasedateyear=temp[2]
             self.puchasedatemonth=temp[0]
             self.purchasedateday=temp[1]
-            self.commission=data[4]
+            self.commission_to_buy=float(data[4])
+            self.commission_to_sell=float(data[5])
 #            self.currentshareprice=self.getSharePrice()
             self.getSharePrice()
             self.dollarGain=self.dollarGain_func()
             self.percentGain=self.percentGain_func()
             self.annualizedReturn=self.annualizedReturn_func()
-
+        def GetStockData(self):
+            print("get stock data")
         def percentGain_func(self): 
             return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
         def dollarGain_func(self):
@@ -100,6 +116,9 @@ class Stock:
             print("Current Value:"+str(self.sharequantity*self.currentshareprice))
             print("Current Share Price:"+str(self.currentshareprice))
             print("Current Open  Price:"+str(self.shareopenprice))
+            print("Current 52 Week High:"+str(self.share52wkhigh))
+            print("Current 52 Week Low:"+str(self.share52wklow))
+            print("Current Trend:"+self.trend)
         def PrintCompact2(self):
             print(" %8s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice),self.currentshareprice,self.shareprevcloseprice))
             
@@ -128,8 +147,8 @@ class Stock:
 #the date goes month(jan=0) day year
             url = 'http://ichart.yahoo.com/table.csv?s=%s&' % self.ticker + \
                 'f=l1' #
-#we actually need to get the prev close to compute gain for the day. we don't compute the gain from the open
-            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1op'
+#we actually need to get the prev close to compute gain for the day. Wall Street doesn't compute the gain from the open, but from prev close
+            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
 
             days = urllib.urlopen(url).read() #lines()
             data = days[:-2].split(',') 
@@ -138,6 +157,12 @@ class Stock:
             self.currentshareprice=float(data[0])
             self.shareopenprice=float(data[1])
             self.shareprevcloseprice=float(data[2])
+            temp=data[3].split(" - ")
+            #print(temp,temp[0][1:],temp[1][:-1])
+            self.share52wklow=float(temp[0][1:])
+            self.share52wkhigh=float(temp[1][:-1])
+            self.trend=data[4][7:13]
+#            print(self.trend[7:13])
 
         def yearsSincePurchase(self):
             now=datetime.datetime.now()
@@ -206,23 +231,29 @@ input=open("StockData.txt")
 DefaultColorCoding()
 PrintHeader()
 
+cumulative=Accumulator()
+
 for line in input:
     data=""
     if line.strip(): #skip blank lines
         if line[0]!='#': #skip comments
             data=line[:-1].split(',')
             stock=Stock(data)
-            #print data[0],data[3]
-#           stock.PrintData()
+#            print( stock.totalpurchaseprice, stock.commission, stock.dollarGain)
+            cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain)
+
+
+#            stock.PrintData()
 #            stock.PrintCompact2()
             stock.PrintColorized()
+
             message=stock.PrintForTxtMessage()
  #           print(message)
  #            emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff",stock.PrintForTxtMessage())
 #            emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","p51mustang","NAK","5079909052@tmomail.net","testnick",stock.PrintForTxtMessage())
 #            emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","p51mustang","NAK","nick_klosterman@yahoo.com","testnick",stock.PrintForTxtMessage()) #this sends a message but there is no subject or body
 #    print data
-
+cumulative.Print()
 DefaultColorCoding()
 
 """

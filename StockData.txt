@@ -1,12 +1,20 @@
-#ticker,shares,total purchase price,commisision #figure its easier to start w total purchase price then deal w dividing etc when splits happen
+#ticker,shares,total purchase price,commisision to buy,commission to sell #figure its easier to start w total purchase price then deal w dividing etc when splits happen
 #commission for apple was 31.50 when bought
-aapl,142,1482.56,10/23/2000,7
-bac,480,8426.20,9/28/2009,7
-#sold 1076@$13.20 jdsu shares to buy bwld #so far a pretty smart move since jdsu doubled in 2011 then came crashing down to ~13 still on mar 12 2012
-bwld,320,14110.4,5/29/2007,7
-c,8,316.6,6/16/2010,7
-crox,65,3938.2,8/8/2007,7
-fmcc.ob,600,5063.62,7/22/2008,7
-jsda,214,4307.8,5/24/2007,7
-pot,54,943,3/29/2007,7
-rimm,18,1896.82,12/10/2007,7
+aapl,142,1482.56,10/23/2000,31.50,7
+bac,480,8426.20,9/28/2009,7,7
+#sold 1076@$13.20 jdsu shares (commission was $0.23) to buy bwld #so far a pretty smart move since jdsu doubled in 2011 then came crashing down to ~13 still on mar 12 2012
+bwld,320,14110.4,5/29/2007,0,7
+c,8,316.6,6/16/2010,7,7
+crox,65,3938.2,8/8/2007,7,7
+fmcc.ob,600,5063.62,7/22/2008,7,7
+jsda,214,4307.8,5/24/2007,0,7
+pot,54,943,3/29/2007,7,7
+rimm,18,1896.82,12/10/2007,7,7
+
+#how do I track the performance of the money that I moved from XXX into YYY?
+#I suppose i could comment the line where the data was sold. Possibly add ending value/shares and commission to sell and tax consequence
+#then your new purchase would have the same purchase price as the stock you just sold (XXX) but would have the appropriate shares that were purchased(YYY). The date would be the date that XXX was purchased, not YYY, so that annualized gain would be properly calculated across the history of that investment. Tack on the costs of commission to buy (YYY) as well as commission to sell (XXX) and losses to taxes of selling (XXX) to the commission to buy field of the new purchase (YYY)
+#if you used the sale of XXX to purchase YYY and ZZZ then the purchase price of YYY and ZZZ would be the percentage of funds used from XXX that was used to buy YYY/ZZZ
+#e.g. used $100 to buy XXX, it turned into $200. used 75% to buy YYY and 25% to buy ZZZ so YYY->$75 ZZZ->$25
+
+#totalpurchaseprice=# shares * share price at purchase + commission
