@@ -1,2 +1,4 @@
 allow for specifying various acct files and output a header in between
 So you can see diff accts perf such as IRA vs Brokerage vs Work Retirement acct
+Instead of flat files and objects, just dump into a sqlite db and update. then can query and sort output via database instead of manipulating objects. WOuld this make it more portable? Or more readable and robust. Only store info pulled from Yahoo finance, calculate everthing else? or calc and store in db so can sort based on that field as well. Yeah why not. It doesn't take that much space 
+[done] takes input filename as command line arg

@@ -257,7 +257,13 @@ from  textwrap import TextWrapper
 wrapper =TextWrapper()
 wrapper.width=190
 
-input=open("StockData.txt")
+import sys
+if sys.argv[1]!="":
+    inputfilename=sys.argv[1]
+else:
+    inputfilename="StockData.txt"
+
+input=open(inputfilename)
 
 DefaultColorCoding()
 PrintHeader()
