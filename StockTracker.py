@@ -53,7 +53,7 @@ def txtReport(Host,User,Password,From,To,Subject,Message):
     server.quit()
 
 def PrintHeader():
-    print("%10s %10s %10s %10s %10s %10s %10s"  % ("ticker"," $ gain", "ann %","Curr Worth", "Today chg$","Curr Price", "Prev Close" ) )
+    print("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend") )
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
 
@@ -62,14 +62,36 @@ class Accumulator:
         self.totalpurchaseprice=0.0
         self.totalcommission=0.0
         self.totaldollargain=0.0
+        self.totallosses=0.0
+        self.totalgains=0.0
     def Add(self,purchaseprice, commission, dollargain):
         self.totalpurchaseprice+=purchaseprice
         self.totalcommission+=commission
         self.totaldollargain+=dollargain
+        if dollargain < 0.0:
+            self.totallosses+=dollargain
+        else:
+            self.totalgains+=dollargain
     def Print(self):
-        print("Total Purchase Price: %s" % (self.totalpurchaseprice))
-        print("Total Commission Paid: %10.2f" % (self.totalcommission))
-        print("Total Dollar Gain/Loss: %10.2f" % (self.totaldollargain))
+        print("")
+        print("%22s %10.2f" % ("Total Purchase Price:",self.totalpurchaseprice))
+        print("%22s %10.2f" % ("Total Commission Paid:",self.totalcommission))
+        print("%22s %10.2f" % ("Total Purchase Price:",self.totaldollargain))
+        #print("%30s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
+        print("%27s %10.2f %s" % ("Total Dollar Losses:\033[31m" ,self.totallosses, " \033[39m" ))
+        #print("%26s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
+        #print("%24s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
+        #print("%22s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
+ #       print("%28s %10.2f %s" % ("Total Dollar Gains:\033[31m" ,self.totalgains, " \033[39m" ))
+        print("%27s %10.2f %s" % ("Total Dollar Gains:\033[32m" ,self.totalgains, " \033[39m" ))
+#        print("%26s %10.2f %s" % ("Total Dollar Gains:\033[31m" ,self.totalgains, " \033[39m" ))
+
+#        print("Total Purchase Price:         %10.2f" % (self.totalpurchaseprice))
+#        print("Total Commission Paid:        %10.2f" % (self.totalcommission))
+#        print("Total Dollar Gain/Loss:       %10.2f" % (self.totaldollargain))
+#        print("Total Dollar Losses: \033[31m %10.2f  \033[39m" % (self.totallosses)) 
+#        print("Total Dollar Gains:\033[32m   %10.2f  \033[39m" % (self.totalgains))
+ 
 
 class Stock:
         currentshareprice=0.0
@@ -100,10 +122,13 @@ class Stock:
             print("get stock data")
         def percentGain_func(self): 
             return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
+        def percentGainLoss_func(self): #not sure what a good term for this is ROI?
+            return (self.sharequantity*self.currentshareprice)/self.totalpurchaseprice
         def dollarGain_func(self):
             return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
         def annualizedReturn_func(self):
             return (((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
+
         def PrintData(self):
             print("-----------------=======================-----------------")
             print("Ticker:"+self.ticker)
@@ -131,16 +156,19 @@ class Stock:
             print(" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice ))
                 
         def PrintColorized(self):
-            print(" %10s"  % (self.ticker)),
+            print("%7s"  % (self.ticker)),
             ColorCode10pt2f(self.dollarGain)
             ColorCode10pt2f(self.annualizedReturn)
+            ColorCode10pt2f(self.percentGain_func())
             print("\033[49m \033[39m"),
-            print(self.sharequantity*self.currentshareprice ),
-            ColorCode10pt2f(self.sharequantity*(self.currentshareprice - self.shareprevcloseprice))
+            print("%10.2f" % (self.sharequantity*self.currentshareprice )),
+            ColorCode10pt2f(self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
             #ColorCode10pt2f(self.currentshareprice)
             print("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)),
             #ColorCode10pt2f(self.shareprevcloseprice)
-            print("\033[49m \033[39m") #reset color to default
+            print("\033[49m \033[39m"), #reset color to default
+            print("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend))
+
                 
         def getSharePrice(self):
 # data format found in GetStockQutoesv2.sh
@@ -225,6 +253,9 @@ stock.PrintData()
 
 #use ncurses, ansi color codes
 
+from  textwrap import TextWrapper
+wrapper =TextWrapper()
+wrapper.width=190
 
 input=open("StockData.txt")
 
@@ -241,6 +272,8 @@ for line in input:
             stock=Stock(data)
 #            print( stock.totalpurchaseprice, stock.commission, stock.dollarGain)
             cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain)
+#            if stock.dollarGain < 0:
+                
 
 
 #            stock.PrintData()
