@@ -2,7 +2,7 @@
 #commission for apple was 31.50 when bought
 aapl,142,1482.56,10/23/2000,31.50,7
 bac,480,8426.20,9/28/2009,7,7
-#sold 1076@$13.20 jdsu shares (commission was $0.23) to buy bwld #so far a pretty smart move since jdsu doubled in 2011 then came crashing down to ~13 still on mar 12 2012
+#sold 1076@$13.20 jdsu shares (commission was $0.23) to buy bwld #so far a pretty smart move since jdsu doubled in 2011 then came crashing down to ~13 still on mar 12 2012, Yeah but too bad I took a $23k->$13 hit on the JDSU shares before I bought BWLD as it is.
 bwld,320,14110.4,5/29/2007,0,7
 c,8,316.6,6/16/2010,7,7
 crox,65,3938.2,8/8/2007,7,7
@@ -18,3 +18,4 @@ rimm,18,1896.82,12/10/2007,7,7
 #e.g. used $100 to buy XXX, it turned into $200. used 75% to buy YYY and 25% to buy ZZZ so YYY->$75 ZZZ->$25
 
 #totalpurchaseprice=# shares * share price at purchase + commission
+#it'd also be nice to track dividends that are paid, ticker changes.

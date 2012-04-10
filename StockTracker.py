@@ -76,7 +76,7 @@ class Accumulator:
         print("")
         print("%22s %10.2f" % ("Total Purchase Price:",self.totalpurchaseprice))
         print("%22s %10.2f" % ("Total Commission Paid:",self.totalcommission))
-        print("%22s %10.2f" % ("Total Purchase Price:",self.totaldollargain))
+        print("%22s %10.2f" % ("Total Gain:",self.totaldollargain))
         #print("%30s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
         print("%27s %10.2f %s" % ("Total Dollar Losses:\033[31m" ,self.totallosses, " \033[39m" ))
         #print("%26s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
@@ -103,7 +103,7 @@ class Stock:
 
         def __init__(self, data): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell):
             self.ticker=data[0]
-            self.sharequantity=int(data[1])
+            self.sharequantity=float(data[1]) #allow for partial shares, useful for mutual funds, and reverse splits
             self.totalpurchaseprice=float(data[2])
             temp=data[3].split('/')
 #            print temp
@@ -111,8 +111,14 @@ class Stock:
             self.purchasedateyear=temp[2]
             self.puchasedatemonth=temp[0]
             self.purchasedateday=temp[1]
-            self.commission_to_buy=float(data[4])
-            self.commission_to_sell=float(data[5])
+            if data[4]!="":
+                self.commission_to_buy=float(data[4])
+            else:
+                self.commission_to_buy=0
+            if data[5]!="":
+                self.commission_to_sell=float(data[5])
+            else:
+                self.commission_to_sell=0
 #            self.currentshareprice=self.getSharePrice()
             self.getSharePrice()
             self.dollarGain=self.dollarGain_func()
@@ -128,7 +134,11 @@ class Stock:
             return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
         def annualizedReturn_func(self):
             return (((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
-
+        def taxRate(self): #add column to input file for personal info that includes tax rate, LT ST capital gains
+            if self.yearsSincePurchase()>1:
+                taxrate=0.75 #1-0.25
+            else:
+                taxrate=0.65 #1-0.35
         def PrintData(self):
             print("-----------------=======================-----------------")
             print("Ticker:"+self.ticker)
@@ -183,7 +193,8 @@ class Stock:
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker")
             self.currentshareprice=float(data[0])
-            self.shareopenprice=float(data[1])
+            if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
+                self.shareopenprice=float(data[1])
             self.shareprevcloseprice=float(data[2])
             temp=data[3].split(" - ")
             #print(temp,temp[0][1:],temp[1][:-1])
@@ -255,11 +266,12 @@ stock.PrintData()
 
 from  textwrap import TextWrapper
 wrapper =TextWrapper()
-wrapper.width=190
+wrapper.width=190 #set text wrapping width manually otherwise if drag terminal to full width python doesn't write text out the full width
 
 import sys
-if sys.argv[1]!="":
-    inputfilename=sys.argv[1]
+if len(sys.argv)>1:
+    if sys.argv[1]!="":
+        inputfilename=sys.argv[1]
 else:
     inputfilename="StockData.txt"
 
@@ -275,6 +287,7 @@ for line in input:
     if line.strip(): #skip blank lines
         if line[0]!='#': #skip comments
             data=line[:-1].split(',')
+            #print(data)
             stock=Stock(data)
 #            print( stock.totalpurchaseprice, stock.commission, stock.dollarGain)
             cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain)
