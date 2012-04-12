@@ -3,7 +3,7 @@ I got these results by googling stock sales tax
 http://www.tax.ohio.gov/divisions/tax_analysis/tax_data_series/sales_and_use/documents/salestaxmapcolor.pdf color coded map
 http://tax.ohio.gov/faqs/Sales/sales_basics.stm This states that the state tax rate is 5.5% on Apr 6 2012
 http://www.moneychimp.com/features/capgain.htm Online Tax Calculator for sale of sstock
-http://www.moneychimp.com/features/tax_brackets.htm Calculate which tax bracket you fall into
+http://www.moneychimp.com/features/tax_brackets.htm Calculate which tax bracket you fall into, gives example on how tax rate is applied, your tax rate applies to last dollar you earn not to all. So effective tax rate is lower overall
 http://www.smartmoney.com/taxes/income/at-what-rate-will-your-sale-be-taxed-9867/ wordier version about which tax bracket you fall into
 http://www.smartmoney.com/taxes/income/calculating-taxes-on-stock-sales-9538/ overview, wordy
 http://www.ehow.com/how_5019169_calculate-taxes-stock-sale.html gen'l info. 

@@ -57,6 +57,14 @@ def PrintHeader():
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
 
+
+def PrintHeader2():
+#    print("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s %10s %10s %10s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes") )
+    print("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes") )
+
+#    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
+#print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
+
 class Accumulator:
     def __init__(self):
         self.totalpurchaseprice=0.0
@@ -64,7 +72,11 @@ class Accumulator:
         self.totaldollargain=0.0
         self.totallosses=0.0
         self.totalgains=0.0
-    def Add(self,purchaseprice, commission, dollargain):
+        self.dailydollargain=0.0
+        self.dailytotallosses=0.0
+        self.dailytotalgains=0.0
+        self.portfolioworth=0.0
+    def Add(self, purchaseprice, commission, dollargain,dailygain,currentworth):
         self.totalpurchaseprice+=purchaseprice
         self.totalcommission+=commission
         self.totaldollargain+=dollargain
@@ -72,6 +84,11 @@ class Accumulator:
             self.totallosses+=dollargain
         else:
             self.totalgains+=dollargain
+        if dailygain < 0.0:
+            self.dailytotallosses+=dailygain
+        else:
+            self.dailytotalgains+=dailygain
+        self.portfolioworth+=currentworth
     def Print(self):
         print("")
         print("%22s %10.2f" % ("Total Purchase Price:",self.totalpurchaseprice))
@@ -85,13 +102,15 @@ class Accumulator:
  #       print("%28s %10.2f %s" % ("Total Dollar Gains:\033[31m" ,self.totalgains, " \033[39m" ))
         print("%27s %10.2f %s" % ("Total Dollar Gains:\033[32m" ,self.totalgains, " \033[39m" ))
 #        print("%26s %10.2f %s" % ("Total Dollar Gains:\033[31m" ,self.totalgains, " \033[39m" ))
-
 #        print("Total Purchase Price:         %10.2f" % (self.totalpurchaseprice))
 #        print("Total Commission Paid:        %10.2f" % (self.totalcommission))
 #        print("Total Dollar Gain/Loss:       %10.2f" % (self.totaldollargain))
 #        print("Total Dollar Losses: \033[31m %10.2f  \033[39m" % (self.totallosses)) 
 #        print("Total Dollar Gains:\033[32m   %10.2f  \033[39m" % (self.totalgains))
- 
+        print("%22s %10.2f" % ("Daily Losses:",self.dailytotallosses))
+        print("%22s %10.2f" % ("Daily Gains:",self.dailytotalgains))
+        print("%22s %10.2f" % ("Daily Change:",self.dailytotalgains+self.dailytotallosses))
+        print("%22s %10.2f" % ("Portfolio Worth:",self.portfolioworth))
 
 class Stock:
         currentshareprice=0.0
@@ -100,7 +119,8 @@ class Stock:
         annualizedgainloss=0.0
         shareopenprice=0.0
         shareprevcloseprice=0.0
-
+        taxbracket=0 
+        filingstatus=""
         def __init__(self, data): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell):
             self.ticker=data[0]
             self.sharequantity=float(data[1]) #allow for partial shares, useful for mutual funds, and reverse splits
@@ -124,6 +144,20 @@ class Stock:
             self.dollarGain=self.dollarGain_func()
             self.percentGain=self.percentGain_func()
             self.annualizedReturn=self.annualizedReturn_func()
+            self.getTaxBracket_func()
+            
+        def getTaxBracket_func(self):
+            input=open("TaxBracket.txt")
+            for line in input:
+                data=""
+                if line.strip(): #skip blank lines
+                    if line[0]!='#': #skip comments
+                        data=line[:-1].split(',')
+                        self.taxbracket=int(data[0])
+                        self.filingstatus=data[1]
+#            print("taxbracket:%i ,filing: %s" % (self.taxbracket,self.filingstatus))
+
+
         def GetStockData(self):
             print("get stock data")
         def percentGain_func(self): 
@@ -134,11 +168,49 @@ class Stock:
             return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
         def annualizedReturn_func(self):
             return (((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
-        def taxRate(self): #add column to input file for personal info that includes tax rate, LT ST capital gains
-            if self.yearsSincePurchase()>1:
-                taxrate=0.75 #1-0.25
+
+        def stockSaleTaxes_func(self): #calculate amount you would pay in taxes on your stock sale, taxed only on gains!
+            if self.currentWorth_func()>self.totalpurchaseprice-self.commission_to_buy:
+                output=(self.currentWorth_func()-self.totalpurchaseprice+self.commission_to_buy)*self.taxRate_func()
             else:
-                taxrate=0.65 #1-0.35
+                output=0 #we're in the red. Not sure just yet how the taxes apply here
+            return output
+
+        def stockSaleTakeHome_func(self): #calculate amount you would receive after taxes on your stock sale
+            if self.currentWorth_func()>self.totalpurchaseprice-self.commission_to_buy:
+                output=self.currentWorth_func()-(self.currentWorth_func()-self.totalpurchaseprice+self.commission_to_buy)*self.taxRate_func() 
+            else:
+                output=0 #we're in the red. Not sure just yet how the taxes apply here
+            return output
+
+        def stockpriceDiscountedForTaxes_func(self): #the effective price the stock would appear when selling taking into acct deductions for taxes: e.g. a $120 stock bought for $20 at a 38% tax rate would appear as a $82 stock -> 120-(120-20)*.38
+            return self.currentshareprice*self.oneMinusTaxRate_func()
+        def oneMinusTaxRate_func(self): #add column to input file for personal info that includes tax rate, LT ST capital gains, This function will need to be update proly every year to take in tax changes
+            if self.yearsSincePurchase()>1:
+                taxrate=(100-self.calculateLongTermCapitalGains_func())/100  #<-- due to pythons untyped variables this is evaluated as an int even when wrapped in float()
+                taxrate=(100-self.calculateLongTermCapitalGains_func())/100.0 #<-- turning the denominator in a float types the whole thing as a float
+            else:
+                taxrate=(100-self.calculateShortTermCapitalGains_func())/100.0
+            return taxrate
+            #return float((100-self.calculateLongTermCapitalGains_func())/100.0)
+        def taxRate_func(self): #add column to input file for personal info that includes tax rate, LT ST capital gains, This function will need to be update proly every year to take in tax changes
+            if self.yearsSincePurchase()>1:
+                taxrate=(self.calculateLongTermCapitalGains_func())/100.0
+            else:
+                taxrate=(self.calculateShortTermCapitalGains_func())/100.0
+            return taxrate
+        def calculateLongTermCapitalGains_func(self):
+            taxlist=[0,15]
+            if self.taxbracket in taxlist:
+                return 0
+            else:
+                return 15
+        def calculateShortTermCapitalGains_func(self):
+            return self.taxbracket
+        def currentWorth_func(self):
+            return self.sharequantity*self.currentshareprice 
+        def dailyChange_func(self):
+            return   self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)
         def PrintData(self):
             print("-----------------=======================-----------------")
             print("Ticker:"+self.ticker)
@@ -163,7 +235,7 @@ class Stock:
         def PrintCompact(self):
 #            print("-----------------=======================-----------------"
 #            print self.ticker+"\t"+str(self.dollarGain)+"\t"+str(self.annualizedReturn)+"\t"+str(self.sharequantity*self.currentshareprice)
-            print(" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice ))
+            print(" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.currentWorth_func()))
                 
         def PrintColorized(self):
             print("%7s"  % (self.ticker)),
@@ -171,13 +243,31 @@ class Stock:
             ColorCode10pt2f(self.annualizedReturn)
             ColorCode10pt2f(self.percentGain_func())
             print("\033[49m \033[39m"),
-            print("%10.2f" % (self.sharequantity*self.currentshareprice )),
-            ColorCode10pt2f(self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
+            print("%10.2f" % (self.currentWorth_func())), #self.sharequantity*self.currentshareprice )),
+            ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
             #ColorCode10pt2f(self.currentshareprice)
             print("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)),
             #ColorCode10pt2f(self.shareprevcloseprice)
             print("\033[49m \033[39m"), #reset color to default
             print("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend))
+#            print("%10.2f %10.2f %10.2f %i" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.taxbracket))
+#            print("%10.2f %10.2f %10.2f %10.2f" %(self.taxRate_func(),self.oneMinusTaxRate_func(),self.calculateLongTermCapitalGains_func(),self.calculateShortTermCapitalGains_func()))
+
+        def PrintColorized2(self):
+            print("%7s"  % (self.ticker)),
+            ColorCode10pt2f(self.dollarGain)
+            ColorCode10pt2f(self.annualizedReturn)
+            ColorCode10pt2f(self.percentGain_func())
+            print("\033[49m \033[39m"),
+            print("%10.2f" % (self.currentWorth_func())), #self.sharequantity*self.currentshareprice )),
+            ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
+            #ColorCode10pt2f(self.currentshareprice)
+            print("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)),
+            #ColorCode10pt2f(self.shareprevcloseprice)
+            print("\033[49m \033[39m"), #reset color to default
+            print("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)),
+            print("%10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func()))
+#            print("%10.2f %10.2f %10.2f %10.2f" %(self.taxRate_func(),self.oneMinusTaxRate_func(),self.calculateLongTermCapitalGains_func(),self.calculateShortTermCapitalGains_func()))
 
                 
         def getSharePrice(self):
@@ -278,7 +368,7 @@ else:
 input=open(inputfilename)
 
 DefaultColorCoding()
-PrintHeader()
+PrintHeader() #2()
 
 cumulative=Accumulator()
 
@@ -290,14 +380,14 @@ for line in input:
             #print(data)
             stock=Stock(data)
 #            print( stock.totalpurchaseprice, stock.commission, stock.dollarGain)
-            cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain)
+            cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
 #            if stock.dollarGain < 0:
                 
 
 
 #            stock.PrintData()
 #            stock.PrintCompact2()
-            stock.PrintColorized()
+            stock.PrintColorized2()
 
             message=stock.PrintForTxtMessage()
  #           print(message)
