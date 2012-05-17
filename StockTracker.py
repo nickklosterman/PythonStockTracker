@@ -2,6 +2,7 @@
 import datetime
 import urllib
 import smtplib #for emailing reports
+import os #for converting ~ -> users home directory
 #now=datetime.datetime.now()
 #'nick':datetime.datetime(1978,7,2)
 #days_ago=(now-when).days
@@ -60,7 +61,7 @@ def PrintHeader():
 
 def PrintHeader2():
 #    print("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s %10s %10s %10s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes") )
-    print("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes") )
+    print("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s %5s"  % ("ticker","\$ gain", "ann \%","\% gain","Curr Worth", "Today chg\$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") )
 
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
@@ -76,6 +77,7 @@ class Accumulator:
         self.dailytotallosses=0.0
         self.dailytotalgains=0.0
         self.portfolioworth=0.0
+        self.dailypercentchange=0.0
     def Add(self, purchaseprice, commission, dollargain,dailygain,currentworth):
         self.totalpurchaseprice+=purchaseprice
         self.totalcommission+=commission
@@ -89,6 +91,8 @@ class Accumulator:
         else:
             self.dailytotalgains+=dailygain
         self.portfolioworth+=currentworth
+    def CalculateDailyPercentChange(self):
+        self.dailypercentchange=((self.dailytotalgains+self.dailytotallosses)/(self.portfolioworth-self.dailytotallosses-self.dailytotalgains)*100)
     def Print(self):
         print("")
         print("%22s %10.2f" % ("Total Purchase Price:",self.totalpurchaseprice))
@@ -110,6 +114,9 @@ class Accumulator:
         print("%22s %10.2f" % ("Daily Losses:",self.dailytotallosses))
         print("%22s %10.2f" % ("Daily Gains:",self.dailytotalgains))
         print("%22s %10.2f" % ("Daily Change:",self.dailytotalgains+self.dailytotallosses))
+        self.CalculateDailyPercentChange()
+
+        print("%22s %10.2f" % ("Daily % Change:", self.dailypercentchange ))
         print("%22s %10.2f" % ("Portfolio Worth:",self.portfolioworth))
 
 class Stock:
@@ -147,7 +154,7 @@ class Stock:
             self.getTaxBracket_func()
             
         def getTaxBracket_func(self):
-            input=open("TaxBracket.txt")
+            input=open(os.path.expanduser("~/Git/PythonStockTracker/TaxBracket.txt"))
             for line in input:
                 data=""
                 if line.strip(): #skip blank lines
@@ -226,6 +233,13 @@ class Stock:
             print("Current 52 Week High:"+str(self.share52wkhigh))
             print("Current 52 Week Low:"+str(self.share52wklow))
             print("Current Trend:"+self.trend)
+        def FiftyTwoWeekHighLowFactor(self):
+            if self.share52wkhigh!=0 and self.share52wklow!=0:
+                return (self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)
+            else:
+                return 0
+            
+    
         def PrintCompact2(self):
             print(" %8s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice),self.currentshareprice,self.shareprevcloseprice))
             
@@ -266,7 +280,7 @@ class Stock:
             #ColorCode10pt2f(self.shareprevcloseprice)
             print("\033[49m \033[39m"), #reset color to default
             print("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)),
-            print("%10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func()))
+            print("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor()))
 #            print("%10.2f %10.2f %10.2f %10.2f" %(self.taxRate_func(),self.oneMinusTaxRate_func(),self.calculateLongTermCapitalGains_func(),self.calculateShortTermCapitalGains_func()))
 
                 
@@ -368,7 +382,7 @@ else:
 input=open(inputfilename)
 
 DefaultColorCoding()
-PrintHeader() #2()
+PrintHeader2() #2()
 
 cumulative=Accumulator()
 
@@ -382,13 +396,9 @@ for line in input:
 #            print( stock.totalpurchaseprice, stock.commission, stock.dollarGain)
             cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
 #            if stock.dollarGain < 0:
-                
-
-
 #            stock.PrintData()
 #            stock.PrintCompact2()
             stock.PrintColorized2()
-
             message=stock.PrintForTxtMessage()
  #           print(message)
  #            emailReport("mail.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff",stock.PrintForTxtMessage())
