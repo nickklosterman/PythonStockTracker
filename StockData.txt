@@ -6,10 +6,17 @@ bac,480,8426.20,9/28/2009,7,7
 bwld,320,14110.4,5/29/2007,0,7
 c,8,316.6,6/16/2010,7,7
 crox,65,3938.2,8/8/2007,7,7
-fmcc.ob,600,5063.62,7/22/2008,7,7
+fmcc,600,5063.62,7/22/2008,7,7
 jsda,214,4307.8,5/24/2007,0,7
 pot,54,943,3/29/2007,7,7
 rimm,18,1896.82,12/10/2007,7,7
+#these two mutual funds were transferred from my SSB acct in Apr 17 2012.
+aepgx,142.366,3000.00,10/23/2003,0,17
+shrax,62.77,5200.00,10/23/2003,0,17
+
+#Legg Mason ClearBridge Aggressive Gr A (SHRAX)
+#American Funds EuroPacific Gr A (AEPGX)
+
 
 #how do I track the performance of the money that I moved from XXX into YYY?
 #I suppose i could comment the line where the data was sold. Possibly add ending value/shares and commission to sell and tax consequence
@@ -19,3 +26,5 @@ rimm,18,1896.82,12/10/2007,7,7
 
 #totalpurchaseprice=# shares * share price at purchase + commission
 #it'd also be nice to track dividends that are paid, ticker changes.
+
+#Trying to keep track of these ticker changes and money flowing from one fund into another is like watching the shifting sands of the desert. June 4 2012                                             

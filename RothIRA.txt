@@ -1,0 +1,10 @@
+sagbx,40.999,4000.00,10/23/2003,0,17
+sfvbx,303.896,3746.65 , 10/23/2003,0,17
+shfvx,131.675,1678.59,10/23/2003,0,17
+shrax,17.681,1464.69,10/23/2003,0,17
+#Legg Mason ClearBridge Aggressive Gr A (SHRAX)
+#Legg Mason ClearBridge Aggressive Gr B (SAGBX)
+#Legg Mason ClearBridge Fdmtl AlCp Val B (SFVBX)
+#Legg Mason ClearBridge Fdmtl AlCp Val A (SHFVX)
+#something weird happened on 11/01/11 as there was a "tax free conversion flip" of assets that weren't previously in the IRA acct. I didn't authorize the transaction.
+#Also the amounts of how much was originally purchased was moved so that it looked like I bought the new assets back in the day. The notes state that activity named "journal" is movement from non-retiremement to retirement acct. Yet I didn't authorize (or at least I don't remember doing so.)

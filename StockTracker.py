@@ -61,7 +61,7 @@ def PrintHeader():
 
 def PrintHeader2():
 #    print("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s %10s %10s %10s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes") )
-    print("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s %5s"  % ("ticker","\$ gain", "ann \%","\% gain","Curr Worth", "Today chg\$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") )
+    print("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s %5s"  % ("ticker","$ gain", "ann \%","\% gain","Curr Worth", "Today chg $","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") )
 
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
@@ -300,11 +300,17 @@ class Stock:
             if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
                 self.shareopenprice=float(data[1])
             self.shareprevcloseprice=float(data[2])
-            temp=data[3].split(" - ")
+            if data[3]!="\"N/A - N/A\"":
+                temp=data[3].split(" - ")
             #print(temp,temp[0][1:],temp[1][:-1])
-            self.share52wklow=float(temp[0][1:])
-            self.share52wkhigh=float(temp[1][:-1])
-            self.trend=data[4][7:13]
+                self.share52wklow=float(temp[0][1:])
+                self.share52wkhigh=float(temp[1][:-1])
+                self.trend=data[4][7:13]
+            else:
+                self.share52wklow=0.0001
+                self.share52wkhigh=0.0002
+                self.trend="N/A"
+                
 #            print(self.trend[7:13])
 
         def yearsSincePurchase(self):
