@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import datetime
-import urllib.request, urllib.parse, urllib.error
+import urllib
 import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 #now=datetime.datetime.now()
@@ -10,7 +10,7 @@ import os #for converting ~ -> users home directory
 #class StockList:
 #    def __init__(self,
 def DefaultColorCoding():
-    print(("\033[49m \033[39m "), end=' ') #set to default color coding, suppress newline
+    print("\033[49m \033[39m "), #set to default color coding, suppress newline
 
 def isLeapYear(year):
     leapyear=0
@@ -22,7 +22,7 @@ def getSharePrices(tickerlist):
 #tickerlist should be a set of ticker symbols with '+' in between
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %tickerlist + '&f=l1'
 #            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=AAPL&f=l1' l1=>last trade without time.
-    days = str( urllib.request.urlopen(url).read() ,encoding='utf8') #lines()
+    days = urllib.urlopen(url).read() #lines()
     data = [day[:-2].split(',') for day in days]
     return data
 def emailReport(Host,Port,User,Password,From,To,Subject,Message):
@@ -41,11 +41,11 @@ def emailReport(Host,Port,User,Password,From,To,Subject,Message):
 #use ansi color codes to color fg and bg : http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html; curses is an alternative
 def ColorCode10pt2f(number):
     if number>0: 
-        print(("\033[32m %10.2f"% (number)), end=' ') #suppress newline
+        print("\033[32m %10.2f"% (number)), #suppress newline
     else:
-        print(("\033[31m %10.2f"% (number)), end=' ') 
+        print("\033[31m %10.2f"% (number)), 
 def ColorCode8s(string):
-        print(("\033[31m %8s"% (string)))
+        print("\033[31m %8s"% (string))
 
 def txtReport(Host,User,Password,From,To,Subject,Message):
     server=smtplib.SMTP(Host)
@@ -54,14 +54,14 @@ def txtReport(Host,User,Password,From,To,Subject,Message):
     server.quit()
 
 def PrintHeader():
-    print(("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend") ))
+    print("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend") )
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
 
 
 def PrintHeader2():
 #    print("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s %10s %10s %10s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes") )
-    print(("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s %5s"  % ("ticker","$ gain", "ann \%","\% gain","Curr Worth", "Today chg $","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") ))
+    print("%7s %12s %12s %12s %12s %12s %12s %12s %12s %12s %6s %12s %12s %12s %5s"  % ("ticker","$ gain", "ann \%","\% gain","Curr Worth", "Today chg $","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") )
 
 #    print(" %8s %8.2f %8.2f %8.2f "  % ("ticker"," $ gain", "ann %","Curr Worth")
 #print(" %8s %8s %8s %8s "  % ("ticker"," $ gain", "ann %","Curr Worth")
@@ -95,29 +95,29 @@ class Accumulator:
         self.dailypercentchange=((self.dailytotalgains+self.dailytotallosses)/(self.portfolioworth-self.dailytotallosses-self.dailytotalgains)*100)
     def Print(self):
         print("")
-        print(("%22s %10.2f" % ("Total Purchase Price:",self.totalpurchaseprice)))
-        print(("%22s %10.2f" % ("Total Commission Paid:",self.totalcommission)))
-        print(("%22s %10.2f" % ("Total Gain:",self.totaldollargain)))
+        print("%22s %10.2f" % ("Total Purchase Price:",self.totalpurchaseprice))
+        print("%22s %10.2f" % ("Total Commission Paid:",self.totalcommission))
+        print("%22s %10.2f" % ("Total Gain:",self.totaldollargain))
         #print("%30s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
-        print(("%27s %10.2f %s" % ("Total Dollar Losses:\033[31m" ,self.totallosses, " \033[39m" )))
+        print("%27s %10.2f %s" % ("Total Dollar Losses:\033[31m" ,self.totallosses, " \033[39m" ))
         #print("%26s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
         #print("%24s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
         #print("%22s %10.2f %s" % ("Total Dollar Losses: \033[31m" ,self.totallosses, " \033[39m" ))
  #       print("%28s %10.2f %s" % ("Total Dollar Gains:\033[31m" ,self.totalgains, " \033[39m" ))
-        print(("%27s %10.2f %s" % ("Total Dollar Gains:\033[32m" ,self.totalgains, " \033[39m" )))
+        print("%27s %10.2f %s" % ("Total Dollar Gains:\033[32m" ,self.totalgains, " \033[39m" ))
 #        print("%26s %10.2f %s" % ("Total Dollar Gains:\033[31m" ,self.totalgains, " \033[39m" ))
 #        print("Total Purchase Price:         %10.2f" % (self.totalpurchaseprice))
 #        print("Total Commission Paid:        %10.2f" % (self.totalcommission))
 #        print("Total Dollar Gain/Loss:       %10.2f" % (self.totaldollargain))
 #        print("Total Dollar Losses: \033[31m %10.2f  \033[39m" % (self.totallosses)) 
 #        print("Total Dollar Gains:\033[32m   %10.2f  \033[39m" % (self.totalgains))
-        print(("%22s %10.2f" % ("Daily Losses:",self.dailytotallosses)))
-        print(("%22s %10.2f" % ("Daily Gains:",self.dailytotalgains)))
-        print(("%22s %10.2f" % ("Daily Change:",self.dailytotalgains+self.dailytotallosses)))
+        print("%22s %10.2f" % ("Daily Losses:",self.dailytotallosses))
+        print("%22s %10.2f" % ("Daily Gains:",self.dailytotalgains))
+        print("%22s %10.2f" % ("Daily Change:",self.dailytotalgains+self.dailytotallosses))
         self.CalculateDailyPercentChange()
 
-        print(("%22s %10.2f" % ("Daily % Change:", self.dailypercentchange )))
-        print(("%22s %10.2f" % ("Portfolio Worth:",self.portfolioworth)))
+        print("%22s %10.2f" % ("Daily % Change:", self.dailypercentchange ))
+        print("%22s %10.2f" % ("Portfolio Worth:",self.portfolioworth))
 
 class Stock:
         currentshareprice=0.0
@@ -220,19 +220,19 @@ class Stock:
             return   self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)
         def PrintData(self):
             print("-----------------=======================-----------------")
-            print(("Ticker:"+self.ticker))
-            print(("Shares:"+str(self.sharequantity)))
-            print(("Total Purchase Price:"+str(self.totalpurchaseprice)))
-            print(("Purchase Date:"+str(self.purchasedate)))
-            print(("Dollar Gain:"+str(self.dollarGain)))
-            print(("Percent Gain:"+str(self.percentGain)))
-            print(("Annualized Return:"+str(self.annualizedReturn)))
-            print(("Current Value:"+str(self.sharequantity*self.currentshareprice)))
-            print(("Current Share Price:"+str(self.currentshareprice)))
-            print(("Current Open  Price:"+str(self.shareopenprice)))
-            print(("Current 52 Week High:"+str(self.share52wkhigh)))
-            print(("Current 52 Week Low:"+str(self.share52wklow)))
-            print(("Current Trend:"+self.trend))
+            print("Ticker:"+self.ticker)
+            print("Shares:"+str(self.sharequantity))
+            print("Total Purchase Price:"+str(self.totalpurchaseprice))
+            print("Purchase Date:"+str(self.purchasedate))
+            print("Dollar Gain:"+str(self.dollarGain))
+            print("Percent Gain:"+str(self.percentGain))
+            print("Annualized Return:"+str(self.annualizedReturn))
+            print("Current Value:"+str(self.sharequantity*self.currentshareprice))
+            print("Current Share Price:"+str(self.currentshareprice))
+            print("Current Open  Price:"+str(self.shareopenprice))
+            print("Current 52 Week High:"+str(self.share52wkhigh))
+            print("Current 52 Week Low:"+str(self.share52wklow))
+            print("Current Trend:"+self.trend)
         def FiftyTwoWeekHighLowFactor(self):
             if self.share52wkhigh!=0 and self.share52wklow!=0:
                 return (self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)
@@ -241,7 +241,7 @@ class Stock:
             
     
         def PrintCompact2(self):
-            print((" %8s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice),self.currentshareprice,self.shareprevcloseprice)))
+            print(" %8s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice),self.currentshareprice,self.shareprevcloseprice))
             
         def PrintForTxtMessage(self):
             message="Ticker: %8s $+-: %8.2f AnnlRet: %8.2f Worth:%8.2f DayChange:%8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice  ))
@@ -249,38 +249,38 @@ class Stock:
         def PrintCompact(self):
 #            print("-----------------=======================-----------------"
 #            print self.ticker+"\t"+str(self.dollarGain)+"\t"+str(self.annualizedReturn)+"\t"+str(self.sharequantity*self.currentshareprice)
-            print((" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.currentWorth_func())))
+            print(" %8s %8.2f %8.2f %8.2f "  % (self.ticker,self.dollarGain,self.annualizedReturn,self.currentWorth_func()))
                 
         def PrintColorized(self):
-            print(("%7s"  % (self.ticker)), end=' ')
+            print("%7s"  % (self.ticker)),
             ColorCode10pt2f(self.dollarGain)
             ColorCode10pt2f(self.annualizedReturn)
             ColorCode10pt2f(self.percentGain_func())
-            print(("\033[49m \033[39m"), end=' ')
-            print(("%10.2f" % (self.currentWorth_func())), end=' ') #self.sharequantity*self.currentshareprice )),
+            print("\033[49m \033[39m"),
+            print("%10.2f" % (self.currentWorth_func())), #self.sharequantity*self.currentshareprice )),
             ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
             #ColorCode10pt2f(self.currentshareprice)
-            print(("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)), end=' ')
+            print("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)),
             #ColorCode10pt2f(self.shareprevcloseprice)
-            print(("\033[49m \033[39m"), end=' ') #reset color to default
-            print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)))
+            print("\033[49m \033[39m"), #reset color to default
+            print("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend))
 #            print("%10.2f %10.2f %10.2f %i" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.taxbracket))
 #            print("%10.2f %10.2f %10.2f %10.2f" %(self.taxRate_func(),self.oneMinusTaxRate_func(),self.calculateLongTermCapitalGains_func(),self.calculateShortTermCapitalGains_func()))
 
         def PrintColorized2(self):
-            print(("%7s"  % (self.ticker)), end=' ')
+            print("%7s"  % (self.ticker)),
             ColorCode10pt2f(self.dollarGain)
             ColorCode10pt2f(self.annualizedReturn)
             ColorCode10pt2f(self.percentGain_func())
-            print(("\033[49m \033[39m"), end=' ')
-            print(("%10.2f" % (self.currentWorth_func())), end=' ') #self.sharequantity*self.currentshareprice )),
+            print("\033[49m \033[39m"),
+            print("%10.2f" % (self.currentWorth_func())), #self.sharequantity*self.currentshareprice )),
             ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
             #ColorCode10pt2f(self.currentshareprice)
-            print(("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)), end=' ')
+            print("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)),
             #ColorCode10pt2f(self.shareprevcloseprice)
-            print(("\033[49m \033[39m"), end=' ') #reset color to default
-            print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
-            print(("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor())))
+            print("\033[49m \033[39m"), #reset color to default
+            print("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)),
+            print("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor()))
 #            print("%10.2f %10.2f %10.2f %10.2f" %(self.taxRate_func(),self.oneMinusTaxRate_func(),self.calculateLongTermCapitalGains_func(),self.calculateShortTermCapitalGains_func()))
 
                 
@@ -292,7 +292,7 @@ class Stock:
 #we actually need to get the prev close to compute gain for the day. Wall Street doesn't compute the gain from the open, but from prev close
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
 
-            days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
+            days = urllib.urlopen(url).read() #lines()
             data = days[:-2].split(',') 
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker")

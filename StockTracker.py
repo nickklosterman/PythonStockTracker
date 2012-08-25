@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import datetime
-import urllib
+import urllib.request
 import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 #now=datetime.datetime.now()
@@ -22,7 +22,7 @@ def getSharePrices(tickerlist):
 #tickerlist should be a set of ticker symbols with '+' in between
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %tickerlist + '&f=l1'
 #            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=AAPL&f=l1' l1=>last trade without time.
-    days = urllib.urlopen(url).read() #lines()
+    days = urllib.request.urlopen(url).read() #lines()
     data = [day[:-2].split(',') for day in days]
     return data
 def emailReport(Host,Port,User,Password,From,To,Subject,Message):
@@ -292,7 +292,7 @@ class Stock:
 #we actually need to get the prev close to compute gain for the day. Wall Street doesn't compute the gain from the open, but from prev close
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
 
-            days = urllib.urlopen(url).read() #lines()
+            days = urllib.request.urlopen(url).read() #lines()
             data = days[:-2].split(',') 
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker")
