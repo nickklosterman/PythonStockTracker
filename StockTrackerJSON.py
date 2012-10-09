@@ -254,6 +254,19 @@ class Stock:
             print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
             print(("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor())))
 
+        def PrintColorized3(self):
+            print(("%7s"  % (self.ticker)), end=' ')
+            ColorCode10pt2f(self.dollarGain)
+            ColorCode10pt2f(self.annualizedReturn)
+            ColorCode10pt2f(self.percentGain_func())
+            print(("\033[49m \033[39m"), end=' ')
+            print(("%10.2f" % (self.currentWorth_func())), end=' ') #self.sharequantity*self.currentshareprice )),
+            ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
+            print(("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)), end=' ')
+            print(("\033[49m \033[39m"), end=' ') #reset color to default
+            print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
+            print(("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor())),end=' ')
+            print(("%10.2f" %( self.resultsIfInvestedInSP500() )))
                 
         def getSharePrice(self):
 # data format found in GetStockQutoesv2.sh
@@ -280,6 +293,10 @@ class Stock:
                 self.share52wkhigh=0.0002
                 self.trend="N/A"
 
+        def resultsIfInvestedInSP500(self):
+            avgAnnualReturn=1.10 #10% annual return
+#            print(self.yearsSincePurchase(),self.totalpurchaseprice,avgAnnualReturn)
+            return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
 
         def yearsSincePurchase(self):
             now=datetime.datetime.now()
@@ -344,6 +361,7 @@ while i <= sysargvlength:
             #print(data)
             stock=Stock(data)
             cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
+#            stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
             stock.PrintColorized2()
             message=stock.PrintForTxtMessage()
 

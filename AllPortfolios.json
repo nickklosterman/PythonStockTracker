@@ -66,7 +66,26 @@
 	     {"ticker":"xlp","shares":1,"totalPurchasePrice":36.13,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
 	     {"ticker":"xlu","shares":1,"totalPurchasePrice":36.74,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
 	     {"ticker":"xlv","shares":1,"totalPurchasePrice":40.68,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
-	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10}
+	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/09/2011","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+,
+     {
+	 "portfolioName":"Scottrade Brokerage without Apple",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bwld","shares":320,"totalPurchasePrice":14110.4,"purchaseDate":"5/29/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"c","shares":8,"totalPurchasePrice":316.6,"purchaseDate":"6/16/2010","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"crox","shares":65,"totalPurchasePrice":3938.2,"purchaseDate":"8/8/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"fmcc","shares":600,"totalPurchasePrice":5063.62,"purchaseDate":"7/22/2008","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"jsda","shares":214,"totalPurchasePrice":4307.8,"purchaseDate":"5/24/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"pot","shares":54,"totalPurchasePrice":943,"purchaseDate":"3/29/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"rimm","shares":18,"totalPurchasePrice":1896.82,"purchaseDate":"12/10/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"tcbi","shares":54,"totalPurchasePrice":2465.89,"purchaseDate":"8/29/2012","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"aepgx","shares":142.366,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":62.77,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
 	 ]
      }
 
