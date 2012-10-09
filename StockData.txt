@@ -14,7 +14,6 @@ tcbi,54,2465.89,8/29/2012,7,7
 #these two mutual funds were transferred from my SSB acct in Apr 17 2012.
 aepgx,142.366,3000.00,10/23/2003,0,17
 shrax,62.77,5200.00,10/23/2003,0,17
-
 #Legg Mason ClearBridge Aggressive Gr A (SHRAX)
 #American Funds EuroPacific Gr A (AEPGX)
 

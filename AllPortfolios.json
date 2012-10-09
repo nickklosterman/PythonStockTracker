@@ -1,0 +1,76 @@
+{"portfolio":
+ [
+     {
+	 "portfolioName": "TRowePrice",
+	 "portfolioStocks":
+	 [
+	     { "ticker": "c", "shares": 22.6, "totalPurchasePrice": 1153.11, "purchaseDate": "1/11/2011","commissionToBuy":19.95,"commissionToSell":19.95},
+	     { "ticker":"c", "shares":39, "totalPurchasePrice":1862.7, "purchaseDate":"1/23/2007","commissionToBuy":19.95,"commissionToSell":19.95 },
+	     { "ticker":"c", "shares":15.4, "totalPurchasePrice":8557.33, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95},
+	     { "ticker":"dd", "shares":79, "totalPurchasePrice":4021.30, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95},
+	     { "ticker":"jpm", "shares":83, "totalPurchasePrice":4032.17, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95},
+	     { "ticker":"mrk", "shares":88, "totalPurchasePrice":3987.87, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95}
+	 ]
+     }
+     ,
+     {
+	 "portfolioName":"Scottrade Brokerage",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"aapl","shares":142,"totalPurchasePrice":1482.56,"purchaseDate":"10/23/2000","commissionToBuy":31.50,"commissionToSell":7},
+	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bwld","shares":320,"totalPurchasePrice":14110.4,"purchaseDate":"5/29/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"c","shares":8,"totalPurchasePrice":316.6,"purchaseDate":"6/16/2010","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"crox","shares":65,"totalPurchasePrice":3938.2,"purchaseDate":"8/8/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"fmcc","shares":600,"totalPurchasePrice":5063.62,"purchaseDate":"7/22/2008","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"jsda","shares":214,"totalPurchasePrice":4307.8,"purchaseDate":"5/24/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"pot","shares":54,"totalPurchasePrice":943,"purchaseDate":"3/29/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"rimm","shares":18,"totalPurchasePrice":1896.82,"purchaseDate":"12/10/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"tcbi","shares":54,"totalPurchasePrice":2465.89,"purchaseDate":"8/29/2012","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"aepgx","shares":142.366,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":62.77,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
+	 ]
+     }
+     ,
+     {
+	 "portfolioName":"Scottrade RothIRA",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"sagbx","shares":40.999,"totalPurchasePrice":4000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"sfvbx","shares":303.896,"totalPurchasePrice":3746.65 , "purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shfvx","shares":131.675,"totalPurchasePrice":1678.59,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":17.681,"totalPurchasePrice":1464.69,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
+
+	 ]
+     }
+     ,
+     {
+	 "portfolioName":"Indices",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"%5EGSPC","shares":1,"totalPurchasePrice":1030.36,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":0},
+	     {"ticker":"%5EIXIC","shares":1,"totalPurchasePrice":1879.1200,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":0}
+
+	 ]
+     }
+     ,
+     {
+	 "portfolioName":"SPDRs",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"xlb","shares":1,"totalPurchasePrice":36.93,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xle","shares":1,"totalPurchasePrice":74.23,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlf","shares":1,"totalPurchasePrice":16.0,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xli","shares":1,"totalPurchasePrice":36.71,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlk","shares":1,"totalPurchasePrice":30.26,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlp","shares":1,"totalPurchasePrice":36.13,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlu","shares":1,"totalPurchasePrice":36.74,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlv","shares":1,"totalPurchasePrice":40.68,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10}
+	 ]
+     }
+
+ ]
+}
+
+

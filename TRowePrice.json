@@ -1,0 +1,46 @@
+{"portfolioName": "TRowePrice",
+    "portfolioStocks":
+    [
+	{
+	    "ticker": "c",
+	    "shares": 22.6,
+	    "totalPurchasePrice": 1153.11,
+	    "purchaseDate": "1/11/2011",
+	    "commission":19.95
+	},
+	{
+	    "ticker":"c",
+	    "shares":39,
+	    "totalPurchasePrice":1862.7,
+	    "purchaseDate":"1/23/2007",
+	    "commission":19.95
+	},
+	{"ticker":"c",
+	 "shares":15.4,
+	 "totalPurchasePrice":8557.33,
+	 "purchaseDate":"01/17/2007",
+	 "commission":19.95
+	},
+	{
+	    "ticker":"dd",
+	    "shares":79,
+	    "totalPurchasePrice":4021.30,
+	    "purchaseDate":"01/17/2007",
+	    "commission":19.95
+	},
+	{
+	    "ticker":"jpm",
+	    "shares":83,
+	    "totalPurchasePrice":4032.17,
+	    "purchaseDate":"01/17/2007",
+	    "commission":19.95
+	},
+	{
+	    "ticker":"mrk",
+	    "shares":88,
+	    "totalPurchasePrice":3987.87,
+	    "purchaseDate":"01/17/2007",
+	    "commission":19.95
+	}
+    ]
+}
