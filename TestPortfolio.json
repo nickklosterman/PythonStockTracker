@@ -1,0 +1,33 @@
+{"portfolio":
+ [
+     {
+	 "portfolioName":"Indices",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"%5EGSPC","shares":1,"totalPurchasePrice":1030.36,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":0},
+	     {"ticker":"%5EIXIC","shares":1,"totalPurchasePrice":1879.1200,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":0}
+
+	 ]
+     }
+     ,
+     {
+	 "portfolioName":"SPDRs",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"xlb","shares":1,"totalPurchasePrice":36.93,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xle","shares":1,"totalPurchasePrice":74.23,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlf","shares":1,"totalPurchasePrice":16.0,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xli","shares":1,"totalPurchasePrice":36.71,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlk","shares":1,"totalPurchasePrice":30.26,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlp","shares":1,"totalPurchasePrice":36.13,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlu","shares":1,"totalPurchasePrice":36.74,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xlv","shares":1,"totalPurchasePrice":40.68,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
+	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/09/2011","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+
+ ]
+}
+
+

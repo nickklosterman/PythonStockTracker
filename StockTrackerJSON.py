@@ -6,6 +6,7 @@ import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 import json
 
+
 #class StockList:
 #    def __init__(self,
 def DefaultColorCoding():
@@ -59,6 +60,10 @@ def PrintHeader():
 def PrintHeader2():
     print(("%s %s %12s %12s %12s %12s %12s %12s %2s %12s %6s %12s %12s %12s %5s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg $","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") ))
 
+def PrintBanner(input):
+    print("#######################################################################")
+    print('                          ',input)
+    print("#######################################################################")
 
 class Accumulator:
     def __init__(self):
@@ -101,7 +106,107 @@ class Accumulator:
 
         print(("%22s %10.2f" % ("Daily % Change:", self.dailypercentchange )))
         print(("%22s %10.2f" % ("Portfolio Worth:",self.portfolioworth)))
+'''
+class Compare:
+take a Stock object and Compare it to a given ComparisonStock
 
+allow a special keyword for a ComparisonStock that will allow a given return i.e. 10% annual return.
+'''
+
+def padDate(MMDDYYYYDate):
+    if len(MMDDYYYYDate)!=10:
+        temp=MMDDYYYYDate.split('/')
+        purchasedate=datetime.date(int(temp[2]),int(temp[0]),int(temp[1]))
+        paddedDate=strftime("%m%d%Y")
+    else:
+        paddedDate=MMDDYYYYDate
+    return paddedDate
+
+def convertToYYYYMMDD(MMDDYYYYDate):# don't need to pad date as the strftime takes care of padding it.
+    temp=MMDDYYYYDate.split('/')
+    tempdate=datetime.date(int(temp[2]),int(temp[0]),int(temp[1]))
+    return tempdate.strftime("%Y%m%d")
+    
+def get_historical_prices_plus_one_day(symbol, date):
+    """
+    Get historical prices for the given ticker symbol.
+    Returns a nested list.
+    date in YYYYMMDD format
+    
+    """
+#the date goes month(jan=0) day year
+#http://ichart.yahoo.com/table.csv?s=alxn&d=2012&e=11&f=03&g=d&a=2012&b=10&c=22&ignore=.csv
+#http://download.finance.yahoo.com/d/quotes.csv?s=alxn&d=2012&e=11&f=03&g=dtw7&a=2012&b=10&c=22&ignore=.csv aaggh it should be m d y not y m d
+
+#why does the c=... line break? would having date as a Python Date object simply this? then I could use strftime to print out the desired bits.
+#it appears my date format from the script I was previously using get_historical_prices... had a diff format. there were separators in it.
+    # print(date,symbol)
+    # print(int(date[:4]))
+    # print(int(date[5:7]),int(date[4:6]))
+    # #print(int(date[8:]),int(date[6:]))
+    # print(int(date[6:]),int(date[6:]))
+    url = 'http://ichart.yahoo.com/table.csv?s=%s&' % symbol + \
+          'd=%s&' % str(int(date[4:6]) - 1) + \
+          'e=%s&' % str(int(date[6:]) + 1) + \
+          'f=%s&' % str(int(date[0:4])) + \
+          'g=d&' + \
+          'a=%s&' % str(int(date[4:6]) - 1) + \
+          'b=%s&' % str(int(date[6:]) + 1) + \
+          'c=%s&' % str(int(date[0:4])) + \
+          'ignore=.csv'
+    days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+    data=[] #python3 method ,
+    for day in days: #day[0] holds the fields names, day[1+] holds the data values
+#        print(day)
+        dayStr = str(day, encoding='utf8')
+        data.append( dayStr[:-2].split(','))
+        print('his',data) Need to fix this so that we get the close data that we want.
+    return data[0]
+
+
+def getSharePrice(ticker):
+#the date goes month(jan=0) day year
+#test strings
+#http://download.finance.yahoo.com/d/quotes.csv?s=alxn&f=l1 # gets only for today
+#http://ichart.yahoo.com/table.csv?s=alxn&f=p # gets all available records
+#    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1p' #l1-> last trade wo time, p->prev close
+    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %ticker + '&f=l1' #l1-> last trade wo time, p->prev close
+    days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
+    data = days[:-2].split(',') 
+    print(data[0])
+    return data[0]
+
+#class to allow easy comparison to SP500,Nasdaq performance over same period
+#I really need an all purpose method to do comparisons
+class MiniStock:
+    def __init__(self,data):
+        self.ticker=data['ticker']
+        self.purchaseDate=data['purchaseDate']
+        self.totalPurchasePrice=data['totalPurchasePrice']
+        self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,convertToYYYYMMDD(self.purchaseDate))
+        self.unitPriceAtPresent=getSharePrice(self.ticker)
+    
+    def GetGainLoss(self):
+        return float(self.unitPriceAtPresent)/float(self.unitPriceAtPurchase)
+    def GetProfit(self):
+        return float(self.gainloss)*float(self.totalPurchasePrice)-self.totalPurchasePrice
+    def GetTicker(self):
+        return self.ticker
+    def GetPurchaseDate(self):
+        return self.purchaseDate
+    def GetTotalPurchasePrice(self):
+        return self.totalPurchasePrice
+
+
+class ComparisonStock:
+    def __init__(self,stockdata1,stockdata2):
+#create two ministock objects  
+#is there a better way to utilize objects? init the object and pass it in and copy or deepcopy it? Hmm that doesn't seem right bc then there is the original hanging out there that is just taking up space.
+        self.miniStock1=MiniStock(stockdata1)
+        self.miniStock2=MiniStock(stockdata2)
+    def printComparison(self):
+        print(self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss())
+    
 class Stock:
         currentshareprice=0.0
         percentgainloss=0.0
@@ -115,11 +220,13 @@ class Stock:
             self.ticker=data["ticker"]
             self.sharequantity=float(data["shares"]) #allow for partial shares, useful for mutual funds, and reverse splits
             self.totalpurchaseprice=float(data["totalPurchasePrice"])
+            ''' not used
             temp=data["purchaseDate"].split('/')
             self.purchasedate=datetime.datetime(int(temp[2]),int(temp[0]),int(temp[1]))
             self.purchasedateyear=temp[2]
-            self.puchasedatemonth=temp[0]
+            self.purchasedatemonth=temp[0]
             self.purchasedateday=temp[1]
+'''
             if data["commissionToBuy"]!="":
                 self.commission_to_buy=float(data["commissionToBuy"])
             else:
@@ -340,13 +447,16 @@ else:
 import os.path
 #loop over command line args
 sysargvlength=len(sys.argv)
-#0th element is the script name
+print('sysargv length',sysargvlength,'sysargv',sys.argv)
+#element 0 is the script name, rest of the elements should be files.
 i=1
-while i <= sysargvlength:
+#although by using a .json file we intend to eliminate
+while i < sysargvlength:
     if sysargvlength>1 and os.path.isfile(sys.argv[i]):
         inputfilename=sys.argv[i]
     i+=1
-
+    PrintBanner(inputfilename)
+    '''
     input=open(inputfilename)
     data_string=json.load(input)
     for portfolio in data_string["portfolio"]:
@@ -367,6 +477,23 @@ while i <= sysargvlength:
 
         cumulative.Print()
         DefaultColorCoding()
+'''
+#debug for comparisonStock functions
+    input=open(inputfilename)
+    data_string=json.load(input)
+    for portfolio in data_string["portfolio"]:
+        print('==================----------',portfolio["portfolioName"],'----------==================')
+        print(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
+        compare=ComparisonStock(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
+        compare.printComparison()
+        # for data in portfolio["portfolioStocks"]:
+        #     print(data)
+
+        # for data1,data2 in portfolio["portfolioStocks"]:
+        #     print(data1,data2)
+        #     stock=ComparisonStock(data1,data2)
+
+
     input.close()
     print("")
 
