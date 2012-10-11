@@ -160,8 +160,8 @@ def get_historical_prices_plus_one_day(symbol, date):
 #        print(day)
         dayStr = str(day, encoding='utf8')
         data.append( dayStr[:-2].split(','))
-        print('his',data) Need to fix this so that we get the close data that we want.
-    return data[0]
+        #print('his',data) #Need to fix this so that we get the close data that we want.
+    return data[1][4] #this is kinda willy nilly since we don't check that we get valid results.
 
 
 def getSharePrice(ticker):
@@ -173,7 +173,7 @@ def getSharePrice(ticker):
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %ticker + '&f=l1' #l1-> last trade wo time, p->prev close
     days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
     data = days[:-2].split(',') 
-    print(data[0])
+    #print(data[0])
     return data[0]
 
 #class to allow easy comparison to SP500,Nasdaq performance over same period
@@ -205,7 +205,8 @@ class ComparisonStock:
         self.miniStock1=MiniStock(stockdata1)
         self.miniStock2=MiniStock(stockdata2)
     def printComparison(self):
-        print(self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss())
+#        print(self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss())
+        print("%s %6.2f %s %2.4f %s %2.4f"% (self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss()))
     
 class Stock:
         currentshareprice=0.0
@@ -483,7 +484,7 @@ while i < sysargvlength:
     data_string=json.load(input)
     for portfolio in data_string["portfolio"]:
         print('==================----------',portfolio["portfolioName"],'----------==================')
-        print(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
+#        print(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
         compare=ComparisonStock(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
         compare.printComparison()
         # for data in portfolio["portfolioStocks"]:
