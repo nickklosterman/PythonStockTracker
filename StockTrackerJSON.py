@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 import datetime
 import urllib.request, urllib.parse, urllib.error
@@ -44,6 +44,13 @@ def ColorCode10pt2f(number):
         print(("\033[32m %10.2f"% (number)), end=' ') #suppress newline
     else:
         print(("\033[31m %10.2f"% (number)), end=' ') 
+
+def ColorCode10pt2fRelative(number,comparedto):
+    if number>comparedto: 
+        print(("\033[32m %10.2f"% (number)), end=' ') #suppress newline
+    else:
+        print(("\033[31m %10.2f"% (number)), end=' ') 
+
 def ColorCode8s(string):
         print(("\033[31m %8s"% (string)))
 
@@ -161,7 +168,7 @@ def get_historical_prices_plus_one_day(symbol, date):
         dayStr = str(day, encoding='utf8')
         data.append( dayStr[:-2].split(','))
         #print('his',data) #Need to fix this so that we get the close data that we want.
-    return data[1][4] #this is kinda willy nilly since we don't check that we get valid results.
+    return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
 
 
 def getSharePrice(ticker):
@@ -178,35 +185,104 @@ def getSharePrice(ticker):
 
 #class to allow easy comparison to SP500,Nasdaq performance over same period
 #I really need an all purpose method to do comparisons
+
 class MiniStock:
     def __init__(self,data):
         self.ticker=data['ticker']
-        self.purchaseDate=data['purchaseDate']
+        #self.purchaseDate=data['purchaseDate']
+        temp=data["purchaseDate"].split('/')
+        self.purchaseDate=datetime.datetime(int(temp[2]),int(temp[0]),int(temp[1]))
+
         self.totalPurchasePrice=data['totalPurchasePrice']
-        self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,convertToYYYYMMDD(self.purchaseDate))
+        self.commissionToBuy=data['commissionToBuy']
+#        self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,convertToYYYYMMDD(self.purchaseDate))
+        self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,(self.purchaseDate.strftime('%Y%m%d')))
         self.unitPriceAtPresent=getSharePrice(self.ticker)
-    
+
     def GetGainLoss(self):
+#        print(self.unitPriceAtPresent,self.unitPriceAtPurchase)
         return float(self.unitPriceAtPresent)/float(self.unitPriceAtPurchase)
     def GetProfit(self):
-        return float(self.gainloss)*float(self.totalPurchasePrice)-self.totalPurchasePrice
+        return self.gainloss*(self.totalPurchasePrice-self.commissionToBuy)-(self.totalPurchasePrice-self.commissionToBuy)
     def GetTicker(self):
         return self.ticker
     def GetPurchaseDate(self):
-        return self.purchaseDate
+        return  self.purchaseDate.strftime('%Y-%m-%d')
     def GetTotalPurchasePrice(self):
         return self.totalPurchasePrice
 
-
+#using the miniStock is inefficient bc you are repeatedly going out to the web to pull the quotes. You really want to use the Stock Objects, pass them in and then do the comparison.
 class ComparisonStock:
     def __init__(self,stockdata1,stockdata2):
 #create two ministock objects  
 #is there a better way to utilize objects? init the object and pass it in and copy or deepcopy it? Hmm that doesn't seem right bc then there is the original hanging out there that is just taking up space.
         self.miniStock1=MiniStock(stockdata1)
         self.miniStock2=MiniStock(stockdata2)
+    def Header(self):
+        print("%5s %s %s %s %s %s %s %s" % ("buy date","init inv","tickr","gain/loss","tickr","gain/loss","value1","value2" ))
     def printComparison(self):
+        self.Header()
 #        print(self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss())
-        print("%s %6.2f %s %2.4f %s %2.4f"% (self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss()))
+
+#        print("%s %6.2f %s %2.4f %s %2.4f %6.2f vs %6.2f"% (self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),ColorCode10pt2f(self.miniStock1.GetGainLoss(),1),self.miniStock2.GetTicker(),ColorCode10pt2f(self.miniStock2.GetGainLoss(),1),self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss(),self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss()))
+        print("%5s %6.2f %5s"  % (self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker()),end=' ')
+        ColorCode10pt2fRelative(self.miniStock1.GetGainLoss(),1)
+        DefaultColorCoding() 
+        print(" %5s " % (self.miniStock2.GetTicker()), end=' ')
+        ColorCode10pt2fRelative(self.miniStock2.GetGainLoss(),1)
+        DefaultColorCoding() 
+
+#        print(" %6.2f vs %6.2f" % ( float(self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss()),float(self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss())))
+
+#        ColorCode10pt2f(self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss(),self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss())
+        self.printBest()
+
+    def printBest(self):
+        total1=self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss()
+        total2=self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss()
+        ColorCode10pt2fRelative(total1,total2)
+        DefaultColorCoding()
+        print( " vs ", end= ' ')
+        ColorCode10pt2fRelative(total2,total1)
+        DefaultColorCoding()
+        print("")
+
+def printCompareHeader():
+#    print("%10s %6s %5s %10s %5s %10s %10s %s %10s" % ("buy date","InitInv","tickr","gain/loss","tickr","gain/loss","value1"," vs ","value2" ))
+    print("  buy date  InitInv  tickr  gain/loss     tickr      gain/loss       value1            value2" )
+# 2003-10-23 1879.12 %5EIXIC        1.62     %5EGSPC         1.39        3049.41     vs      2613.14
+
+# ==================---------- SPDRs ----------==================
+#   buy date InitInv tickr  gain/loss tickr  gain/loss     value1  vs      value2
+# 2012-10-01  36.93   xlb        0.99       xle         0.98          36.53     vs        36.30
+
+
+class CompareStock:
+    def __init__(self,stockdata1,stockdata2):
+#create two ministock objects  
+#is there a better way to utilize objects? init the object and pass it in and copy or deepcopy it? Hmm that doesn't seem right bc then there is the original hanging out there that is just taking up space.
+        self.Stock1=stockdata1
+        self.Stock2=stockdata2
+
+    def printComparison(self):
+        print("%5s %6.2f %5s"  % (self.Stock1.GetPurchaseDateYYYY_MM_DDFormatted(),self.Stock1.GetTotalPurchasePrice(),self.Stock1.GetTicker()),end=' ')
+        ColorCode10pt2fRelative(self.Stock1.GetGainLoss(),1)
+        DefaultColorCoding() 
+        print(" %5s " % (self.Stock2.GetTicker()), end=' ')
+        ColorCode10pt2fRelative(self.Stock2.GetGainLoss(),1)
+        DefaultColorCoding() 
+        self.printBest()
+
+    def printBest(self):
+        total1=self.Stock1.GetTotalPurchasePrice()*self.Stock1.GetGainLoss()
+        total2=self.Stock1.GetTotalPurchasePrice()*self.Stock2.GetGainLoss()
+        ColorCode10pt2fRelative(total1,total2)
+        DefaultColorCoding()
+        print( " vs ", end= ' ')
+        ColorCode10pt2fRelative(total2,total1)
+        DefaultColorCoding()
+        print("")
+        
     
 class Stock:
         currentshareprice=0.0
@@ -221,13 +297,14 @@ class Stock:
             self.ticker=data["ticker"]
             self.sharequantity=float(data["shares"]) #allow for partial shares, useful for mutual funds, and reverse splits
             self.totalpurchaseprice=float(data["totalPurchasePrice"])
-            ''' not used
+
+            #only purchasedate used
             temp=data["purchaseDate"].split('/')
             self.purchasedate=datetime.datetime(int(temp[2]),int(temp[0]),int(temp[1]))
-            self.purchasedateyear=temp[2]
-            self.purchasedatemonth=temp[0]
-            self.purchasedateday=temp[1]
-'''
+            # self.purchasedateyear=temp[2]
+            # self.purchasedatemonth=temp[0]
+            # self.purchasedateday=temp[1]
+
             if data["commissionToBuy"]!="":
                 self.commission_to_buy=float(data["commissionToBuy"])
             else:
@@ -251,8 +328,17 @@ class Stock:
                         data=line[:-1].split(',')
                         self.taxbracket=int(data[0])
                         self.filingstatus=data[1]
-
-
+        def GetTicker(self):
+            return self.ticker
+        def GetGainLoss(self):
+#            print(self.percentgainloss)<-- this never gets set. I
+            return self.percentGainLoss_func()
+        def GetTotalPurchasePrice(self):
+            return self.totalpurchaseprice
+        def GetPurchaseDateYYYY_MM_DDFormatted(self):
+            return self.purchasedate.strftime('%Y-%m-%d')
+        def GetPurchaseDate(self):
+            return self.purchasedate
         def GetStockData(self):
             print("get stock data")
         def percentGain_func(self): 
@@ -374,7 +460,10 @@ class Stock:
             print(("\033[49m \033[39m"), end=' ') #reset color to default
             print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
             print(("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor())),end=' ')
-            print(("%10.2f" %( self.resultsIfInvestedInSP500() )))
+            print(("%10.2f" %( self.resultsIfInvestedInSP500() )), end=' ')
+            print(("%2.5f" %( self.yearsSincePurchase() )))
+#NOTE:
+#I could make these print functions more multipurpose by defining a function that outputs a new line and otherwise you prevent the newline from being added. Then just pick and choose which statements you want printed.
                 
         def getSharePrice(self):
 # data format found in GetStockQutoesv2.sh
@@ -406,13 +495,13 @@ class Stock:
 #            print(self.yearsSincePurchase(),self.totalpurchaseprice,avgAnnualReturn)
             return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
 
-        def yearsSincePurchase(self):
+        def yearsSincePurchase(self):#is there an easier way to do this with the built in time functions?-->doesn't appear to be : http://www.python-forum.org/pythonforum/viewtopic.php?f=3&t=4553  http://stackoverflow.com/questions/4436957/pythonic-difference-between-two-dates-in-years http://stackoverflow.com/questions/6451655/python-how-to-convert-datetime-dates-to-decimal-years http://www.google.com/search?q=fraction+years+between+dates+python&oq=fraction+years+between+dates+python&sugexp=chrome,mod=0&sourceid=chrome&ie=UTF-8
             now=datetime.datetime.now()
             daysElapsed=(now-self.purchasedate).days
             yearsElapsed=now.year-self.purchasedate.year
             daysCalc=datetime.datetime(now.year,self.purchasedate.month,self.purchasedate.day)
             days2=(now-daysCalc).days
-            if days2 <0: #the case when trying to do june 6-Oct 8, so have to subtract a year 
+            if days2 <0: #the case when trying to do june 6 2012 -Oct 8 2011, so have to subtract a year 
                 yearsElapsed=yearsElapsed-1
                 daysCalc=datetime.datetime(now.year-1,self.purchasedate.month,self.purchasedate.day)
                 days2=(now-daysCalc).days
@@ -424,6 +513,86 @@ class Stock:
             daysDiff=(days2/daysinyear)
             return yearsElapsed+daysDiff
             
+
+#this methoad traverses a portfolio and outputs the performance of each stock in the portfolio
+#as well as overall performance.
+def StockTable(inputfilename):
+#Uncomment me to get the original StockTrackerJSON functionality back.
+    input=open(inputfilename)
+    data_string=json.load(input)
+    for portfolio in data_string["portfolio"]:
+        print('==================----------',portfolio["portfolioName"],'----------==================')
+
+        DefaultColorCoding()
+        PrintHeader2() #2()
+
+        cumulative=Accumulator()
+
+        for data in portfolio["portfolioStocks"]:
+            #print(data)
+            stock=Stock(data)
+            cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
+            stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
+#            stock.PrintColorized2()
+            message=stock.PrintForTxtMessage()
+
+        cumulative.Print()
+        DefaultColorCoding()
+    input.close()
+
+
+#this method takes traverses a portfolio and compares the performance of the two stocks against each other.
+#the first stock's purchase date is used to perform the benchmark.
+#the performance of each stock from that purchase date is calculated
+#the print out shows each stock's return from the purchase data as welll as what that initial investment is and what it 
+#would've turned into if the second stock was purchased instead.
+def ComparePortfolio(inputfilename):
+    input=open(inputfilename)
+    data_string=json.load(input)
+ #   stockCollection=[]
+    stockz=[]
+    for portfolio in data_string["portfolio"]:
+        print('==================----------',portfolio["portfolioName"],'----------==================')
+        for stock in portfolio["portfolioStocks"]:
+#            stockCollection.append(stock)#portfolio["portfolioStocks"][i])
+            stockz.append(Stock(stock))
+        # for i in (range(len(stockCollection)-1)): #subtract 1 because we don't want to comare ele[max] to ele[max]
+        #     for k in (range(i+1,len(stockCollection))):
+        #         print(i,k)
+
+# #this isn't the correct looping pattern because we want to see how X would've faired from Y's starting point and not just the other way around.
+#         for i in range(len(stockCollection)-1):
+#             for k in (range(i+1,len(stockCollection))):
+# #                print(i,k)
+#                 compare=ComparisonStock(portfolio["portfolioStocks"][i],portfolio["portfolioStocks"][k])
+#                 compare.printComparison()
+#             print('-----')
+
+# #this is the correct looping pattern bc we want to not compare each stock to itself but to all others in the list.
+# this is the older MUCH slower version with redundant calls to yahoo which really bogged things down.
+#         print(len(stockCollection))
+#         for i in range(len(stockCollection)):
+#             for k in range(len(stockCollection)):
+#                 if i!=k:
+#                     #print(i,k,stockCollection[i]["ticker"],stockCollection[k]["ticker"])
+#                     compare=ComparisonStock(portfolio["portfolioStocks"][i],portfolio["portfolioStocks"][k])
+#                     compare.printComparison()
+                    
+#             print('---')
+
+#this is the correct looping pattern bc we want to not compare each stock to itself but to all others in the list.
+#        print(len(stockz))
+        for i in range(len(stockz)):
+            printCompareHeader()
+            for k in range(len(stockz)):
+                if i!=k:
+                    #print(i,k,stockzCollection[i]["ticker"],stockCollection[k]["ticker"])
+                    compare=CompareStock(stockz[i],stockz[k])
+                    compare.printComparison()
+            print('') #---')
+        stockCollection=[] #reset the stock collection
+        stockz=[]
+    input.close()
 
 #TODO: create Portfolio object and have a total for the entire portfolio
 #todo: trend line of +-+-++ for last few days worth of trading,
@@ -457,46 +626,9 @@ while i < sysargvlength:
         inputfilename=sys.argv[i]
     i+=1
     PrintBanner(inputfilename)
-    '''
-    input=open(inputfilename)
-    data_string=json.load(input)
-    for portfolio in data_string["portfolio"]:
-        print('==================----------',portfolio["portfolioName"],'----------==================')
-
-        DefaultColorCoding()
-        PrintHeader2() #2()
-
-        cumulative=Accumulator()
-
-        for data in portfolio["portfolioStocks"]:
-            #print(data)
-            stock=Stock(data)
-            cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
-#            stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
-            stock.PrintColorized2()
-            message=stock.PrintForTxtMessage()
-
-        cumulative.Print()
-        DefaultColorCoding()
-'''
-#debug for comparisonStock functions
-    input=open(inputfilename)
-    data_string=json.load(input)
-    for portfolio in data_string["portfolio"]:
-        print('==================----------',portfolio["portfolioName"],'----------==================')
-#        print(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
-        compare=ComparisonStock(portfolio["portfolioStocks"][0],portfolio["portfolioStocks"][1])
-        compare.printComparison()
-        # for data in portfolio["portfolioStocks"]:
-        #     print(data)
-
-        # for data1,data2 in portfolio["portfolioStocks"]:
-        #     print(data1,data2)
-        #     stock=ComparisonStock(data1,data2)
-
-
-    input.close()
-    print("")
+#    StockTable(inputfilename)
+    ComparePortfolio(inputfilename)
+    print("") #otherwise 
 
 
 """
