@@ -598,6 +598,9 @@ def ComparePortfolio(inputfilename):
 #todo: trend line of +-+-++ for last few days worth of trading,
 #generic line for an index. as comparison
 
+def usage():
+    print("python StockTrackerJSON  [ -c/--comparison, -i/--input=portfolio.json -s/--stocktable ]")
+    print("python StockTrackerJSON -iPortfolio.json -c -s")
 
 ############ Main 
 
@@ -607,28 +610,54 @@ from  textwrap import TextWrapper
 wrapper =TextWrapper()
 wrapper.width=190 #set text wrapping width manually otherwise if drag terminal to full width python doesn't write text out the full width
 
+import getopt 
 import sys
-if len(sys.argv)>1:
-    if sys.argv[1]!="":
-        inputfilename=sys.argv[1]
-else:
-    inputfilename="AllPortfolios.json"
 
-import os.path
-#loop over command line args
-sysargvlength=len(sys.argv)
-print('sysargv length',sysargvlength,'sysargv',sys.argv)
-#element 0 is the script name, rest of the elements should be files.
-i=1
-#although by using a .json file we intend to eliminate
-while i < sysargvlength:
-    if sysargvlength>1 and os.path.isfile(sys.argv[i]):
-        inputfilename=sys.argv[i]
-    i+=1
-    PrintBanner(inputfilename)
-#    StockTable(inputfilename)
+
+comparisonflag=False
+stocktableflag=False
+print(sys.argv[1:])
+#pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
+#took me a while to catch that for py3k that you don't need the leading -- for the long options
+try:
+    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'csi:', ['compare',
+                                                                        'stocktable',
+                                                                        'input='
+                                                                ])
+except getopt.GetoptError as err:
+    # print help information and exit:                                                                        
+    print( str(err)) # will print something like "option -a not recognized"                                         
+    usage()                                                                                                  
+    sys.exit(2)
+
+for opt, arg in options:
+    if opt in ('-c', '--compare'):
+        comparisonflag=True
+    elif opt in ('-s', '--stocktable'):
+        stocktableflag=True
+    elif opt in ('-i', '--input'):
+        inputfilename=arg
+    else:
+        assert False, "unhandled option"
+
+# #import os.path
+# #loop over command line args
+# sysargvlength=len(sys.argv)
+# print('sysargv length',sysargvlength,'sysargv',sys.argv)
+# #element 0 is the script name, rest of the elements should be files.
+# i=1
+# #although by using a .json file we intend to eliminate specifying multiple files on the command line.
+# while i < sysargvlength:
+# if sysargvlength>1 and os.path.isfile(sys.argv[i]):
+#     inputfilename=sys.argv[i]
+# i+=1
+
+PrintBanner(inputfilename)
+if stocktableflag:
+    StockTable(inputfilename)
+if comparisonflag:
     ComparePortfolio(inputfilename)
-    print("") #otherwise 
+print("") #otherwise 
 
 
 """
@@ -636,6 +665,6 @@ emailReport("smtp.djinnius.com","587","deals","backcountry","NAK","5079909052@tm
 emailReport("smtp.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly2")
 emailReport("djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly3")
 #emailReport("mail.djinnius.com",587,"dals","backctry","NAK","5079909052@tmomail.net","stuff","hello McFly")
-# this guy works: emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","p51mustang","NAK","5079909052@tmomail.net","testnick","test subjetct")
+# this guy works: emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","XXXXXXXXXX","NAK","5079909052@tmomail.net","testnick","test subjetct")
 
 """
