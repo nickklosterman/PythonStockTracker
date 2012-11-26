@@ -192,7 +192,9 @@ class Stock:
             return output
 
         def stockpriceDiscountedForTaxes_func(self): #the effective price the stock would appear when selling taking into acct deductions for taxes: e.g. a $120 stock bought for $20 at a 38% tax rate would appear as a $82 stock -> 120-(120-20)*.38
-            return self.currentshareprice*self.oneMinusTaxRate_func()
+            #return self.currentshareprice*self.oneMinusTaxRate_func() #this method is unrealistically simplistic
+#This method appears correct: the first part finds the theoretical profit you would make from the sale. This taxed profit is then added on to the per share purchase price to display the take home from the sale. 
+            return (self.currentshareprice-(self.totalpurchaseprice+self.commission_to_buy)/self.sharequantity)*self.oneMinusTaxRate_func()+(self.totalpurchaseprice+self.commission_to_buy)/self.sharequantity
         def oneMinusTaxRate_func(self): #add column to input file for personal info that includes tax rate, LT ST capital gains, This function will need to be update proly every year to take in tax changes
             if self.yearsSincePurchase()>1:
                 taxrate=(100-self.calculateLongTermCapitalGains_func())/100  #<-- due to pythons untyped variables this is evaluated as an int even when wrapped in float()
