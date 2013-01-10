@@ -8,3 +8,7 @@ Flag for retirement / roth ira so as to elim tax.create tool to grab various com
 http://developer.yahoo.com/finance/company.html rss feed of co. news.
 
 http://www.gummy-stuff.org/Yahoo-data.htm
+
+Have the program run and sleep for an interval and then output the data to a database that is constantly updated.
+Then have the program pull from the local database for faster results (not like getting the results takes that long anyway)
+Save the amount of eatch portfolio so you can log that day after day and see how that is trending. The problem otherwise is that you don't necessarily see the changes from the prev close to the current open. Have it run as a daemon in the background and poll the requisite data.
