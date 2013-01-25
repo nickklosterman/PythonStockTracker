@@ -12,3 +12,5 @@ http://www.gummy-stuff.org/Yahoo-data.htm
 Have the program run and sleep for an interval and then output the data to a database that is constantly updated.
 Then have the program pull from the local database for faster results (not like getting the results takes that long anyway)
 Save the amount of eatch portfolio so you can log that day after day and see how that is trending. The problem otherwise is that you don't necessarily see the changes from the prev close to the current open. Have it run as a daemon in the background and poll the requisite data.
+
+create a color coded ticker at the end that shows plus/minus as a trend for how the stock has fared over set periods. 1wk 1mo 3mo 6mo 1yr etc. 
