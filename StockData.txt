@@ -10,8 +10,8 @@ crox,65,3938.2,8/8/2007,7,7
 fmcc,600,5063.62,7/22/2008,7,7
 jsda,214,4307.8,5/24/2007,0,7
 pot,54,943,3/29/2007,7,7
-bby,18,1896.82,12/10/2007,7,7 
-#bby was rimm; changed on February 4th 2013
+bbry,18,1896.82,12/10/2007,7,7 
+#bbry was rimm; changed on February 4th 2013
 tcbi,54,2465.89,8/29/2012,7,7
 #these two mutual funds were transferred from my SSB acct in Apr 17 2012.
 aepgx,142.366,3000.00,10/23/2003,0,17
