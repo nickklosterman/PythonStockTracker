@@ -1,6 +1,7 @@
 #ticker,shares,total purchase price,commisision to buy,commission to sell #figure its easier to start w total purchase price then deal w dividing etc when splits happen
 #commission for apple was 31.50 when bought
-aapl,142,1482.56,10/23/2000,31.50,7
+#aapl,142,1482.56,10/23/2000,31.50,7 sold on 1/15/2013 completed 1/18/2013 @486/share. 8.55 commission, amount: 69003.45; tax liability should be about $10k; proceeds used to buy ivv 
+ivv,487,73057.00,01/29/2013,7,7
 bac,480,8426.20,9/28/2009,7,7
 #sold 1076@$13.20 jdsu shares (commission was $0.23) to buy bwld #so far a pretty smart move since jdsu doubled in 2011 then came crashing down to ~13 still on mar 12 2012, Yeah but too bad I took a $23k->$13 hit on the JDSU shares before I bought BWLD as it is.
 bwld,320,14110.4,5/29/2007,0,7
@@ -9,7 +10,8 @@ crox,65,3938.2,8/8/2007,7,7
 fmcc,600,5063.62,7/22/2008,7,7
 jsda,214,4307.8,5/24/2007,0,7
 pot,54,943,3/29/2007,7,7
-rimm,18,1896.82,12/10/2007,7,7
+bby,18,1896.82,12/10/2007,7,7 
+#bby was rimm; changed on February 4th 2013
 tcbi,54,2465.89,8/29/2012,7,7
 #these two mutual funds were transferred from my SSB acct in Apr 17 2012.
 aepgx,142.366,3000.00,10/23/2003,0,17

@@ -14,3 +14,6 @@ Then have the program pull from the local database for faster results (not like 
 Save the amount of eatch portfolio so you can log that day after day and see how that is trending. The problem otherwise is that you don't necessarily see the changes from the prev close to the current open. Have it run as a daemon in the background and poll the requisite data.
 
 create a color coded ticker at the end that shows plus/minus as a trend for how the stock has fared over set periods. 1wk 1mo 3mo 6mo 1yr etc. 
+
+Fri Feb 22 17:39:12 EST 2013
+the Totals that I output for a particular portfolio don't currently show cumulative effects. I just sold AAPL but that isn't showing up in the Total Dollar Gains. Maybe I need to have a Realized Gains. I also need to propagate the commission paid for that purchase and sale into the total. Need to figure out how to track those items that are realized but not sure how to propagate and keep track of them. Ideally you keep piling up the gains but there are also some cumulative losses that are realized as well that i need to keep track of. 
