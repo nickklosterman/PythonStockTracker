@@ -1,4 +1,8 @@
 #!/usr/bin/python3
+#usage:
+# python StockTrackerJSON.py -i AllPortfolios.json -a 8 #alerts if share price is 8% lower than when bought.
+# python StockTrackerJSON.py -i AllPortfolios.json -s
+# python StockTrackerJSON.py -i AllPortfolios.json -c
 
 import datetime
 import urllib.request, urllib.parse, urllib.error
@@ -540,6 +544,23 @@ def StockTable(inputfilename):
         DefaultColorCoding()
     input.close()
 
+def Alert(inputfilename,alertPercent):
+#Uncomment me to get the original StockTrackerJSON functionality back.
+    
+    input=open(inputfilename)
+    data_string=json.load(input)
+    print('The following stocks have dropped below your threshold.')
+    for portfolio in data_string["portfolio"]:
+        print('==================----------',portfolio["portfolioName"],'----------==================')
+        for data in portfolio["portfolioStocks"]:
+            stock=Stock(data)
+            if stock.GetGainLoss()<(1-alertPercent):
+                print(stock.ticker.upper())
+#            else:
+#                print(stock.GetGainLoss(),stock.ticker,(1-alertPercent))
+
+    input.close()
+
 
 #this method takes traverses a portfolio and compares the performance of the two stocks against each other.
 #the first stock's purchase date is used to perform the benchmark.
@@ -616,13 +637,17 @@ import sys
 
 comparisonflag=False
 stocktableflag=False
+alertflag=False
+alertPercent=0.8
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
+#sadly optional options aren't allowed. says it in the docs :( http://docs.python.org/3.3/library/getopt.html
 try:
-    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'csi:', ['compare',
-                                                                        'stocktable',
-                                                                        'input='
+    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:csi:', ['alert=',
+                                                                   'compare',
+                                                                   'stocktable',
+                                                                   'input='
                                                                 ])
 except getopt.GetoptError as err:
     # print help information and exit:                                                                        
@@ -637,6 +662,14 @@ for opt, arg in options:
         stocktableflag=True
     elif opt in ('-i', '--input'):
         inputfilename=arg
+    elif opt in ('-a', '--alert'): #check for stocks where loss is > 8 %
+        alertflag=True
+        try:
+            alertPercent=float(arg) #will it break if an opt isn't specified?
+        except ValueError:
+            alertPercent=8
+        if alertPercent > 1:
+            alertPercent=alertPercent/100;
     else:
         assert False, "unhandled option"
 
@@ -657,6 +690,8 @@ if stocktableflag:
     StockTable(inputfilename)
 if comparisonflag:
     ComparePortfolio(inputfilename)
+if alertflag:
+    Alert(inputfilename,alertPercent)
 print("") #otherwise 
 
 
