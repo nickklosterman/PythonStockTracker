@@ -32,6 +32,28 @@
 	 ]
      }
      ,
+     ,
+     {
+	 "portfolioName":"Scottrade Brokerage Wed May  1 13:24:16 EDT 2013",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"aapl","shares":142,"totalPurchasePrice":1482.56,"purchaseDate":"10/23/2000","commissionToBuy":31.50,"commissionToSell":7},
+	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bbry","shares":18,"totalPurchasePrice":1896.82,"purchaseDate":"12/10/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bwld","shares":320,"totalPurchasePrice":14110.4,"purchaseDate":"5/29/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"c","shares":8,"totalPurchasePrice":316.6,"purchaseDate":"6/16/2010","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"crox","shares":65,"totalPurchasePrice":3938.2,"purchaseDate":"8/8/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"fmcc","shares":600,"totalPurchasePrice":5063.62,"purchaseDate":"7/22/2008","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"ivv","shares":487,"totalPurchasePrice":73057.00,"purchaseDate":"1/29/2013","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"jsda","shares":214,"totalPurchasePrice":4307.8,"purchaseDate":"5/24/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"pot","shares":54,"totalPurchasePrice":943,"purchaseDate":"3/29/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"tcbi","shares":54,"totalPurchasePrice":2465.89,"purchaseDate":"8/29/2012","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"aepgx","shares":144.769,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":64.641,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
+	 ]
+     }
+     ,
+
      {
 	 "portfolioName":"Scottrade RothIRA",
 	 "portfolioStocks":
@@ -44,6 +66,19 @@
 	 ]
      }
      ,
+     {
+	 "portfolioName":"Scottrade RothIRA Wed May  1 13:22:29 EDT 2013",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"sagbx","shares":42.461,"totalPurchasePrice":4000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"sfvbx","shares":311.236,"totalPurchasePrice":3746.65 , "purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shfvx","shares":135.976,"totalPurchasePrice":1678.59,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":18.208,"totalPurchasePrice":1464.69,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
+
+	 ]
+     }
+     ,
+
      {
 	 "portfolioName":"Indices",
 	 "portfolioStocks":
