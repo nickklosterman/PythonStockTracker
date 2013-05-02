@@ -1,7 +1,7 @@
 {"portfolio":
  [
      {
-	 "portfolioName": "TRowePrice",
+	 "portfolioName": "TRowePrice Brokerage Rollover IRA",
 	 "portfolioStocks":
 	 [
 	     { "ticker": "c", "shares": 22.6, "totalPurchasePrice": 1153.11, "purchaseDate": "1/11/2011","commissionToBuy":19.95,"commissionToSell":19.95},
@@ -10,6 +10,22 @@
 	     { "ticker":"dd", "shares":79, "totalPurchasePrice":4021.30, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95},
 	     { "ticker":"jpm", "shares":83, "totalPurchasePrice":4032.17, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95},
 	     { "ticker":"mrk", "shares":88, "totalPurchasePrice":3987.87, "purchaseDate":"01/17/2007","commissionToBuy":19.95,"commissionToSell":19.95}
+	 ]
+     }
+     ,
+     {
+	 "portfolioName": "TRowePrice Rollover IRA Thu May  2 13:14:53 EDT 2013",
+	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
+	 "portfolioStocks":
+	 [
+	     { "ticker": "prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"preix", "shares":175.993, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
+	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prrxx", "shares":854.870, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
 	 ]
      }
      ,
@@ -32,7 +48,7 @@
 	 ]
      }
      ,
-     ,
+
      {
 	 "portfolioName":"Scottrade Brokerage Wed May  1 13:24:16 EDT 2013",
 	 "portfolioStocks":
