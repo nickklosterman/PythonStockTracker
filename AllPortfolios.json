@@ -65,7 +65,7 @@
 	     {"ticker":"tcbi","shares":54,"totalPurchasePrice":2465.89,"purchaseDate":"8/29/2012","commissionToBuy":7,"commissionToSell":7},
 	     {"ticker":"aepgx","shares":144.769,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"shrax","shares":64.641,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
-	     {"ticker":"xlb","shares":183,"totalPurchasePrice":7420.33,"purchaseDate":"5/08/2013","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"xlb","shares":183,"totalPurchasePrice":7420.33,"purchaseDate":"5/08/2013","commissionToBuy":7,"commissionToSell":7}
 	 ]
      }
      ,
