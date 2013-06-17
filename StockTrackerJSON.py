@@ -59,10 +59,13 @@ def ColorCode8s(string):
         print(("\033[31m %8s"% (string)))
 
 def txtReport(Host,User,Password,From,To,Subject,Message):
-    server=smtplib.SMTP(Host)
-    server.login(User,Password)
-    server.sendmail(From,[To],Message)
-    server.quit()
+    try:
+        server=smtplib.SMTP(Host)
+        server.login(User,Password)
+        server.sendmail(From,[To],Message)
+        server.quit()
+    except smtp.SMTPException:
+        print("Error sending text message")
 
 def PrintHeader():
     print(("%7s %10s %10s %10s %10s %10s %10s %10s %10s %10s %6s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg$","Curr Price", "Prev Close" , "52 High","52 Low", "Trend") ))
@@ -117,6 +120,21 @@ class Accumulator:
 
         print(("%22s %10.2f" % ("Daily % Change:", self.dailypercentchange )))
         print(("%22s %10.2f" % ("Portfolio Worth:",self.portfolioworth)))
+    def JSONify(self):
+        #self.CalculateDailyPercentChange()
+        jsonData = json.dumps({
+            "Total Purchase Price":self.totalpurchaseprice,
+            "Total Commission Paid":self.totalcommission,
+            "Total Gain/Loss":self.totaldollargain,
+            "Total Dollar Losses":self.totallosses, 
+            "Total Dollar Gains":self.totalgains, 
+            "Daily Losses":self.dailytotallosses,
+            "Daily Gains":self.dailytotalgains,
+            "Daily Change":self.dailytotalgains+self.dailytotallosses,
+            "Daily % Change": self.dailypercentchange,
+            "Portfolio Worth":self.portfolioworth
+        } )
+        return jsonData
 '''
 class Compare:
 take a Stock object and Compare it to a given ComparisonStock
@@ -524,25 +542,31 @@ def StockTable(inputfilename):
 #Uncomment me to get the original StockTrackerJSON functionality back.
     input=open(inputfilename)
     data_string=json.load(input)
+    emailReportMsg=""
     for portfolio in data_string["portfolio"]:
-        print('==================----------',portfolio["portfolioName"],'----------==================')
+        if portfolio["display"] == "yes":
+            print('==================----------',portfolio["portfolioName"],'----------==================')
 
-        DefaultColorCoding()
-        PrintHeader2() #2()
+            DefaultColorCoding()
+            PrintHeader2() #2()
 
-        cumulative=Accumulator()
-
-        for data in portfolio["portfolioStocks"]:
-            #print(data)
-            stock=Stock(data)
-            cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
-            stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
-#            stock.PrintColorized2()
-            message=stock.PrintForTxtMessage()
-
-        cumulative.Print()
-        DefaultColorCoding()
+            cumulative=Accumulator()
+            emailReportMsg+=portfolio["portfolioName"]
+            for data in portfolio["portfolioStocks"]:
+                #print(data)
+                
+                stock=Stock(data)
+                cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
+                stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
+                #            stock.PrintColorized2()
+                message=stock.PrintForTxtMessage()
+                emailReportMsg+=cumulative.JSONify()+"\n"
+            cumulative.Print()
+            DefaultColorCoding()
     input.close()
+    emailReport("smtp.gmail.com",587,"nick.klosterman","p51mustang","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",emailReportMsg)
+    print(emailReportMsg)
+    print(message)
 
 def Alert(inputfilename,alertPercent):
 #Uncomment me to get the original StockTrackerJSON functionality back.

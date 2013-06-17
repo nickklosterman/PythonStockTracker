@@ -2,6 +2,7 @@
  [
      {
 	 "portfolioName": "TRowePrice Brokerage Rollover IRA",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     { "ticker": "c", "shares": 22.6, "totalPurchasePrice": 1153.11, "purchaseDate": "1/11/2011","commissionToBuy":19.95,"commissionToSell":19.95},
@@ -16,6 +17,7 @@
      {
 	 "portfolioName": "TRowePrice Rollover IRA Thu May  2 13:14:53 EDT 2013",
 	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     { "ticker": "prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
@@ -29,8 +31,28 @@
 	 ]
      }
      ,
+
+     {
+	 "portfolioName": "TRowePrice Rollover IRA Mon Jun 17 11:57:28 EDT 2013",
+	 "display":"yes",
+	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
+	 "note2":"the only thing that changed since may 2 is the prrxx prime reserve fund grew",
+	 "portfolioStocks":
+	 [
+	     { "ticker": "prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"preix", "shares":175.993, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
+	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prrxx", "shares":891.190, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+     ,
      {
 	 "portfolioName":"Scottrade Brokerage",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"aapl","shares":142,"totalPurchasePrice":1482.56,"purchaseDate":"10/23/2000","commissionToBuy":31.50,"commissionToSell":7},
@@ -51,6 +73,7 @@
 
      {
 	 "portfolioName":"Scottrade Brokerage Wed May  1 13:24:16 EDT 2013",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
@@ -72,6 +95,7 @@
 
      {
 	 "portfolioName":"Scottrade RothIRA",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"sagbx","shares":40.999,"totalPurchasePrice":4000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
@@ -84,6 +108,7 @@
      ,
      {
 	 "portfolioName":"Scottrade RothIRA Wed May  1 13:22:29 EDT 2013",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"sagbx","shares":42.461,"totalPurchasePrice":4000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
@@ -97,6 +122,7 @@
 
      {
 	 "portfolioName":"Indices",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"%5EGSPC","shares":1,"totalPurchasePrice":1030.36,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":0},
@@ -107,6 +133,7 @@
      ,
      {
 	 "portfolioName":"SPDRs",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"xlb","shares":1,"totalPurchasePrice":36.93,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
@@ -124,6 +151,7 @@
 ,
      {
 	 "portfolioName":"Scottrade Brokerage without Apple",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
@@ -142,6 +170,7 @@
 ,
      {
 	 "portfolioName":"Shitty Scottrade Brokerage",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
@@ -152,6 +181,35 @@
 	     {"ticker":"bbry","shares":18,"totalPurchasePrice":1896.82,"purchaseDate":"12/10/2007","commissionToBuy":7,"commissionToSell":7},
 	     {"ticker":"aepgx","shares":142.366,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"shrax","shares":62.77,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
+	 ]
+     }
+,
+     {
+	 "portfolioName":"Wells Fargo Aerotek Combined 401(k)",
+	 "display":"yes",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"vifsx","shares":66.208,"totalPurchasePrice":8426.20,"purchaseDate":"11/15/2012","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+
+,
+     {
+	 "portfolioName":"Wells Fargo Aerotek Pretax 401(k)",
+	 "display":"no",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"vifsx","shares":52.9664,"totalPurchasePrice":6589.02,"purchaseDate":"11/15/2012","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+
+,
+     {
+	 "portfolioName":"Wells Fargo Aerotek Roth IRA",
+	 "display":"no",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"vifsx","shares":13.2416,"totalPurchasePrice":1647.25,"purchaseDate":"11/15/2012","commissionToBuy":0,"commissionToSell":0}
 	 ]
      }
 
