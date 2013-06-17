@@ -564,7 +564,7 @@ def StockTable(inputfilename):
             cumulative.Print()
             DefaultColorCoding()
     input.close()
-    emailReport("smtp.gmail.com",587,"nick.klosterman","p51mustang","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",emailReportMsg)
+    emailReport("smtp.gmail.com",587,"user","password","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",emailReportMsg)
     print(emailReportMsg)
     print(message)
 
