@@ -29,8 +29,15 @@ def getSharePrices(tickerlist):
     days = str( urllib.request.urlopen(url).read() ,encoding='utf8') #lines()
     data = [day[:-2].split(',') for day in days]
     return data
+def getUsernamePassword(file):
+    import linecache 
+    username=linecache.getline(file,1) #username on 1st line
+    password=linecache.getline(file,2) #password on 2nd line
+    return username.strip(),password.strip()  #remove the CRLF
+
 def emailReport(Host,Port,User,Password,From,To,Subject,Message):
     try:
+        User,Password = getUsernamePassword("~/.gmaillogin")
         server=smtplib.SMTP()
         server.connect(Host,Port)
         server.starttls()
@@ -39,8 +46,8 @@ def emailReport(Host,Port,User,Password,From,To,Subject,Message):
         server.sendmail(From,[To],Message)
         server.quit()
         print("Successfully sent email")
-    except smtp.SMTPException:
-        print("Error: unable to send email")
+    except smtplib.SMTPException:
+        print("Error: unable to send email:%s" % smtplib.SMTPException)
 
 #use ansi color codes to color fg and bg : http://pueblo.sourceforge.net/doc/manual/ansi_color_codes.html; curses is an alternative
 def ColorCode10pt2f(number):
@@ -565,8 +572,8 @@ def StockTable(inputfilename):
             DefaultColorCoding()
     input.close()
     emailReport("smtp.gmail.com",587,"user","password","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",emailReportMsg)
-    print(emailReportMsg)
-    print(message)
+#    print(emailReportMsg)
+#    print(message)
 
 def Alert(inputfilename,alertPercent):
 #Uncomment me to get the original StockTrackerJSON functionality back.
