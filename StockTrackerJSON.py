@@ -9,7 +9,7 @@ import urllib.request, urllib.parse, urllib.error
 import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 import json
-
+import pymongo #for mongodb
 
 #class StockList:
 #    def __init__(self,
@@ -347,6 +347,23 @@ class Stock:
             self.percentGain=self.percentGain_func()
             self.annualizedReturn=self.annualizedReturn_func()
             self.getTaxBracket_func()
+
+        def getDictionary(self):
+            output={}
+            output['Commission To Buy']=self.commission_to_buy
+            output['Commission To Sell']=self.commission_to_sell
+            output['Share Price']=self.currentshareprice
+            output['Ticker']=self.ticker
+            output['Purchase Date']=self.purchasedate
+            output['Percent Gain']=self.percentGain
+            output['Dollar Gain']=self.dollarGain
+            output['Annualized Return']=self.annualizedReturn
+            output['TimeStamp']=datetime.datetime.now() #.utcnow()# http://pleac.sourceforge.net/pleac_python/datesandtimes.html
+#            output['']=self.
+#            output['']=self.
+#            output['']=self.
+
+            return output
             
         def getTaxBracket_func(self):
             input=open(os.path.expanduser("~/Git/PythonStockTracker/TaxBracket.txt"))
@@ -548,6 +565,7 @@ class Stock:
 def StockTable(inputfilename):
 #Uncomment me to get the original StockTrackerJSON functionality back.
     input=open(inputfilename)
+    outputlist=[]
     data_string=json.load(input)
     emailReportMsg=""
     for portfolio in data_string["portfolio"]:
@@ -567,13 +585,40 @@ def StockTable(inputfilename):
                 stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
                 #            stock.PrintColorized2()
                 message=stock.PrintForTxtMessage()
-                emailReportMsg+=cumulative.JSONify()+"\n"
+                #outputlist.append(stock.getDictionary())
+                emailReportMsg+="stock data" #stock+','
+            emailReportMsg+=cumulative.JSONify()+",\n"
             cumulative.Print()
             DefaultColorCoding()
     input.close()
     emailReport("smtp.gmail.com",587,"user","password","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",emailReportMsg)
-#    print(emailReportMsg)
+
+    print(emailReportMsg)
+    return stock.getDictionary() #outputlist #emailReportMsg
 #    print(message)
+
+def MongoStockTable(inputfilename):
+#Uncomment me to get the original StockTrackerJSON functionality back.
+    input=open(inputfilename)
+    outputlist=[]
+    data_string=json.load(input)
+    print("I need to create one large dictionary of the portfolios and their contents")
+    for portfolio in data_string["portfolio"]:
+        if portfolio["display"] == "yes":
+            cumulative=Accumulator()
+            for data in portfolio["portfolioStocks"]:
+                stock=Stock(data)
+                cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
+                message=stock.PrintForTxtMessage()
+                MongoSave(stock.getDictionary())
+    input.close()
+
+
+def MongoSave(message):
+    client = pymongo.MongoClient("localhost",27017)
+    db = client.PortfolioTracker
+    db.AllPortfolios.save(message)#this must be a dictionary for proper insertion http://docs.python.org/2/tutorial/datastructures.html#dictionaries
+#http://docs.mongodb.org/manual/tutorial/getting-started-with-the-mongo-shell/
 
 def Alert(inputfilename,alertPercent):
 #Uncomment me to get the original StockTrackerJSON functionality back.
@@ -670,15 +715,19 @@ comparisonflag=False
 stocktableflag=False
 alertflag=False
 alertPercent=0.8
+destinationemail="foo.bar@example.com"
+mongoflag=False
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
 #sadly optional options aren't allowed. says it in the docs :( http://docs.python.org/3.3/library/getopt.html
 try:
-    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:csi:', ['alert=',
+    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:csi:m', ['alert=',
                                                                    'compare',
                                                                    'stocktable',
-                                                                   'input='
+                                                                   'input=',
+                                                                      'email=',
+                                                                       'mongo'
                                                                 ])
 except getopt.GetoptError as err:
     # print help information and exit:                                                                        
@@ -691,8 +740,12 @@ for opt, arg in options:
         comparisonflag=True
     elif opt in ('-s', '--stocktable'):
         stocktableflag=True
+    elif opt in ('-m', '--mongo'):
+        mongoflag=True
     elif opt in ('-i', '--input'):
         inputfilename=arg
+    elif opt in ('-e', '--email'):
+        destinationemail=arg
     elif opt in ('-a', '--alert'): #check for stocks where loss is > 8 %
         alertflag=True
         try:
@@ -723,6 +776,10 @@ if comparisonflag:
     ComparePortfolio(inputfilename)
 if alertflag:
     Alert(inputfilename,alertPercent)
+if mongoflag:
+    MongoStockTable(inputfilename)
+#    MongoSave(StockTable(inputfilename))#.JSONify())
+#    MongoSave("{ 'name':'bob', 'hair':'bald'}")#.JSONify())
 print("") #otherwise 
 
 

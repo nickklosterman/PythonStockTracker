@@ -2,7 +2,7 @@
  [
      {
 	 "portfolioName": "TRowePrice Brokerage Rollover IRA",
-	 "display":"no",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     { "ticker": "c", "shares": 22.6, "totalPurchasePrice": 1153.11, "purchaseDate": "1/11/2011","commissionToBuy":19.95,"commissionToSell":19.95},
