@@ -20,7 +20,7 @@
 	 "display":"no",
 	 "portfolioStocks":
 	 [
-	     { "ticker": "prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"preix", "shares":175.993, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
 	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
@@ -39,7 +39,7 @@
 	 "note2":"the only thing that changed since may 2 is the prrxx prime reserve fund grew",
 	 "portfolioStocks":
 	 [
-	     { "ticker": "prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prfdx", "shares": 349.9, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"preix", "shares":175.993, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
 	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},

@@ -9,7 +9,7 @@ import urllib.request, urllib.parse, urllib.error
 import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 import json
-import pymongo #for mongodb
+#import pymongo #for mongodb
 
 #class StockList:
 #    def __init__(self,
@@ -37,7 +37,7 @@ def getUsernamePassword(file):
 
 def emailReport(Host,Port,User,Password,From,To,Subject,Message):
     try:
-        User,Password = getUsernamePassword("~/.gmaillogin")
+        User,Password = getUsernamePassword(os.path.expanduser("~/.gmaillogin"))
         server=smtplib.SMTP()
         server.connect(Host,Port)
         server.starttls()
@@ -573,7 +573,7 @@ def StockTable(inputfilename):
             print('==================----------',portfolio["portfolioName"],'----------==================')
 
             DefaultColorCoding()
-            PrintHeader2() #2()
+            PrintHeader2()
 
             cumulative=Accumulator()
             emailReportMsg+=portfolio["portfolioName"]
@@ -591,7 +591,7 @@ def StockTable(inputfilename):
             cumulative.Print()
             DefaultColorCoding()
     input.close()
-    emailReport("smtp.gmail.com",587,"user","password","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",emailReportMsg)
+    emailReport("smtp.gmail.com",587,"username","password","N a K","5079909052@tmomail.net","Daily Mkt Report",emailReportMsg)
 
     print(emailReportMsg)
     return stock.getDictionary() #outputlist #emailReportMsg
