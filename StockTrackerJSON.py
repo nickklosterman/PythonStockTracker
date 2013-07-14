@@ -558,6 +558,24 @@ class Stock:
                daysinyear+=1
             daysDiff=(days2/daysinyear)
             return yearsElapsed+daysDiff
+        def JSON(self):
+            data=json.dumps({
+            "Ticker":self.ticker,
+            "Shares":str(self.sharequantity),
+            "Total Purchase Price":str(self.totalpurchaseprice),
+            "Purchase Date":str(self.purchasedate),
+            "Dollar Gain":str(self.dollarGain),
+            "Percent Gain":str(self.percentGain),
+            "Annualized Return":str(self.annualizedReturn),
+            "Current Value":str(self.sharequantity*self.currentshareprice),
+            "Current Share Price":str(self.currentshareprice),
+            "Current Open  Price":str(self.shareopenprice),
+            "Current 52 Week High":str(self.share52wkhigh),
+            "Current 52 Week Low":str(self.share52wklow),
+            "Current Trend":self.trend
+
+                    })
+            return data
             
 
 #this methoad traverses a portfolio and outputs the performance of each stock in the portfolio
@@ -568,7 +586,9 @@ def StockTable(inputfilename):
     outputlist=[]
     data_string=json.load(input)
     emailReportMsg=""
+    jsonOutput="{ portfolio:["
     for portfolio in data_string["portfolio"]:
+        jsonOutput+="{portfolioname:\"" + portfolio["portfolioName"]+"\", portfolioStocks:["
         if portfolio["display"] == "yes":
             print('==================----------',portfolio["portfolioName"],'----------==================')
 
@@ -586,14 +606,21 @@ def StockTable(inputfilename):
                 #            stock.PrintColorized2()
                 message=stock.PrintForTxtMessage()
                 #outputlist.append(stock.getDictionary())
-                emailReportMsg+="stock data" #stock+','
+                emailReportMsg+=stock.JSON()#"stock data" #stock+','
+                jsonOutput+=stock.JSON()+"," #need to get rid of the final trailing comma. not sure if that will cause problems.
+            jsonOutput=jsonOutput.rstrip(',') # remove that trailing extraneous ,   [:-1]
+            jsonOutput+="],"
+            jsonOutput+="\n" #should remove this to make valid xml?
+            jsonOutput+="\"cumulative Result\":"+cumulative.JSONify()+"}"
             emailReportMsg+=cumulative.JSONify()+",\n"
             cumulative.Print()
             DefaultColorCoding()
+    jsonOutput+="] }"
     input.close()
-    emailReport("smtp.gmail.com",587,"username","password","N a K","5079909052@tmomail.net","Daily Mkt Report",emailReportMsg)
-
-    print(emailReportMsg)
+#    emailReport("smtp.gmail.com",587,"username","password","N a K","5079909052@tmomail.net","Daily Mkt Report",emailReportMsg)
+    print(jsonOutput)
+#    print ("\n\n\n\n")
+#    print(emailReportMsg)
     return stock.getDictionary() #outputlist #emailReportMsg
 #    print(message)
 
@@ -768,7 +795,7 @@ for opt, arg in options:
 # if sysargvlength>1 and os.path.isfile(sys.argv[i]):
 #     inputfilename=sys.argv[i]
 # i+=1
-
+usage()
 PrintBanner(inputfilename)
 if stocktableflag:
     StockTable(inputfilename)
