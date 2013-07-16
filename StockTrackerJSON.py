@@ -9,7 +9,8 @@ import urllib.request, urllib.parse, urllib.error
 import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 import json
-#import pymongo #for mongodb
+import pymongo #for mongodb
+import ast #for literal_eval for converting string to dict
 
 #class StockList:
 #    def __init__(self,
@@ -521,7 +522,7 @@ class Stock:
             days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
             data = days[:-2].split(',') 
             if float(data[0])==0.0:
-                print("Uhh bad stock ticker")
+                print("Uhh bad stock ticker: %7s" % self.ticker)
             self.currentshareprice=float(data[0])
             if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
                 self.shareopenprice=float(data[1])
@@ -586,15 +587,13 @@ def StockTable(inputfilename):
     outputlist=[]
     data_string=json.load(input)
     emailReportMsg=""
-    jsonOutput="{ portfolio:["
+    jsonOutput="{ \"portfolio\":["
     for portfolio in data_string["portfolio"]:
-        jsonOutput+="{portfolioname:\"" + portfolio["portfolioName"]+"\", portfolioStocks:["
         if portfolio["display"] == "yes":
+            jsonOutput+="{\"portfolioname\":\"" + portfolio["portfolioName"]+"\", \"portfolioStocks\":["
             print('==================----------',portfolio["portfolioName"],'----------==================')
-
             DefaultColorCoding()
             PrintHeader2()
-
             cumulative=Accumulator()
             emailReportMsg+=portfolio["portfolioName"]
             for data in portfolio["portfolioStocks"]:
@@ -610,21 +609,27 @@ def StockTable(inputfilename):
                 jsonOutput+=stock.JSON()+"," #need to get rid of the final trailing comma. not sure if that will cause problems.
             jsonOutput=jsonOutput.rstrip(',') # remove that trailing extraneous ,   [:-1]
             jsonOutput+="],"
-            jsonOutput+="\n" #should remove this to make valid xml?
-            jsonOutput+="\"cumulative Result\":"+cumulative.JSONify()+"}"
+            jsonOutput+="\n" 
+            jsonOutput+="\"cumulative Result\":"+cumulative.JSONify()+"}," #will need to get rid of the last trailing , 
             emailReportMsg+=cumulative.JSONify()+",\n"
             cumulative.Print()
             DefaultColorCoding()
+    jsonOutput=jsonOutput.rstrip(',') 
     jsonOutput+="] }"
     input.close()
-#    emailReport("smtp.gmail.com",587,"username","password","N a K","5079909052@tmomail.net","Daily Mkt Report",emailReportMsg)
-    print(jsonOutput)
+#read in list of email addresses to send the message out to.
+#    emailReport("smtp.gmail.com",587,"username","password","N a K","5079909052@tmomail.net","Daily Mkt Report",jsonOutput) #emailReportMessage
+#    emailReport("smtp.gmail.com",587,"username","password","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",jsonOutput) #emailReportMessage
+#    print(jsonOutput)
+    output=open("jsonoutput.txt",'w')
+    output.write(jsonOutput)
+    output.close()
 #    print ("\n\n\n\n")
 #    print(emailReportMsg)
     return stock.getDictionary() #outputlist #emailReportMsg
 #    print(message)
 
-def MongoStockTable(inputfilename):
+def MongoStockTable_Old(inputfilename):
 #Uncomment me to get the original StockTrackerJSON functionality back.
     input=open(inputfilename)
     outputlist=[]
@@ -640,6 +645,27 @@ def MongoStockTable(inputfilename):
                 MongoSave(stock.getDictionary())
     input.close()
 
+def MongoStockTable(inputfilename):
+    input=open(inputfilename)
+    data_string=json.load(input)
+    jsonOutput="{ \"portfolio\":["
+    for portfolio in data_string["portfolio"]:
+        if portfolio["display"] == "yes":
+            jsonOutput+="{\"portfolioname\":\"" + portfolio["portfolioName"]+"\", \"portfolioStocks\":["
+            cumulative=Accumulator()
+            for data in portfolio["portfolioStocks"]:
+                stock=Stock(data)
+                cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
+                jsonOutput+=stock.JSON()+"," 
+            jsonOutput=jsonOutput.rstrip(',') # remove that trailing extraneous ,   [:-1]
+            jsonOutput+="],"
+            jsonOutput+="\n" 
+            jsonOutput+="\"cumulative Result\":"+cumulative.JSONify()+"}," 
+    jsonOutput=jsonOutput.rstrip(',') 
+    jsonOutput+="] }"
+    MongoSave(ast.literal_eval(jsonOutput))
+    input.close()
+
 
 def MongoSave(message):
     client = pymongo.MongoClient("localhost",27017)
@@ -649,7 +675,7 @@ def MongoSave(message):
 
 def Alert(inputfilename,alertPercent):
 #Uncomment me to get the original StockTrackerJSON functionality back.
-    
+#better algo, compile list of uni ... um never mind. I was going to say to compile list of unique stocks and only compute 1x for each stock, but depending on when you bought, it may be a winner and loser.
     input=open(inputfilename)
     data_string=json.load(input)
     print('The following stocks have dropped below your threshold.')
