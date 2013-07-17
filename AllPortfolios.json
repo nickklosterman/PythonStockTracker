@@ -31,10 +31,9 @@
 	 ]
      }
      ,
-
      {
 	 "portfolioName": "TRowePrice Rollover IRA Mon Jun 17 11:57:28 EDT 2013",
-	 "display":"yes",
+	 "display":"no",
 	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
 	 "note2":"the only thing that changed since may 2 is the prrxx prime reserve fund grew",
 	 "portfolioStocks":
@@ -45,6 +44,25 @@
 	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prrxx", "shares":891.190, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+     ,
+
+     {
+	 "portfolioName": "TRowePrice Rollover IRA Wed Jul 17 12:06:25 EDT 2013",
+	 "display":"yes",
+	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
+	 "note2":"the only thing that changed since may 2 is the prrxx prime reserve fund grew",
+	 "portfolioStocks":
+	 [
+	     { "ticker":"prfdx", "shares": 351.425, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"preix", "shares":176.808, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
+	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prrxx", "shares":929.030, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
 	 ]
@@ -74,6 +92,29 @@
 
      {
 	 "portfolioName":"Scottrade Brokerage Wed May  1 13:24:16 EDT 2013",
+	 "display":"no",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bbry","shares":18,"totalPurchasePrice":1896.82,"purchaseDate":"12/10/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bwld","shares":320,"totalPurchasePrice":14110.4,"purchaseDate":"5/29/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"c","shares":8,"totalPurchasePrice":316.6,"purchaseDate":"6/16/2010","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"crox","shares":65,"totalPurchasePrice":3938.2,"purchaseDate":"8/8/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"fmcc","shares":600,"totalPurchasePrice":5063.62,"purchaseDate":"7/22/2008","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"ivv","shares":487,"totalPurchasePrice":73057.00,"purchaseDate":"1/29/2013","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"jsda","shares":214,"totalPurchasePrice":4307.8,"purchaseDate":"5/24/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"pot","shares":54,"totalPurchasePrice":943,"purchaseDate":"3/29/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"tcbi","shares":54,"totalPurchasePrice":2465.89,"purchaseDate":"8/29/2012","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"aepgx","shares":144.769,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":64.641,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"xlb","shares":183,"totalPurchasePrice":7420.33,"purchaseDate":"5/08/2013","commissionToBuy":7,"commissionToSell":7}
+	     {"ticker":"v","shares":34,"totalPurchasePrice":6467,"purchaseDate":"07/16/2013","commissionToBuy":7,"commissionToSell":7}
+	 ]
+     }
+     ,
+
+     {
+	 "portfolioName":"Scottrade Brokerage Wed Jul 17 14:26:27 EDT 2013",
 	 "display":"yes",
 	 "portfolioStocks":
 	 [
@@ -90,10 +131,10 @@
 	     {"ticker":"aepgx","shares":144.769,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"shrax","shares":64.641,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"xlb","shares":183,"totalPurchasePrice":7420.33,"purchaseDate":"5/08/2013","commissionToBuy":7,"commissionToSell":7}
+	     {"ticker":"v","shares":34,"totalPurchasePrice":6467,"purchaseDate":"07/16/2013","commissionToBuy":7,"commissionToSell":7}
 	 ]
      }
      ,
-
      {
 	 "portfolioName":"Scottrade RothIRA",
 	 "display":"no",
