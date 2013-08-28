@@ -17,3 +17,13 @@ create a color coded ticker at the end that shows plus/minus as a trend for how 
 
 Fri Feb 22 17:39:12 EST 2013
 the Totals that I output for a particular portfolio don't currently show cumulative effects. I just sold AAPL but that isn't showing up in the Total Dollar Gains. Maybe I need to have a Realized Gains. I also need to propagate the commission paid for that purchase and sale into the total. Need to figure out how to track those items that are realized but not sure how to propagate and keep track of them. Ideally you keep piling up the gains but there are also some cumulative losses that are realized as well that i need to keep track of. 
+
+
+Thu Aug 15 14:31:48 EDT 2013
+Allow for selecting a portfolio and then a stock in the portfolio.
+List percentage of money in that portfolio in that stock.
+Allow switches to produce output of a certain kind.
+Switches to show which fields to display. 
+Send alert when near the 52 week high, low.
+Send alert when losses at 8%. 
+Send alert when the stock has made an X percent jump that day. 

@@ -86,6 +86,7 @@
 	     {"ticker":"aepgx","shares":142.366,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"shrax","shares":62.77,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"v","shares":34,"totalPurchasePrice":6467,"purchaseDate":"07/16/2013","commissionToBuy":7,"commissionToSell":7}
+
 	 ]
      }
      ,
@@ -115,7 +116,7 @@
 
      {
 	 "portfolioName":"Scottrade Brokerage Wed Jul 17 14:26:27 EDT 2013",
-	 "display":"yes",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
@@ -136,6 +137,31 @@
      }
      ,
      {
+	 "portfolioName":"Scottrade Brokerage Tue Aug 20 12:43:50 EDT 2013",
+	 "display":"yes",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"bac","shares":480,"totalPurchasePrice":8426.20,"purchaseDate":"9/28/2009","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bbry","shares":18,"totalPurchasePrice":1896.82,"purchaseDate":"12/10/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"bwld","shares":320,"totalPurchasePrice":14110.4,"purchaseDate":"5/29/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"c","shares":8,"totalPurchasePrice":316.6,"purchaseDate":"6/16/2010","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"crox","shares":65,"totalPurchasePrice":3938.2,"purchaseDate":"8/8/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"fmcc","shares":600,"totalPurchasePrice":5063.62,"purchaseDate":"7/22/2008","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"ivv","shares":487,"totalPurchasePrice":73057.00,"purchaseDate":"1/29/2013","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"jsda","shares":214,"totalPurchasePrice":4307.8,"purchaseDate":"5/24/2007","commissionToBuy":0,"commissionToSell":7},
+	     {"ticker":"pot","shares":54,"totalPurchasePrice":943,"purchaseDate":"3/29/2007","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"tcbi","shares":54,"totalPurchasePrice":2465.89,"purchaseDate":"8/29/2012","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"aepgx","shares":144.769,"totalPurchasePrice":3000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":64.641,"totalPurchasePrice":5200.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"xlb","shares":183,"totalPurchasePrice":7420.33,"purchaseDate":"5/08/2013","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"v","shares":34,"totalPurchasePrice":6467,"purchaseDate":"07/16/2013","commissionToBuy":7,"commissionToSell":7},
+	     {"ticker":"voo","shares":27,"totalPurchasePrice":2060.55,"purchaseDate":"08/20/2013","commissionToBuy":7,"commissionToSell":7}
+	 ]
+     }
+
+
+     ,
+     {
 	 "portfolioName":"Scottrade RothIRA",
 	 "display":"no",
 	 "portfolioStocks":
@@ -150,7 +176,7 @@
      ,
      {
 	 "portfolioName":"Scottrade RothIRA Wed May  1 13:22:29 EDT 2013",
-	 "display":"yes",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"sagbx","shares":42.461,"totalPurchasePrice":4000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
@@ -158,6 +184,29 @@
 	     {"ticker":"shfvx","shares":135.976,"totalPurchasePrice":1678.59,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
 	     {"ticker":"shrax","shares":18.208,"totalPurchasePrice":1464.69,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17}
 
+	 ]
+     }
+     ,
+     {
+	 "portfolioName":"Scottrade RothIRA (incl. wells fargo tx'ed funds) Tue Aug 20 12:44:36 EDT 2013",
+	 "display":"yes",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"sagbx","shares":42.461,"totalPurchasePrice":4000.00,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"sfvbx","shares":311.236,"totalPurchasePrice":3746.65 , "purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shfvx","shares":135.976,"totalPurchasePrice":1678.59,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"shrax","shares":18.208,"totalPurchasePrice":1464.69,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":17},
+	     {"ticker":"voo","shares":24,"totalPurchasePrice":1831.72,"purchaseDate":"08/20/2013","commissionToBuy":7,"commissionToSell":7}
+	 ]
+     }
+     ,
+
+     {
+	 "portfolioName":"Scottrade RolloverIRA (tx'ed from wells fargo) Tue Aug 20 12:44:36 EDT 2013",
+	 "display":"yes",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"qqq","shares":90,"totalPurchasePrice":6843.39,"purchaseDate":"08/20/2013","commissionToBuy":7,"commissionToSell":7}
 	 ]
      }
      ,
