@@ -52,7 +52,7 @@
 
      {
 	 "portfolioName": "TRowePrice Rollover IRA Wed Jul 17 12:06:25 EDT 2013",
-	 "display":"yes",
+	 "display":"no",
 	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
 	 "note2":"the only thing that changed since may 2 is the prrxx prime reserve fund grew",
 	 "portfolioStocks":
@@ -63,6 +63,25 @@
 	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prrxx", "shares":929.030, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+     ,
+     {
+	 "portfolioName": "TRowePrice Rollover IRA Mon Sep 16 17:30:12 EDT 2013",
+	 "display":"yes",
+	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
+	 "note2":"I purchased rpmgx with money that was doing nothing in prrxx",
+	 "portfolioStocks":
+	 [
+	     { "ticker":"prfdx", "shares": 351.425, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"preix", "shares":176.808, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
+	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"rpmgx", "shares":13.513, "totalPurchasePrice":961.34, "purchaseDate": "9/12/2013","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prrxx", "shares":35.55, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
 	 ]
@@ -224,7 +243,7 @@
      ,
      {
 	 "portfolioName":"SPDRs",
-	 "display":"yes",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"xlb","shares":1,"totalPurchasePrice":36.93,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
@@ -277,7 +296,7 @@
 ,
      {
 	 "portfolioName":"Wells Fargo Aerotek Combined 401(k)",
-	 "display":"yes",
+	 "display":"no",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"vifsx","shares":66.208,"totalPurchasePrice":8426.20,"purchaseDate":"11/15/2012","commissionToBuy":0,"commissionToSell":0}

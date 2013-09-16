@@ -518,24 +518,29 @@ class Stock:
 
 #we actually need to get the prev close to compute gain for the day. Wall Street doesn't compute the gain from the open, but from prev close
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
-
-            days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
-            data = days[:-2].split(',') 
-            if float(data[0])==0.0:
-                print("Uhh bad stock ticker: %7s" % self.ticker)
-            self.currentshareprice=float(data[0])
-            if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
-                self.shareopenprice=float(data[1])
-            self.shareprevcloseprice=float(data[2])
-            if data[3]!="\"N/A - N/A\"":
-                temp=data[3].split(" - ")
-                self.share52wklow=float(temp[0][1:])
-                self.share52wkhigh=float(temp[1][:-1])
-                self.trend=data[4][7:13]
+            if (self.ticker=="prrxx"):
+                self.shareopenprice=1.0
+                self.share52wklow=1.000001
+                self.share52wkhigh=1.0
+                self.trend="===="
             else:
-                self.share52wklow=0.0001
-                self.share52wkhigh=0.0002
-                self.trend="N/A"
+                days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
+                data = days[:-2].split(',') 
+                if float(data[0])==0.0:
+                    print("Uhh bad stock ticker: %7s" % self.ticker)
+                self.currentshareprice=float(data[0])
+                if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
+                    self.shareopenprice=float(data[1])
+                self.shareprevcloseprice=float(data[2])
+                if data[3]!="\"N/A - N/A\"":
+                    temp=data[3].split(" - ")
+                    self.share52wklow=float(temp[0][1:])
+                    self.share52wkhigh=float(temp[1][:-1])
+                    self.trend=data[4][7:13]
+                else:
+                    self.share52wklow=0.0001
+                    self.share52wkhigh=0.0002
+                    self.trend="N/A"
 
         def resultsIfInvestedInSP500(self):
             avgAnnualReturn=1.10 #10% annual return
