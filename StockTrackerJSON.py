@@ -9,7 +9,7 @@ import urllib.request, urllib.parse, urllib.error
 import smtplib #for emailing reports
 import os #for converting ~ -> users home directory
 import json
-import pymongo #for mongodb
+#import pymongo #for mongodb
 import ast #for literal_eval for converting string to dict
 
 #class StockList:
@@ -229,6 +229,7 @@ class MiniStock:
         self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,(self.purchaseDate.strftime('%Y%m%d')))
         self.unitPriceAtPresent=getSharePrice(self.ticker)
 
+       
     def GetGainLoss(self):
 #        print(self.unitPriceAtPresent,self.unitPriceAtPurchase)
         return float(self.unitPriceAtPresent)/float(self.unitPriceAtPurchase)
@@ -367,7 +368,7 @@ class Stock:
             return output
             
         def getTaxBracket_func(self):
-            input=open(os.path.expanduser("~/Git/PythonStockTracker/TaxBracket.txt"))
+            input=open(os.path.expanduser("TaxBracket.txt")) #~/Git/PythonStockTracker/TaxBracket.txt"))
             for line in input:
                 data=""
                 if line.strip(): #skip blank lines
@@ -577,9 +578,18 @@ class Stock:
 
                     })
             return data
+
+#just use FiftyTwoWeekHighLowFactor
+        # def get52WeekHighCheck(self):
+        #     return (self.currentshareprice-self.share52wklow) / (self.share52wkhigh-self.share52wklow);
+
+        # def get52WeekLowCheck(self):
+        #     return (self.currentshareprice - self.share52wkhigh ) / self.share52wkhigh;
+
             
 
-#this methoad traverses a portfolio and outputs the performance of each stock in the portfolio
+
+#This methoad traverses a portfolio and outputs the performance of each stock in the portfolio
 #as well as overall performance.
 def StockTable(inputfilename):
 #Uncomment me to get the original StockTrackerJSON functionality back.
@@ -837,10 +847,10 @@ print("") #otherwise
 
 
 """
-emailReport("smtp.djinnius.com","587","deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly")
-emailReport("smtp.djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly2")
-emailReport("djinnius.com",587,"deals","backcountry","NAK","5079909052@tmomail.net","stuff","hello McFly3")
-#emailReport("mail.djinnius.com",587,"dals","backctry","NAK","5079909052@tmomail.net","stuff","hello McFly")
-# this guy works: emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","XXXXXXXXXX","NAK","5079909052@tmomail.net","testnick","test subjetct")
+emailReport("smtp.djinnius.com","587","deals","XXXXXXXX","NAK","9052@tmomail.net","stuff","hello McFly")
+emailReport("smtp.djinnius.com",587,"deals","XXX","NAK","9052@tmomail.net","stuff","hello McFly2")
+emailReport("djinnius.com",587,"deals","XXXXXX","NAK","9052@tmomail.net","stuff","hello McFly3")
+#emailReport("mail.djinnius.com",587,"dals","backctry","NAK","052@tmomail.net","stuff","hello McFly")
+# this guy works: emailReport("smtp.gmail.com",587,"nick.klosterman@gmail.com","XXXXXXXXXX","NAK","9052@tmomail.net","testnick","test subjetct")
 
 """
