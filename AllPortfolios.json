@@ -323,6 +323,16 @@
 	 ]
      }
 
+,
+     {
+	 "portfolioName":"test div by zero",
+	 "display":"yes",
+	 "portfolioStocks":
+	 [
+	     {"ticker":"vifsx","shares":13.2416,"totalPurchasePrice":1647.25,"purchaseDate":"09/17/2013","commissionToBuy":0,"commissionToSell":0}
+	 ]
+     }
+
  ]
 }
 
