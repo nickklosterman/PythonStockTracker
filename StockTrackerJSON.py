@@ -80,7 +80,7 @@ def PrintHeader():
 
 
 def PrintHeader2():
-    print(("%s %s %12s %12s %12s %12s %12s %12s %2s %12s %6s %12s %12s %12s %5s"  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg $","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct") ))
+    print(("%s %s %12s %12s %12s %12s %12s %12s %2s %12s %6s %12s %12s %12s %5s %12s %3s "  % ("ticker","$ gain", "ann %","% gain","Curr Worth", "Today chg $","Curr Price", "Prev Close" , "52 High","52 Low", "Trend", "Sale Tk Home","Sale Taxes","Disc4Taxes", "HiLoPct","Value if invested in SP500","Years Held") ))
 
 def PrintBanner(input):
     print("#######################################################################")
@@ -396,7 +396,10 @@ class Stock:
         def dollarGain_func(self):
             return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
         def annualizedReturn_func(self):
-            return (((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
+            ARR=0
+            if (self.yearsSincePurchase() > 0):
+                ARR=(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
+            return ARR #(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
 
         def stockSaleTaxes_func(self): #calculate amount you would pay in taxes on your stock sale, taxed only on gains!
             if self.currentWorth_func()>self.totalpurchaseprice-self.commission_to_buy:
@@ -412,8 +415,11 @@ class Stock:
                 output=0 #we're in the red. Not sure just yet how the taxes apply here
             return output
 
-        def stockpriceDiscountedForTaxes_func(self): #the effective price the stock would appear when selling, taking into acct deductions for taxes: e.g. a $120 stock bought for $20 at a 38% tax rate would appear as a $82 stock -> 120-(120-20)*.38
-            return self.currentshareprice*self.oneMinusTaxRate_func()
+        def stockpriceDiscountedForTaxes_func(self): #the effective price the stock would appear when selling, taking into acct deductions for taxes: e.g. a $120 stock bought for $20 at a 38% tax rate would appear as a $82 stock -> (120-20)*(1-.38)+20=82
+            discountedPrice= (self.currentWorth_func()-(self.currentWorth_func()-(self.totalpurchaseprice-self.commission_to_buy))*self.taxRate_func())/self.sharequantity #this math is correct. I tried to simplify by writing it out and simplifying the equation, thats why it may look goofy
+            if self.currentWorth_func()<self.totalpurchaseprice-self.commission_to_buy:  #if our shares are worth less we return the share purchase  price and mark it as such with a negative share value
+                discountedPrice=-(self.totalpurchaseprice-self.commission_to_buy)/self.sharequantity
+            return discountedPrice #return self.currentshareprice*self.oneMinusTaxRate_func()
         def oneMinusTaxRate_func(self): #add column to input file for personal info that includes tax rate, LT ST capital gains, This function will need to be update proly every year to take in tax changes
             if self.yearsSincePurchase()>1:
                 taxrate=(100-self.calculateLongTermCapitalGains_func())/100  #<-- due to pythons untyped variables this is evaluated as an int even when wrapped in float()
@@ -461,7 +467,7 @@ class Stock:
             else:
                 return 0
             
-    
+ 
         def PrintCompact2(self):
             print((" %8s %8.2f %8.2f %8.2f %8.2f %8.2f %8.2f"  % (self.ticker,self.dollarGain,self.annualizedReturn,self.sharequantity*self.currentshareprice,self.sharequantity*(self.currentshareprice - self.shareprevcloseprice),self.currentshareprice,self.shareprevcloseprice)))
             
@@ -509,7 +515,7 @@ class Stock:
             print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
             print(("%10.2f %10.2f %10.2f %10.2f" %(self.stockSaleTakeHome_func(),self.stockSaleTaxes_func(),self.stockpriceDiscountedForTaxes_func(),self.FiftyTwoWeekHighLowFactor())),end=' ')
             print(("%10.2f" %( self.resultsIfInvestedInSP500() )), end=' ')
-            print(("%2.5f" %( self.yearsSincePurchase() )))
+            print(("%2.1f" %( self.yearsSincePurchase() )))
 #NOTE:
 #I could make these print functions more multipurpose by defining a function that outputs a new line and otherwise you prevent the newline from being added. Then just pick and choose which statements you want printed.
                 

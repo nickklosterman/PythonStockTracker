@@ -27,3 +27,21 @@ Switches to show which fields to display.
 Send alert when near the 52 week high, low.
 Send alert when losses at 8%. 
 Send alert when the stock has made an X percent jump that day. 
+
+Tue Sep 17 16:21:06 EDT 2013
+html webpage output format.
+interactive web page
+store portfolios in db and pull the xml portfolio and parse it from the db
+better document the code and define what the outputs represent
+warning that the first day of a portfolios life may not be very true due to the diff in open close price vs purchase price. hmm need to analyze this statement and the code behind it. 
+put in checks if the portfolio age is zero and therefore it'll try to divide by zero.
+ncurses front end
+purely webbased app. could use localstorage and load a local file and pull in the data that way.
+
+Wed Sep 18 09:00:13 EDT 2013
+text friendly output. hmm I like the html formatting output. pretty flexible. 
+spawn LaTeX output/pdf
+interactive data table
+use JS to turn certain rows on/off based on what they want to view.
+
+
