@@ -2,6 +2,7 @@
  [
      {
 	 "portfolioName":"Indices",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"%5EGSPC","shares":1,"totalPurchasePrice":1030.36,"purchaseDate":"10/23/2003","commissionToBuy":0,"commissionToSell":0},
@@ -12,6 +13,7 @@
      ,
      {
 	 "portfolioName":"SPDRs",
+	 "display":"yes",
 	 "portfolioStocks":
 	 [
 	     {"ticker":"xlb","shares":1,"totalPurchasePrice":36.93,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},

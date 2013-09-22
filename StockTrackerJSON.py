@@ -253,19 +253,12 @@ class ComparisonStock:
         print("%5s %s %s %s %s %s %s %s" % ("buy date","init inv","tickr","gain/loss","tickr","gain/loss","value1","value2" ))
     def printComparison(self):
         self.Header()
-#        print(self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),self.miniStock1.GetGainLoss(),self.miniStock2.GetTicker(),self.miniStock2.GetGainLoss())
-
-#        print("%s %6.2f %s %2.4f %s %2.4f %6.2f vs %6.2f"% (self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker(),ColorCode10pt2f(self.miniStock1.GetGainLoss(),1),self.miniStock2.GetTicker(),ColorCode10pt2f(self.miniStock2.GetGainLoss(),1),self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss(),self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss()))
         print("%5s %6.2f %5s"  % (self.miniStock1.GetPurchaseDate(),self.miniStock1.GetTotalPurchasePrice(),self.miniStock1.GetTicker()),end=' ')
         ColorCode10pt2fRelative(self.miniStock1.GetGainLoss(),1)
         DefaultColorCoding() 
         print(" %5s " % (self.miniStock2.GetTicker()), end=' ')
         ColorCode10pt2fRelative(self.miniStock2.GetGainLoss(),1)
         DefaultColorCoding() 
-
-#        print(" %6.2f vs %6.2f" % ( float(self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss()),float(self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss())))
-
-#        ColorCode10pt2f(self.miniStock1.GetTotalPurchasePrice()*self.miniStock1.GetGainLoss(),self.miniStock1.GetTotalPurchasePrice()*self.miniStock2.GetGainLoss())
         self.printBest()
 
     def printBest(self):
@@ -279,14 +272,15 @@ class ComparisonStock:
         print("")
 
 def printCompareHeader():
-#    print("%10s %6s %5s %10s %5s %10s %10s %s %10s" % ("buy date","InitInv","tickr","gain/loss","tickr","gain/loss","value1"," vs ","value2" ))
     print("  buy date  InitInv  tickr  gain/loss     tickr      gain/loss       value1            value2" )
-# 2003-10-23 1879.12 %5EIXIC        1.62     %5EGSPC         1.39        3049.41     vs      2613.14
-
-# ==================---------- SPDRs ----------==================
-#   buy date InitInv tickr  gain/loss tickr  gain/loss     value1  vs      value2
-# 2012-10-01  36.93   xlb        0.99       xle         0.98          36.53     vs        36.30
-
+def htmlTableColorCode(value):
+    if value > 0:
+        output="<span class=\"positive\"> {:03.2f}</span>".format(value)
+    elif value < 0:
+        output="<span class=\"negative\"> {:03.2f}</span>".format(value)
+    else:
+        output=value
+    return output
 
 class CompareStock:
     def __init__(self,stockdata1,stockdata2):
@@ -332,9 +326,6 @@ class Stock:
             #only purchasedate used
             temp=data["purchaseDate"].split('/')
             self.purchasedate=datetime.datetime(int(temp[2]),int(temp[0]),int(temp[1]))
-            # self.purchasedateyear=temp[2]
-            # self.purchasedatemonth=temp[0]
-            # self.purchasedateday=temp[1]
 
             if data["commissionToBuy"]!="":
                 self.commission_to_buy=float(data["commissionToBuy"])
@@ -349,6 +340,26 @@ class Stock:
             self.percentGain=self.percentGain_func()
             self.annualizedReturn=self.annualizedReturn_func()
             self.getTaxBracket_func()
+        def tickerLink(self):
+            output="<a href=\"http://finance.yahoo.com/echarts?s="+self.ticker+"+Interactive#symbol="+self.ticker+";range=1y\">"+self.ticker+"</a>"
+            return output
+
+        def htmlTableRowOutput(self):
+            separator="</td><td>"
+            output="<tr><td> {0} {1} {2} {1} {3} {1}{} {} {} {} {} {} {} {} {}  </td></tr>".format(self.tickerLink(),separator,htmlTableColorCode(self.dollarGain),htmlTableColorCode(self.annualizedReturn), htmlTableColorCode(self.percentGain_func()) )
+            # output="<tr><td>"+self.tickerLink()+separator + \
+            # htmlTableColorCode(self.dollarGain)+ separator + \
+            # htmlTableColorCode(self.annualizedReturn)+ separator + \
+            # htmlTableColorCode(self.percentGain_func())+ separator + \
+            # str(self.currentWorth_func())+ separator + \
+            # htmlTableColorCode(self.dailyChange_func()) + separator + \
+            # str(self.currentshareprice)+ separator +str(self.shareprevcloseprice)+ separator + \
+            # str(self.share52wkhigh)+ separator +str(self.share52wklow)+ separator +str(self.trend)+ separator + \
+            # str(self.stockSaleTakeHome_func())+ separator +str(self.stockSaleTaxes_func())+ separator +str(self.stockpriceDiscountedForTaxes_func())+ separator +str(self.FiftyTwoWeekHighLowFactor())+ separator + \
+            # str(self.resultsIfInvestedInSP500()) + separator + \
+            # str(self.yearsSincePurchase()) + \
+            # "</td></tr>"
+            return output
 
         def getDictionary(self):
             output={}
@@ -379,7 +390,6 @@ class Stock:
         def GetTicker(self):
             return self.ticker
         def GetGainLoss(self):
-#            print(self.percentgainloss)<-- this never gets set. I
             return self.percentGainLoss_func()
         def GetTotalPurchasePrice(self):
             return self.totalpurchaseprice
@@ -603,11 +613,12 @@ class Stock:
 #This methoad traverses a portfolio and outputs the performance of each stock in the portfolio
 #as well as overall performance.
 def StockTable(inputfilename):
-#Uncomment me to get the original StockTrackerJSON functionality back.
     input=open(inputfilename)
-    outputlist=[]
+    portfolioList=[]
     data_string=json.load(input)
     emailReportMsg=""
+    htmlOutput=" "
+    portfolioList.add(data_string["portfolio"])
     jsonOutput="{ \"portfolio\":["
     for portfolio in data_string["portfolio"]:
         if portfolio["display"] == "yes":
@@ -618,17 +629,13 @@ def StockTable(inputfilename):
             cumulative=Accumulator()
             emailReportMsg+=portfolio["portfolioName"]
             for data in portfolio["portfolioStocks"]:
-                #print(data)
-                
                 stock=Stock(data)
                 cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
                 stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
-                #            stock.PrintColorized2()
                 message=stock.PrintForTxtMessage()
-                #outputlist.append(stock.getDictionary())
-                emailReportMsg+=stock.JSON()#"stock data" #stock+','
-                jsonOutput+=stock.JSON()+"," #need to get rid of the final trailing comma. not sure if that will cause problems.
-            jsonOutput=jsonOutput.rstrip(',') # remove that trailing extraneous ,   [:-1]
+                emailReportMsg+=stock.JSON()
+                jsonOutput+=stock.JSON()+"," 
+            jsonOutput=jsonOutput.rstrip(',') 
             jsonOutput+="],"
             jsonOutput+="\n" 
             jsonOutput+="\"cumulative Result\":"+cumulative.JSONify()+"}," #will need to get rid of the last trailing , 
@@ -638,20 +645,116 @@ def StockTable(inputfilename):
     jsonOutput=jsonOutput.rstrip(',') 
     jsonOutput+="] }"
     input.close()
-#read in list of email addresses to send the message out to.
-#    emailReport("smtp.gmail.com",587,"username","password","N a K","5079909052@tmomail.net","Daily Mkt Report",jsonOutput) #emailReportMessage
-#    emailReport("smtp.gmail.com",587,"username","password","N a K","nick.klosterman@intelligrated.com","Daily Mkt Report",jsonOutput) #emailReportMessage
-#    print(jsonOutput)
     output=open("jsonoutput.txt",'w')
     output.write(jsonOutput)
     output.close()
-#    print ("\n\n\n\n")
-#    print(emailReportMsg)
     return stock.getDictionary() #outputlist #emailReportMsg
-#    print(message)
+
+#This methoad traverses a portfolio and outputs the performance of each stock in the portfolio
+#as well as overall performance.
+class HTMLTable():
+    def __init__(self,inputfilename):
+        input=open(inputfilename)
+        portfolioTabsList=[]
+        portfolioStockDataList=[]
+        portfolioTabContentsList=[]
+        data_string=json.load(input)
+        htmlOutput=" "
+        for portfolio in data_string["portfolio"]:
+            if portfolio["display"] == "yes":
+                portfolioName=portfolio["portfolioName"]
+                portfolioTabsList.append(portfolio["portfolioName"])
+                cumulative=Accumulator()
+                for data in portfolio["portfolioStocks"]:
+                    stock=Stock(data)
+                    cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
+                    portfolioStockDataList.append(stock.htmlTableRowOutput())
+                portfolioTabContentsList.append(createPortfolioTable(portfolioName,portfolioStockDataList)) #TODO add cumulative data too!!!
+            portfolioStockDataList=[] #clear the list for the next portfolio
+        input.close()
+        output=open("portfolioNNNN.html",'w')
+        output.write(createHTMLOutput(portfolioTabsList,portfolioTabContentsList))
+        output.close()
+        
+
+def createPortfolioTable(name,dataList):
+    startText='<table border="2"><caption>'
+    output=startText+name+"</caption>"
+    header="""<tr><th>Ticker</th><th>
+   $ gain</th><th>
+    Ann %</th><th>
+    % gain</th><th>
+    Curr Worth</th><th>
+    Today chg $</th><th>
+    Curr Price</th><th>
+    Prev Close</th><th>
+    52 High</th><th>     
+    52 Low </th><th>
+    Trend</th><th>
+    Sale Tk Home</th><th> 
+    Sale Taxes</th><th> 
+    Disc4Taxes</th><th>
+    HiLoPct</th><th>
+    Value if invested in SP500</th><th> 
+    Years Held </th></tr>"""
+    output+=header
+    for item in dataList:
+        output+=item
+    output+='</table>'
+    return output
+
+def jqueryUITabs(tabList):
+    startText='<div id="tabs"> \
+    <ul>'
+    endText='</ul>'
+    itemStart='<li><a href="#tabs-'
+    itemEnd='</a></li>'
+    output=startText
+    for counter,item in enumerate(tabList):
+        output+=itemStart+str(counter)+"\">"+item+itemEnd
+    output+=endText
+    return output
+
+def tabContent(tabList):
+    start='<div id="tabs">'
+    startText='<div id="tabs-'
+    endText='</div>'
+    output=start
+    for counter,item in enumerate(tabList):
+        output+=startText+str(counter)+"\">"+item+endText
+    return output
+    
+def createHTMLOutput(portfolioNameList,portfolioContentList):
+    start='<html lang="en"> \
+    <head> \
+    <meta charset="utf-8" /> \
+    <title>jQuery UI Tabs - Default functionality</title> \
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" /> \
+    <script src="http://code.jquery.com/jquery-1.9.1.js"></script> \
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> \
+    <link rel="stylesheet" href="/resources/demos/style.css" /> \
+    <script> \
+    $(function() { \
+    $( "#tabs" ).tabs(); \
+    }); \
+    </script> \
+    <style type="text/css"> \
+    .negative1 {color:red } \
+    .negative {background-color:red } \
+    .positive1 {color:green } \
+    .positive {background-color:green } \
+    </style> \
+    </head> \
+    <body> \
+    '
+    end='</div></body></html>'
+    tabs=jqueryUITabs(portfolioNameList)
+    content=tabContent(portfolioContentList)
+    output=start+tabs+content+end
+    return output
+        
 
 def MongoStockTable_Old(inputfilename):
-#Uncomment me to get the original StockTrackerJSON functionality back.
     input=open(inputfilename)
     outputlist=[]
     data_string=json.load(input)
@@ -791,17 +894,19 @@ alertflag=False
 alertPercent=0.8
 destinationemail="foo.bar@example.com"
 mongoflag=False
+htmltableflag=False
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
 #sadly optional options aren't allowed. says it in the docs :( http://docs.python.org/3.3/library/getopt.html
 try:
-    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:csi:m', ['alert=',
-                                                                   'compare',
-                                                                   'stocktable',
-                                                                   'input=',
-                                                                      'email=',
-                                                                       'mongo'
+    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:csi:mw', ['alert=',
+                                                                        'compare',
+                                                                        'stocktable',
+                                                                        'input=',
+                                                                        'email=',
+                                                                        'mongo',
+                                                                        'web-html-table'
                                                                 ])
 except getopt.GetoptError as err:
     # print help information and exit:                                                                        
@@ -814,6 +919,8 @@ for opt, arg in options:
         comparisonflag=True
     elif opt in ('-s', '--stocktable'):
         stocktableflag=True
+    elif opt in ('-w', '--web-html-table'):
+        htmltableflag=True
     elif opt in ('-m', '--mongo'):
         mongoflag=True
     elif opt in ('-i', '--input'):
@@ -844,17 +951,22 @@ for opt, arg in options:
 # i+=1
 usage()
 PrintBanner(inputfilename)
+
+#this is super inefficient. I should go out and construct the data for each stock / portfolio and then run the stats, using those objects. I shouldn't go out and get the yahoo data for each function
+#TODO make this efficient. eliminate the unnecessary slow calls to yahoo
 if stocktableflag:
     StockTable(inputfilename)
 if comparisonflag:
     ComparePortfolio(inputfilename)
 if alertflag:
     Alert(inputfilename,alertPercent)
+if htmltableflag:
+    HTMLTable(inputfilename)
 if mongoflag:
     MongoStockTable(inputfilename)
 #    MongoSave(StockTable(inputfilename))#.JSONify())
 #    MongoSave("{ 'name':'bob', 'hair':'bald'}")#.JSONify())
-print("") #otherwise 
+print("") #otherwise the prompt isn't on a new line
 
 
 """

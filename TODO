@@ -45,3 +45,12 @@ interactive data table
 use JS to turn certain rows on/off based on what they want to view.
 
 
+Sat Sep 21 18:12:33 EDT 2013
+add tooltips to explain the headings of each row in the html output. 
+ticker is hyperlink to yahoo finance page.
+if the stock is losing to the sp500, then color the text diff.
+buffer output based on terminal so that it doesn't go flying by
+'switches' of css hinting to gauge performance.
+use tabs to show diff portfolios. 
+could do a metarefresh of the html and have it chart your portfolios worth across the day. ie save off the data and update the price slowly adding to a list a snapshot of the value at that time.
+text alignmen
