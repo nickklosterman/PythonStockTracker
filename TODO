@@ -54,3 +54,17 @@ buffer output based on terminal so that it doesn't go flying by
 use tabs to show diff portfolios. 
 could do a metarefresh of the html and have it chart your portfolios worth across the day. ie save off the data and update the price slowly adding to a list a snapshot of the value at that time.
 text alignmen
+
+Sun Sep 22 17:47:53 EDT 2013
+Nice output format for the html so that can easily examine it.
+documentation examples of all the various output formats (may not be best approach since if they aren't up to date, that is no good)
+Is there an easy way to ingest other stock data?
+simply output in valid json as a portfolio and I can ingest it......
+expand TaxBracket.txt for ST/LT tax brackers.
+I believe I have a very naive implementation of the tax scenario. It is a 'straight' rate and doesn't take into acct the true way taxes are calculated. This needs to be implemented, or a note made.
+
+Categorize investments in the portfolio
+Create a history of the portfolio. buys sells etc. 
+
+Show the % of the portfolio in each investment. 
+
