@@ -43,7 +43,13 @@ text friendly output. hmm I like the html formatting output. pretty flexible.
 spawn LaTeX output/pdf
 interactive data table
 use JS to turn certain rows on/off based on what they want to view.
+show profit per share, growth?? per share. ie if you bought at $3 and its's worth $6 show taht it doubled i.e.100% growth
 
+
+Fri Sep 20 13:16:43 EDT 2013
+allow specification of time period to compare. 
+so you can also have an email sent to you via a monthly cron job that will give you performance across period X.
+specify the time period generically so one option can be used to cover weekly,monthly,yearly periods.
 
 Sat Sep 21 18:12:33 EDT 2013
 add tooltips to explain the headings of each row in the html output. 
