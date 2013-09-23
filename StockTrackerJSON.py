@@ -609,7 +609,7 @@ self.yearsSincePurchase() )
         Read in the tax bracket and filing status from the given file 
         these fields are then used for 
         """
-        input=open(os.path.expanduser("TaxBracket.txt")) #~/Git/PythonStockTracker/TaxBracket.txt")) #the os.path.expanduser is unnecessary unless you are using the ~ to denote the user's home path
+        input=open(os.path.expanduser(taxBracketFile)) #the os.path.expanduser is unnecessary unless you are using the ~ to denote the user's home path
         for line in input:
             data=""
             if line.strip(): #skip blank lines
@@ -1230,10 +1230,11 @@ def usage():
     print("python StockTrackerJSON  [ -c/--comparison, -i/--input=portfolio.json -s/--stocktable -e/--email -w/--web-html]")
     print("-a/--alert=X Only output those stocks whose value has dropped below X % of the purchase price.")
     print("-c/--comparison Output performance comparing each stock to all the others in the portfolio")
-    print("-i/--input=portfolio.json")
-    print("-s/--stocktable Output the stock table ")
     print("-e/--email=joe.schmoe@email.org Email the results to user joe.schmoe@email.org")
+    print("-i/--input=portfolio.json")
     print("-m/--mongo Output data to local MongoDB instance AllPortfolios table")
+    print("-s/--stocktable Output the stock table ")
+    print("-t/--tax-bracket-file Tax bracket file to use and parse. Defaults to ~/Git/PythonStockTracker/TaxBracket.txtt")
     print("-w/--web-html output the data in a webpage name Portfolioname.html e.g. AllPortfolios.json -> AllPortfolios.html")
     print("python StockTrackerJSON -iPortfolio.json -c -s")
 
@@ -1258,18 +1259,20 @@ alertPercent=0.8
 destinationemail="foo.bar@example.com"
 mongoflag=False
 htmltableflag=False
+taxBracketFile="~/Git/PythonStockTracker/TaxBracket.txt"
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
 #sadly optional options aren't allowed. says it in the docs :( http://docs.python.org/3.3/library/getopt.html
 try:
-    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:csi:mw', ['alert=',
-                                                                        'compare',
-                                                                        'stocktable',
-                                                                        'input=',
-                                                                        'email=',
-                                                                        'mongo',
-                                                                        'web-html-table'
+    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:t:csi:mw', ['alert=',
+                                                                          'compare',
+                                                                          'stocktable',
+                                                                          'input=',
+                                                                          'email=',
+                                                                          'tax-bracket-file=',
+                                                                          'mongo',
+                                                                          'web-html-table'
                                                                 ])
 except getopt.GetoptError as err:
     # print help information and exit:                                                                        
@@ -1290,6 +1293,8 @@ for opt, arg in options:
         inputfilename=arg
     elif opt in ('-e', '--email'):
         destinationemail=arg
+    elif opt in ('-t', '--tax-bracket-file'):
+        taxBracketFile=arg
     elif opt in ('-a', '--alert'): #check for stocks where loss is > 8 %
         alertflag=True
         try:
