@@ -68,3 +68,8 @@ Create a history of the portfolio. buys sells etc.
 
 Show the % of the portfolio in each investment. 
 
+The Hi low Pct for mutual funds needs to be corrected.
+the comparetosp500 vs calculation is wrong for some reason???
+
+make it multi purpose so that can compare to other indices or stocks. could be easy to do with javascript and background proc
+

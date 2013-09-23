@@ -73,17 +73,19 @@
 	 "display":"yes",
 	 "note":"I fudged the info I didnt know such as purchaseprice,date,commission",
 	 "note2":"I purchased rpmgx with money that was doing nothing in prrxx",
+	 "note3":"I believe that using a date earlier than when I would've started investing will produce pessimistic results. The longer turn will give me a lower ARR than I really should have.",
+	 "note4":"I originally had the date as 9/11/2001, but that caused an error bc the market closed bc of the attacks.",
 	 "portfolioStocks":
 	 [
-	     { "ticker":"prfdx", "shares": 351.425, "totalPurchasePrice": 1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
-	     { "ticker":"preix", "shares":176.808, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0 },
-	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
-	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
-	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prfdx", "shares": 351.425, "totalPurchasePrice": 1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"preix", "shares":176.808, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0 },
+	     { "ticker":"prgfx", "shares":247.953, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prmtx", "shares":159.629, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"rpmgx", "shares":535.841, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0},
 	     { "ticker":"rpmgx", "shares":13.513, "totalPurchasePrice":961.34, "purchaseDate": "9/12/2013","commissionToBuy":0,"commissionToSell":0},
-	     { "ticker":"prrxx", "shares":35.55, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
-	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0},
-	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/11/2001","commissionToBuy":0,"commissionToSell":0}
+	     { "ticker":"prrxx", "shares":35.55, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prscx", "shares":245.690, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0},
+	     { "ticker":"prsvx", "shares":100.465, "totalPurchasePrice":1, "purchaseDate": "9/10/2001","commissionToBuy":0,"commissionToSell":0}
 	 ]
      }
      ,

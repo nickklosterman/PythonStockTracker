@@ -359,6 +359,34 @@ def get_historical_prices_plus_one_day(symbol, date):
         #print('his',data) #Need to fix this so that we get the close data that we want.
     return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
 
+def get_historical_price(symbol, date):
+    """
+    Get historical prices for the given ticker symbol.
+    Returns a nested list.
+    date in YYYYMMDD format
+        
+    the date goes month(jan=0) day year
+    http://ichart.yahoo.com/table.csv?s=alxn&d=2012&e=11&f=03&g=d&a=2012&b=10&c=22&ignore=.csv
+    http://download.finance.yahoo.com/d/quotes.csv?s=alxn&d=2012&e=11&f=03&g=dtw7&a=2012&b=10&c=22&ignore=.csv aaggh it should be m d y not y m d
+    
+    """
+    url = 'http://ichart.yahoo.com/table.csv?s=%s&' % symbol + \
+          'd=%s&' % str(int(date[4:6]) - 1) + \
+          'e=%s&' % str(int(date[6:]) ) + \
+          'f=%s&' % str(int(date[0:4])) + \
+          'g=d&' + \
+          'a=%s&' % str(int(date[4:6]) - 1) + \
+          'b=%s&' % str(int(date[6:]) ) + \
+          'c=%s&' % str(int(date[0:4])) + \
+          'ignore=.csv'
+    days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+    data=[] #python3 method ,
+    for day in days: #day[0] holds the fields names, day[1+] holds the data values
+        dayStr = str(day, encoding='utf8')
+        data.append( dayStr[:-2].split(','))
+        #print('his',data) #Need to fix this so that we get the close data that we want.
+    return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
+
 
 def getSharePrice(ticker):
     """
@@ -839,10 +867,18 @@ self.yearsSincePurchase() )
 
     def resultsIfInvestedInSP500(self):
         """
+        I still need tofigure out why the numbers come out awful for the mutual funds.
         """
+        currentSP500=float(getSharePrice("%5EGSPC"))
+#        startSP500 =float(get_historical_price("aapl",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
+        startSP500 =float(get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
         avgAnnualReturn=1.10 #10% annual return
         #            print(self.yearsSincePurchase(),self.totalpurchaseprice,avgAnnualReturn)
-        return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
+        #        print(self.ticker,self.purchasedate)
+        #       print((currentSP500-startSP500)/startSP500)
+        print("mutual funds calc is all wrong")
+        #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
+        return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
         
     def yearsSincePurchase(self):
         """

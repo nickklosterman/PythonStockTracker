@@ -25,7 +25,7 @@
 	     {"ticker":"xlu","shares":1,"totalPurchasePrice":36.74,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
 	     {"ticker":"xlv","shares":1,"totalPurchasePrice":40.68,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
 	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/01/2012","commissionToBuy":10,"commissionToSell":10},
-	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/09/2011","commissionToBuy":0,"commissionToSell":0}
+	     {"ticker":"xly","shares":1,"totalPurchasePrice":46.96,"purchaseDate":"10/10/2011","commissionToBuy":0,"commissionToSell":0}
 	 ]
      }
 
