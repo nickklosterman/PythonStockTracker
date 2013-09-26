@@ -828,13 +828,16 @@ self.yearsSincePurchase() )
         
         we actually need to get the prev close to compute gain for the day. Wall Street doesn't compute the gain from the open, but from prev close
         """
-        url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
+
         if (self.ticker=="prrxx"):
             self.shareopenprice=1.0
+            self.currentshareprice=1.0
+            self.shareprevcloseprice=1.0
             self.share52wklow=1.000001
             self.share52wkhigh=1.0
             self.trend="===="
         else:
+            url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
             days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
             data = days[:-2].split(',') 
             if float(data[0])==0.0:
