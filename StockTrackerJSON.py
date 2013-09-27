@@ -353,10 +353,19 @@ def get_historical_prices_plus_one_day(symbol, date):
           'ignore=.csv'
     days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
     data=[] #python3 method ,
-    for day in days: #day[0] holds the fields names, day[1+] holds the data values
-        dayStr = str(day, encoding='utf8')
-        data.append( dayStr[:-2].split(','))
-        #print('his',data) #Need to fix this so that we get the close data that we want.
+    try:
+        for day in days: #day[0] holds the fields names, day[1+] holds the data values
+            dayStr = str(day, encoding='utf8')
+            data.append( dayStr[:-2].split(','))
+            #print('his',data) #Need to fix this so that we get the close data that we want.
+    except urllib.error.HTTPError as err:
+        if err.code == 404: #try incrementing date again                                                                                                                               
+            counter+=1
+            if (counter > _CounterSentinel) :
+                print("uh oh")
+                done=True
+                data=[["error"]]
+
     return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
 
 def get_historical_price(symbol, date):
