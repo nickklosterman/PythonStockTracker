@@ -351,9 +351,10 @@ def get_historical_prices_plus_one_day(symbol, date):
           'b=%s&' % str(int(date[6:]) + 1) + \
           'c=%s&' % str(int(date[0:4])) + \
           'ignore=.csv'
-    days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+
     data=[] #python3 method ,
     try:
+        days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
         for day in days: #day[0] holds the fields names, day[1+] holds the data values
             dayStr = str(day, encoding='utf8')
             data.append( dayStr[:-2].split(','))
@@ -388,13 +389,20 @@ def get_historical_price(symbol, date):
           'b=%s&' % str(int(date[6:]) ) + \
           'c=%s&' % str(int(date[0:4])) + \
           'ignore=.csv'
-    days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
     data=[] #python3 method ,
-    for day in days: #day[0] holds the fields names, day[1+] holds the data values
-        dayStr = str(day, encoding='utf8')
-        data.append( dayStr[:-2].split(','))
-        #print('his',data) #Need to fix this so that we get the close data that we want.
-    return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
+    output=0.0
+    try:
+        days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+
+        for day in days: #day[0] holds the fields names, day[1+] holds the data values
+            dayStr = str(day, encoding='utf8')
+            data.append( dayStr[:-2].split(','))
+        output=data[1][6]
+    except urllib.error.HTTPError as err:
+        print(err)
+        
+    #return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
+    return output
 
 
 def getSharePrice(ticker):
@@ -407,8 +415,15 @@ def getSharePrice(ticker):
     #    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1p' #l1-> last trade wo time, p->prev close
     """
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %ticker + '&f=l1' #l1-> last trade wo time, p->prev close
-    days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
-    data = days[:-2].split(',') 
+    data=0.0
+    try:
+        days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
+        data = days[:-2].split(',') 
+    except urllib.error.HTTPError as err:
+        print(err)
+    except urllib.error.URLError as err:
+        print(err)
+
     #print(data[0])
     return data[0]
 
@@ -642,9 +657,15 @@ self.yearsSincePurchase() )
 
 
     def percentGain_func(self): 
-        return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
+        if (self.totalpurchaseprice != 0):
+            return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
+        else:
+            return 0.0
     def percentGainLoss_func(self): #not sure what a good term for this is ROI?
-        return (self.sharequantity*self.currentshareprice)/self.totalpurchaseprice
+        if (self.totalpurchaseprice != 0):
+            return (self.sharequantity*self.currentshareprice)/self.totalpurchaseprice
+        else:
+            return 0.0
     def dollarGain_func(self):
         return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
 
@@ -654,7 +675,7 @@ self.yearsSincePurchase() )
         
         """
         ARR=0
-        if (self.yearsSincePurchase() > 0):
+        if (self.yearsSincePurchase() > 0 and self.totalpurchaseprice > 0 ):
             ARR=(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
         return ARR #(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
 
@@ -688,10 +709,13 @@ self.yearsSincePurchase() )
         if we are in a tax loss situation we calculate the share purchase price and mark with a negative sign to denote we are under water.
         
         """
-        discountedPrice= (self.currentWorth_func()-(self.currentWorth_func()-(self.totalpurchaseprice-self.commission_to_buy))*self.taxRate_func())/self.sharequantity #this math is correct. I tried to simplify by writing it out and simplifying the equation, thats why it may look goofy
-        if self.currentWorth_func()<self.totalpurchaseprice-self.commission_to_buy:  #if our shares are worth less we return the share purchase  price and mark it as such with a negative share value
-            discountedPrice=-(self.totalpurchaseprice-self.commission_to_buy)/self.sharequantity
-        return discountedPrice 
+        if (self.sharequantity > 0):
+            discountedPrice= (self.currentWorth_func()-(self.currentWorth_func()-(self.totalpurchaseprice-self.commission_to_buy))*self.taxRate_func())/self.sharequantity #this math is correct. I tried to simplify by writing it out and simplifying the equation, thats why it may look goofy
+            if self.currentWorth_func()<self.totalpurchaseprice-self.commission_to_buy:  #if our shares are worth less we return the share purchase  price and mark it as such with a negative share value
+                discountedPrice=-(self.totalpurchaseprice-self.commission_to_buy)/self.sharequantity
+            return discountedPrice 
+        else:
+            return 0
 
     def oneMinusTaxRate_func(self):
         """
@@ -847,14 +871,20 @@ self.yearsSincePurchase() )
             self.trend="===="
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
-            days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
-            data = days[:-2].split(',') 
+
+            try:
+                days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
+                data = days[:-2].split(',') 
+            except urllib.error.HTTPError as err:
+                print(err)
+
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker: %7s" % self.ticker)
             self.currentshareprice=float(data[0])
             if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
                 self.shareopenprice=float(data[1])
-            self.shareprevcloseprice=float(data[2])
+            if data[2]!="N/A": 
+                self.shareprevcloseprice=float(data[2])
             if data[3]!="\"N/A - N/A\"":
                 temp=data[3].split(" - ")
                 self.share52wklow=float(temp[0][1:])
@@ -889,8 +919,11 @@ self.yearsSincePurchase() )
         #        print(self.ticker,self.purchasedate)
         #       print((currentSP500-startSP500)/startSP500)
         print("mutual funds calc is all wrong")
-        #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
-        return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
+        #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.5F
+        if (startSP500 != 0):
+            return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
+        else:
+            return 0
         
     def yearsSincePurchase(self):
         """
@@ -1246,7 +1279,7 @@ def usage():
     print("-i/--input=portfolio.json")
     print("-m/--mongo Output data to local MongoDB instance AllPortfolios table")
     print("-s/--stocktable Output the stock table ")
-    print("-t/--tax-bracket-file Tax bracket file to use and parse. Defaults to ~/Git/PythonStockTracker/TaxBracket.txtt")
+    print("-t/--tax-bracket-file Tax bracket file to use and parse. Defaults to ~/Git/PythonStockTracker/TaxBracket.txt")
     print("-w/--web-html output the data in a webpage name Portfolioname.html e.g. AllPortfolios.json -> AllPortfolios.html")
     print("python StockTrackerJSON -iPortfolio.json -c -s")
 
@@ -1271,7 +1304,7 @@ alertPercent=0.8
 destinationemail="foo.bar@example.com"
 mongoflag=False
 htmltableflag=False
-taxBracketFile="~/Git/PythonStockTracker/TaxBracket.txt"
+taxBracketFile="TaxBracket.txt"
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
