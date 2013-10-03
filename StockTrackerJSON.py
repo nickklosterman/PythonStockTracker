@@ -351,12 +351,22 @@ def get_historical_prices_plus_one_day(symbol, date):
           'b=%s&' % str(int(date[6:]) + 1) + \
           'c=%s&' % str(int(date[0:4])) + \
           'ignore=.csv'
-    days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+
     data=[] #python3 method ,
-    for day in days: #day[0] holds the fields names, day[1+] holds the data values
-        dayStr = str(day, encoding='utf8')
-        data.append( dayStr[:-2].split(','))
-        #print('his',data) #Need to fix this so that we get the close data that we want.
+    try:
+        days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+        for day in days: #day[0] holds the fields names, day[1+] holds the data values
+            dayStr = str(day, encoding='utf8')
+            data.append( dayStr[:-2].split(','))
+            #print('his',data) #Need to fix this so that we get the close data that we want.
+    except urllib.error.HTTPError as err:
+        if err.code == 404: #try incrementing date again                                                                                                                               
+            counter+=1
+            if (counter > _CounterSentinel) :
+                print("uh oh")
+                done=True
+                data=[["error"]]
+
     return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
 
 def get_historical_price(symbol, date):
@@ -379,37 +389,35 @@ def get_historical_price(symbol, date):
           'b=%s&' % str(int(date[6:]) ) + \
           'c=%s&' % str(int(date[0:4])) + \
           'ignore=.csv'
-#old method
-    # days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
-    # data=[] #python3 method ,
-    # for day in days: #day[0] holds the fields names, day[1+] holds the data values
-    #     dayStr = str(day, encoding='utf8')
-    #     data.append( dayStr[:-2].split(','))
-    #     #print('his',data) #Need to fix this so that we get the close data that we want.
-    # return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
-    output=0
+
+    data=[] #python3 method ,
+    output=0.0
+
     try:
-        days = urllib.request.urlopen(url).readlines()
-        data=[] #python3 method , 
+        days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
         for day in days: #day[0] holds the fields names, day[1+] holds the data values
-           
             dayStr = str(day, encoding='utf8')
             data.append( dayStr[:-2].split(','))
-            #    print(data)  #this is what 'data' looks like --> [['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Clos'], ['2013-09-24', '110.09', '111.08', '108.15', '110.42', '596200', '110.4']]
+            #this is what 'data' looks like --> [['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Clos'], ['2013-09-24', '110.09', '111.08', '108.15', '110.42', '596200', '110.4']]
         output=float(data[1][6])
     except urllib.error.HTTPError as err:
-        if err.code == 404: #try incrementing date again
-            import traceback
-            
+        import traceback
+        print(err)
+           
     except urllib.error.URLError as err:
         import traceback
+        print(err)
 
     except Exception as err:
         import traceback
+        print(err)
 
     else:
         #raise
         import traceback
+        
+    #return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
+
     return output
 
 
@@ -423,8 +431,15 @@ def getSharePrice(ticker):
     #    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1p' #l1-> last trade wo time, p->prev close
     """
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %ticker + '&f=l1' #l1-> last trade wo time, p->prev close
-    days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
-    data = days[:-2].split(',') 
+    data=0.0
+    try:
+        days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
+        data = days[:-2].split(',') 
+    except urllib.error.HTTPError as err:
+        print(err)
+    except urllib.error.URLError as err:
+        print(err)
+
     #print(data[0])
     return data[0]
 
@@ -658,15 +673,16 @@ self.yearsSincePurchase() )
 
 
     def percentGain_func(self): 
-        if self.totalpurchaseprice != 0:
+        if (self.totalpurchaseprice != 0):
             return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
         else:
-            return 0
+            return 0.0
     def percentGainLoss_func(self): #not sure what a good term for this is ROI?
-        if self.totalpurchaseprice != 0:
+        if (self.totalpurchaseprice != 0):
             return (self.sharequantity*self.currentshareprice)/self.totalpurchaseprice
         else:
-            return 0 
+            return 0.0
+
     def dollarGain_func(self):
         return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
 
@@ -675,6 +691,7 @@ self.yearsSincePurchase() )
         Calculate the annualized rate of return for this investment
         """
         ARR=0
+
         if (self.yearsSincePurchase() > 0 and self.totalpurchaseprice !=0):
             ARR=(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
         return ARR #(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
@@ -709,6 +726,7 @@ self.yearsSincePurchase() )
         if we are in a tax loss situation we calculate the share purchase price and mark with a negative sign to denote we are under water.
         
         """
+
         discountedPrice = 0
         if self.sharequantity > 0:
             discountedPrice= (self.currentWorth_func()-(self.currentWorth_func()-(self.totalpurchaseprice-self.commission_to_buy))*self.taxRate_func())/self.sharequantity #this math is correct. I tried to simplify by writing it out and simplifying the equation, thats why it may look goofy
@@ -870,8 +888,13 @@ self.yearsSincePurchase() )
             self.trend="===="
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
-            days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
-            data = days[:-2].split(',') 
+
+            try:
+                days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
+                data = days[:-2].split(',') 
+            except urllib.error.HTTPError as err:
+                print(err)
+
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker: %7s" % self.ticker)
             self.currentshareprice=float(data[0])
@@ -914,9 +937,12 @@ self.yearsSincePurchase() )
         #            print(self.yearsSincePurchase(),self.totalpurchaseprice,avgAnnualReturn)
         #        print(self.ticker,self.purchasedate)
         #       print((currentSP500-startSP500)/startSP500)
+
         print("mutual funds calc is all wrong, does it have to do with indexing the result data. I assume the same data is returned as the stocks when it isn't ie. think am getting close when getting volume")
         #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
-        if startSP500 !=0:
+
+        if (startSP500 != 0):
+
             return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
         else:
             return 0
@@ -1275,7 +1301,7 @@ def usage():
     print("-i/--input=portfolio.json")
     print("-m/--mongo Output data to local MongoDB instance AllPortfolios table")
     print("-s/--stocktable Output the stock table ")
-    print("-t/--tax-bracket-file Tax bracket file to use and parse. Defaults to ~/Git/PythonStockTracker/TaxBracket.txtt")
+    print("-t/--tax-bracket-file Tax bracket file to use and parse. Defaults to ~/Git/PythonStockTracker/TaxBracket.txt")
     print("-w/--web-html output the data in a webpage name Portfolioname.html e.g. AllPortfolios.json -> AllPortfolios.html")
     print("python StockTrackerJSON -iPortfolio.json -c -s")
 
@@ -1300,7 +1326,7 @@ alertPercent=0.8
 destinationemail="foo.bar@example.com"
 mongoflag=False
 htmltableflag=False
-taxBracketFile="~/Git/PythonStockTracker/TaxBracket.txt"
+taxBracketFile="TaxBracket.txt"
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
