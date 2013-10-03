@@ -379,13 +379,38 @@ def get_historical_price(symbol, date):
           'b=%s&' % str(int(date[6:]) ) + \
           'c=%s&' % str(int(date[0:4])) + \
           'ignore=.csv'
-    days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
-    data=[] #python3 method ,
-    for day in days: #day[0] holds the fields names, day[1+] holds the data values
-        dayStr = str(day, encoding='utf8')
-        data.append( dayStr[:-2].split(','))
-        #print('his',data) #Need to fix this so that we get the close data that we want.
-    return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
+#old method
+    # days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
+    # data=[] #python3 method ,
+    # for day in days: #day[0] holds the fields names, day[1+] holds the data values
+    #     dayStr = str(day, encoding='utf8')
+    #     data.append( dayStr[:-2].split(','))
+    #     #print('his',data) #Need to fix this so that we get the close data that we want.
+    # return data[1][6] #return the Adj Close value, this takes splits into acct #this is kinda willy nilly since we don't check that we get valid results.
+    output=0
+    try:
+        days = urllib.request.urlopen(url).readlines()
+        data=[] #python3 method , 
+        for day in days: #day[0] holds the fields names, day[1+] holds the data values
+           
+            dayStr = str(day, encoding='utf8')
+            data.append( dayStr[:-2].split(','))
+            #    print(data)  #this is what 'data' looks like --> [['Date', 'Open', 'High', 'Low', 'Close', 'Volume', 'Adj Clos'], ['2013-09-24', '110.09', '111.08', '108.15', '110.42', '596200', '110.4']]
+        output=float(data[1][6])
+    except urllib.error.HTTPError as err:
+        if err.code == 404: #try incrementing date again
+            import traceback
+            
+    except urllib.error.URLError as err:
+        import traceback
+
+    except Exception as err:
+        import traceback
+
+    else:
+        #raise
+        import traceback
+    return output
 
 
 def getSharePrice(ticker):
@@ -633,19 +658,24 @@ self.yearsSincePurchase() )
 
 
     def percentGain_func(self): 
-        return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
+        if self.totalpurchaseprice != 0:
+            return (self.sharequantity*self.currentshareprice-self.totalpurchaseprice)/self.totalpurchaseprice
+        else:
+            return 0
     def percentGainLoss_func(self): #not sure what a good term for this is ROI?
-        return (self.sharequantity*self.currentshareprice)/self.totalpurchaseprice
+        if self.totalpurchaseprice != 0:
+            return (self.sharequantity*self.currentshareprice)/self.totalpurchaseprice
+        else:
+            return 0 
     def dollarGain_func(self):
         return float(self.sharequantity*self.currentshareprice-self.totalpurchaseprice)
 
     def annualizedReturn_func(self):
         """
         Calculate the annualized rate of return for this investment
-        
         """
         ARR=0
-        if (self.yearsSincePurchase() > 0):
+        if (self.yearsSincePurchase() > 0 and self.totalpurchaseprice !=0):
             ARR=(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
         return ARR #(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
 
@@ -679,9 +709,11 @@ self.yearsSincePurchase() )
         if we are in a tax loss situation we calculate the share purchase price and mark with a negative sign to denote we are under water.
         
         """
-        discountedPrice= (self.currentWorth_func()-(self.currentWorth_func()-(self.totalpurchaseprice-self.commission_to_buy))*self.taxRate_func())/self.sharequantity #this math is correct. I tried to simplify by writing it out and simplifying the equation, thats why it may look goofy
-        if self.currentWorth_func()<self.totalpurchaseprice-self.commission_to_buy:  #if our shares are worth less we return the share purchase  price and mark it as such with a negative share value
-            discountedPrice=-(self.totalpurchaseprice-self.commission_to_buy)/self.sharequantity
+        discountedPrice = 0
+        if self.sharequantity > 0:
+            discountedPrice= (self.currentWorth_func()-(self.currentWorth_func()-(self.totalpurchaseprice-self.commission_to_buy))*self.taxRate_func())/self.sharequantity #this math is correct. I tried to simplify by writing it out and simplifying the equation, thats why it may look goofy
+            if self.currentWorth_func()<self.totalpurchaseprice-self.commission_to_buy:  #if our shares are worth less we return the share purchase  price and mark it as such with a negative share value
+                discountedPrice=-(self.totalpurchaseprice-self.commission_to_buy)/self.sharequantity
         return discountedPrice 
 
     def oneMinusTaxRate_func(self):
@@ -845,7 +877,10 @@ self.yearsSincePurchase() )
             self.currentshareprice=float(data[0])
             if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
                 self.shareopenprice=float(data[1])
-            self.shareprevcloseprice=float(data[2])
+
+            if data[2]!="N/A": 
+                self.shareprevcloseprice=float(data[2])
+
             if data[3]!="\"N/A - N/A\"":
                 temp=data[3].split(" - ")
                 self.share52wklow=float(temp[0][1:])
@@ -879,9 +914,12 @@ self.yearsSincePurchase() )
         #            print(self.yearsSincePurchase(),self.totalpurchaseprice,avgAnnualReturn)
         #        print(self.ticker,self.purchasedate)
         #       print((currentSP500-startSP500)/startSP500)
-        print("mutual funds calc is all wrong")
+        print("mutual funds calc is all wrong, does it have to do with indexing the result data. I assume the same data is returned as the stocks when it isn't ie. think am getting close when getting volume")
         #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
-        return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
+        if startSP500 !=0:
+            return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
+        else:
+            return 0
         
     def yearsSincePurchase(self):
         """
