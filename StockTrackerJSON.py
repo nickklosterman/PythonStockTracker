@@ -419,13 +419,14 @@ def getSharePrice(ticker):
     try:
         days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
         data = days[:-2].split(',') 
+        return data[0]
     except urllib.error.HTTPError as err:
         print(err)
     except urllib.error.URLError as err:
         print(err)
 
     #print(data[0])
-    return data[0]
+    return 0.0#data[0]
 
 
 class MiniStock:

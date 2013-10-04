@@ -79,3 +79,8 @@ the comparetosp500 vs calculation is wrong for some reason???
 
 make it multi purpose so that can compare to other indices or stocks. could be easy to do with javascript and background proc
 
+
+Thu Oct  3 22:25:04 EDT 2013
+instead of the jqueryui tabs, use just a list of links and anchors to tables.
+
+HTTP meta refresh for webpage if meant to go out on web
