@@ -11,9 +11,18 @@ import os
 import csv
 from math import ceil
 import sys
-
+import re #regular expression
 class PrincipalImportCSVExportJSON:
-    
+    """    headerString="
+    {"portfolio":
+    [
+    {
+    "portfolioName": "TRowePrice Brokerage Rollover IRA",
+    "display":"yes",
+    "portfolioStocks":
+    [
+    "
+    """
     def __init__(self,directory):
         self.fileList=""
 
@@ -29,36 +38,73 @@ class PrincipalImportCSVExportJSON:
     def getCSVFileList(self):
         os.chdir(self.directory) 
         self.fileList=glob.glob("*.csv")
+        
+    def tickerFromFilename(self,filename):
+        return (filename.split('.'))[0]
+        
             
         
     def loopOverFiles(self):
         for csvfile in self.fileList:
-            print(csvfile)
+            
             ticker=(csvfile.split('.'))[0]
             ticker=ticker.strip()
+            outpufilename=ticker+".json"
             #csvfile sure the file size isn't 0       
             if (os.stat(csvfile).st_size!=0):
                 with open(csvfile,'rt') as csvFileHandle:
                     csvDataReader=csv.DictReader(csvFileHandle,delimiter=',')
                     counter=0
+                    inv401k=[]
+                    rothIRA=[]
+                    inv401kMatch=[]
                     for row in csvDataReader:
-
                         if row['Contribution Type']!="ZZZZZZZZZZZZZZZZZZZZZZTotal":
-                            if (counter%4==0):
-                                print("401(k)")
-                            elif (counter%4==1):
-                                print("Roth IRA")
-                            elif (counter%4==2):
-                                print("Employer Match 401(k)")
-                            elif (counter%4==3):
-                                print("Total")
-                            counter+=1                            
-                            ActAmount=float(row['Activity Amount'].strip('$').strip('"').strip(',').strip(' '))
+
+                            # ActAmount=float(row['Activity Amount'].strip('$').strip('"').strip(',').strip(' '))
+                            ActAmount=float(re.sub("[^\d\.]","",row['Activity Amount'])) #using regex is much handier than the above. Regular expression pattern says "anything that isn't a number or a decimal point". Anything matching that regex is replaced with "".  http://stackoverflow.com/questions/5180184/python-remove-comma-in-dollar-amount
                             date=row['Date']
                             contribution=row['Contribution Type']
                             shares=float(row['# of Shares / Unit'])
                             sharePurchasePrice=float(row['NAV / Unit Value'])
-                            print(" { \"ticker\":\"%s\", \"shares\":%s, \"totalPurchasePrice\":%f, \"purchsaeDate\": \"%s\", \"commissionToBuy\":0, \"commissionToSell\":0, \"contributionType\":\"%s\"}," % ( "rpmgx",shares,ActAmount,date,contribution))
+                            #print(" { \"ticker\":\"%s\", \"shares\":%s, \"totalPurchasePrice\":%f, \"purchaseDate\": \"%s\", \"commissionToBuy\":0, \"commissionToSell\":0, \"contributionType\":\"%s\"}," % ( ticker,shares,ActAmount,date,contribution))
+                            output=(" { \"ticker\":\"%s\", \"shares\":%s, \"totalPurchasePrice\":%f, \"purchaseDate\": \"%s\", \"commissionToBuy\":0, \"commissionToSell\":0, \"contributionType\":\"%s\"}" % ( ticker,shares,ActAmount,date,contribution))
+                            if (counter%4==0):
+                                #print("401(k)")
+                                inv401k.append(output)
+                            elif (counter%4==1):
+                                #print("Roth IRA")
+                                rothIRA.append(output)
+                            elif (counter%4==2):
+                                #print("Employer Match 401(k)")
+                                inv401kMatch.append(output)
+                            elif (counter%4==3):
+                                print("Total")
+                            counter+=1                            
+                    print("  {\"portfolio\":    [")
+                    print(" {    \"portfolioName\": \"%s\", \"display\":\"yes\",  \"portfolioStocks\": [" %("Principal 401k"))
+                    listLength=(len(inv401k))
+                    for counter,item in enumerate(inv401k):
+                        print(item,end="")
+                        if counter<listLength-1:
+                            print(",")
+                    print("] }, ")
+                    print(" {    \"portfolioName\": \"%s\", \"display\":\"yes\",  \"portfolioStocks\": [" %("Principal Roth IRA"))
+                    
+                    listLength=(len(rothIRA))
+                    for counter,item in enumerate(rothIRA):
+                        print(item,end="")
+                        if counter<listLength-1:
+                            print(",")
+                    print("] }, ")
+                    print(" {    \"portfolioName\": \"%s\", \"display\":\"yes\",  \"portfolioStocks\": [" %("Principal 401k Emplyer Match"))
+                    
+                    listLength=(len(inv401kMatch))
+                    for counter,item in enumerate(inv401kMatch):
+                        print(item,end="")
+                        if counter<listLength-1:
+                            print(",")
+                    print("]} ]}")
         
 
 

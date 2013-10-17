@@ -1,0 +1,29 @@
+{"portfolio":    
+ [
+     {    "portfolioName": "Principal 401k", "display":"yes",  "portfolioStocks": [
+	 { "ticker":"RPMGX", "shares":5.78995767, "totalPurchasePrice":396.670000, "purchaseDate": "8/15/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":5.825671904, "totalPurchasePrice":396.670000, "purchaseDate": "8/30/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":5.569643358, "totalPurchasePrice":396.670000, "purchaseDate": "9/13/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":5.534672805, "totalPurchasePrice":396.670000, "purchaseDate": "9/30/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":5.537763506, "totalPurchasePrice":396.670000, "purchaseDate": "10/15/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"}
+     ]
+     },
+     {    "portfolioName": "Principal Roth IRA", "display":"yes",  "portfolioStocks": [
+	 { "ticker":"RPMGX", "shares":1.447525908, "totalPurchasePrice":99.170000, "purchaseDate": "8/15/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":1.456454692, "totalPurchasePrice":99.170000, "purchaseDate": "8/30/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":1.392445942, "totalPurchasePrice":99.170000, "purchaseDate": "9/13/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":1.383703083, "totalPurchasePrice":99.170000, "purchaseDate": "9/30/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"},
+	 { "ticker":"RPMGX", "shares":1.384475778, "totalPurchasePrice":99.170000, "purchaseDate": "10/15/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"ELECTIVE DEFERRAL"}
+     ]
+     },
+     {    "portfolioName": "Principal 401k Emplyer Match", "display":"yes",  "portfolioStocks": [
+	 { "ticker":"RPMGX", "shares":1.157933148, "totalPurchasePrice":79.330000, "purchaseDate": "8/15/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"EMPLOYER MATCH"},
+	 { "ticker":"RPMGX", "shares":1.165075635, "totalPurchasePrice":79.330000, "purchaseDate": "8/30/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"EMPLOYER MATCH"},
+	 { "ticker":"RPMGX", "shares":1.113872507, "totalPurchasePrice":79.330000, "purchaseDate": "9/13/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"EMPLOYER MATCH"},
+	 { "ticker":"RPMGX", "shares":1.106878749, "totalPurchasePrice":79.330000, "purchaseDate": "9/30/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"EMPLOYER MATCH"},
+	 { "ticker":"RPMGX", "shares":7.75289683, "totalPurchasePrice":555.340000, "purchaseDate": "10/15/2013", "commissionToBuy":0, "commissionToSell":0, "contributionType":"EMPLOYER MATCH"}
+     ]
+     } 
+ ]
+}
+
