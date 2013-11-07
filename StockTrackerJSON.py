@@ -798,7 +798,10 @@ self.yearsSincePurchase() )
         e.g. 52wk range: $200-$100, current price: $175, therefore the current price is 75% of the way to the high
         """
         if self.share52wkhigh!=0 and self.share52wklow!=0:
-            return (self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)
+            if self.share52wklow==-1 and self.share52wkhigh==-1:
+                return 0
+            else:
+                return (self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)
         else:
             return 0
             
@@ -911,8 +914,8 @@ self.yearsSincePurchase() )
                 self.share52wkhigh=float(temp[1][:-1])
                 self.trend=data[4][7:13]
             else:
-                self.share52wklow=0.0001
-                self.share52wkhigh=0.0002
+                self.share52wklow=-1#"-"#0.0001
+                self.share52wkhigh=-1#"-"#=0.0002
                 self.trend="N/A"
 
 
@@ -939,7 +942,7 @@ self.yearsSincePurchase() )
         #        print(self.ticker,self.purchasedate)
         #       print((currentSP500-startSP500)/startSP500)
 
-        print("mutual funds calc is all wrong, does it have to do with indexing the result data. I assume the same data is returned as the stocks when it isn't ie. think am getting close when getting volume")
+        #print("mutual funds calc is all wrong, does it have to do with indexing the result data. I assume the same data is returned as the stocks when it isn't ie. think am getting close when getting volume")
         #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
 
         if (startSP500 != 0):
