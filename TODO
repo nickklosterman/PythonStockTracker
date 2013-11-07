@@ -87,3 +87,7 @@ HTTP meta refresh for webpage if meant to go out on web
 
 Mon Oct  7 22:24:40 EDT 2013
 pie chart of each portfolio into total worth and each individual portfolio broken down into its components.
+
+Tue Oct 22 17:02:18 EDT 2013
+have some type of status message.
+For the last few days I've been running the script but emailing myself an old .html file because of invalid json. I didn't realize that I was emailing myself crappy stale data. 
