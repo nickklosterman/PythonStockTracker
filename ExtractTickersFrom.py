@@ -13,7 +13,7 @@ def ExtractPortfolioStocks(inputfilename):
     myset=set(stockz) #create unique set of tickers http://stackoverflow.com/questions/12897374/get-unique-values-from-a-list-in-python
    
     sortedTickers =sorted(myset, key=lambda item: (int(item.partition(' ')[0])
-                                                   if item[0].isdigit() else float('inf'),item)) #stolen from:http://stackoverflow.com/questions/2669059/how-to-sort-alpha-numeric-set-in-python
+                                                   if item[0].isdigit() and item[1].isdigit() else float('inf'),item)) #stolen from:http://stackoverflow.com/questions/2669059/how-to-sort-alpha-numeric-set-in-python
     for ticker in sortedTickers:
         print(ticker)
     input.close()
