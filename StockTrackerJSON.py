@@ -1096,7 +1096,7 @@ class HTMLTable:
             portfolioStockDataList=[] #clear the list for the next portfolio
         input.close()
         output=open(outputfilename,'w')
-        output.write(createHTMLOutput(portfolioTabsList,portfolioTabContentsList))
+        output.write(createHTMLOutput(filename[0],portfolioTabsList,portfolioTabContentsList))
         output.close()
         print("Output written to ",outputfilename,".")
         
@@ -1157,14 +1157,15 @@ def tabContent(tabList):
         output+=startText+str(counter)+"\">"+item+endText
     return output
     
-def createHTMLOutput(portfolioNameList,portfolioContentList):
+def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     """
     create an html webpage from a list of portfolio names, and their performance data in html
     """
+    runDate=datetime.datetime.now()
     start="""<html lang="en"> 
     <head>
-    <meta charset="utf-8" />
-    <title>jQuery UI Tabs - Default functionality</title>
+    <meta HTTP-EQUIV="Refresh" CONTENT="300" charset="utf-8" />
+    <title> %s %s </title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -1183,7 +1184,7 @@ def createHTMLOutput(portfolioNameList,portfolioContentList):
     </style>
     </head>
     <body>
-    """
+    """ % (portfolioName,runDate)
     end='</div></body></html>'
     tabs=jqueryUITabs(portfolioNameList)
     content=tabContent(portfolioContentList)
