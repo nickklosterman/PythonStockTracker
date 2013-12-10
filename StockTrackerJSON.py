@@ -1389,7 +1389,7 @@ print(sys.argv[1:])
 try:
     options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:d:t:csi:mw', ['alert=',
                                                                           'compare',
-                                                                          'database'=,
+                                                                          'database',
                                                                           'email=',
                                                                           'input=',
                                                                           'mongo',
