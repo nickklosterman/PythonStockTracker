@@ -106,6 +106,21 @@ def isLeapYear(year):
     if year%4==0:
         leapyer=1
     return leapyear
+    
+def getSharePriceFromDatabase(ticker):
+    import sqlite3
+    connection=sqlite3.connect(database)
+    cursor=connection.cursor()
+    Query='SELECT Close FROM '+ticker+' LIMIT 1 '
+    cursor.execute(Query)
+    while True:
+        row=cursor.fetchone()
+        print(row)
+        if row[1] is  None:
+            return -1
+        return row
+
+
 
 def getSharePrices(tickerlist):
     """
@@ -430,6 +445,9 @@ def getSharePrice(ticker):
     http://ichart.yahoo.com/table.csv?s=alxn&f=p # gets all available records
     #    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1p' #l1-> last trade wo time, p->prev close
     """
+    if (databaseflag):
+        return getSharePriceFromDatabase(ticker)
+        #an 'else' isn't necessary since we will return here.
     url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %ticker + '&f=l1' #l1-> last trade wo time, p->prev close
     data=0.0
     try:
@@ -456,7 +474,8 @@ class MiniStock:
         self.purchaseDate=datetime.datetime(int(temp[2]),int(temp[0]),int(temp[1]))
         self.totalPurchasePrice=data['totalPurchasePrice']
         self.commissionToBuy=data['commissionToBuy']
-        self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,(self.purchaseDate.strftime('%Y%m%d')))
+        #self.unitPriceAtPurchase=get_historical_prices_plus_one_day(self.ticker,(self.purchaseDate.strftime('%Y%m%d'))) #NO LONGER USING this version since IBD lists are published the night before their list date, so you could purchase at the open.
+        self.unitPriceAtPurchase=get_historical_price(self.ticker,(self.purchaseDate.strftime('%Y%m%d')))
         self.unitPriceAtPresent=getSharePrice(self.ticker)
 
        
@@ -873,6 +892,7 @@ self.yearsSincePurchase() )
         #NOTE:
         #I could make these print functions more multipurpose by defining a function that outputs a new line and otherwise you prevent the newline from being added. Then just pick and choose which statements you want printed.
         #or have a check as to print this field or not.
+
         
     def getSharePrice(self):
         """
@@ -890,6 +910,9 @@ self.yearsSincePurchase() )
             self.share52wklow=1.000001
             self.share52wkhigh=1.0
             self.trend="===="
+        elif (databaseflag):
+            self.currentshareprice=getSharePriceFromDatabase(self.ticker)
+        
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
 
@@ -1328,6 +1351,8 @@ stocktableflag=False
 alertflag=False
 alertPercent=0.8
 destinationemail="foo.bar@example.com"
+database="YahooHistoricalDatabase.sqlite3"
+databaseflag=False
 mongoflag=False
 htmltableflag=False
 taxBracketFile="TaxBracket.txt"
@@ -1336,13 +1361,14 @@ print(sys.argv[1:])
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
 #sadly optional options aren't allowed. says it in the docs :( http://docs.python.org/3.3/library/getopt.html
 try:
-    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:t:csi:mw', ['alert=',
+    options, remainder = getopt.gnu_getopt(sys.argv[1:], 'a:e:d:t:csi:mw', ['alert=',
                                                                           'compare',
-                                                                          'stocktable',
-                                                                          'input=',
+                                                                          'database'=,
                                                                           'email=',
-                                                                          'tax-bracket-file=',
+                                                                          'input=',
                                                                           'mongo',
+                                                                          'stocktable',
+                                                                          'tax-bracket-file=',
                                                                           'web-html-table'
                                                                 ])
 except getopt.GetoptError as err:
@@ -1352,21 +1378,7 @@ except getopt.GetoptError as err:
     sys.exit(2)
 
 for opt, arg in options:
-    if opt in ('-c', '--compare'):
-        comparisonflag=True
-    elif opt in ('-s', '--stocktable'):
-        stocktableflag=True
-    elif opt in ('-w', '--web-html-table'):
-        htmltableflag=True
-    elif opt in ('-m', '--mongo'):
-        mongoflag=True
-    elif opt in ('-i', '--input'):
-        inputfilename=arg
-    elif opt in ('-e', '--email'):
-        destinationemail=arg
-    elif opt in ('-t', '--tax-bracket-file'):
-        taxBracketFile=arg
-    elif opt in ('-a', '--alert'): #check for stocks where loss is > 8 %
+    if opt in ('-a', '--alert'): #check for stocks where loss is > 8 %
         alertflag=True
         try:
             alertPercent=float(arg) #will it break if an opt isn't specified?
@@ -1374,6 +1386,23 @@ for opt, arg in options:
             alertPercent=8
         if alertPercent > 1:
             alertPercent=alertPercent/100;
+    elif opt in ('-c', '--compare'):
+        comparisonflag=True
+    elif opt in ('-d', '--database'):
+        database=arg
+        databaseflag=True
+    elif opt in ('-e', '--email'):
+        destinationemail=arg
+    elif opt in ('-i', '--input'):
+        inputfilename=arg
+    elif opt in ('-m', '--mongo'):
+        mongoflag=True
+    elif opt in ('-s', '--stocktable'):
+        stocktableflag=True
+    elif opt in ('-t', '--tax-bracket-file'):
+        taxBracketFile=arg
+    elif opt in ('-w', '--web-html-table'):
+        htmltableflag=True
     else:
         assert False, "unhandled option"
 
