@@ -407,6 +407,7 @@ def get_historical_price(symbol, date):
 
     data=[] #python3 method ,
     output=0.0
+    #print(url)
 
     try:
         days = urllib.request.urlopen(url).readlines() #urllib.urlopen --> py3k needs .request. in there
@@ -417,15 +418,15 @@ def get_historical_price(symbol, date):
         output=float(data[1][6])
     except urllib.error.HTTPError as err:
         import traceback
-        print(err)
+        print(err,symbol,date)
            
     except urllib.error.URLError as err:
         import traceback
-        print(err)
+        print(err,symbol,date)
 
     except Exception as err:
         import traceback
-        print(err)
+        print(err,symbol,date)
 
     else:
         #raise
@@ -455,13 +456,35 @@ def getSharePrice(ticker):
         data = days[:-2].split(',') 
         return data[0]
     except urllib.error.HTTPError as err:
-        print(err)
+        print(err,ticker)
     except urllib.error.URLError as err:
-        print(err)
+        print(err,ticker)
 
     #print(data[0])
     return 0.0#data[0]
 
+def getShareOpenPrice(ticker):
+    """
+    Retrieve the current share price for the provided ticker
+    
+    the date goes month(jan=0) day year
+    http://download.finance.yahoo.com/d/quotes.csv?s=alxn&f=l1 # gets only for today
+    http://ichart.yahoo.com/table.csv?s=alxn&f=p # gets all available records
+    #    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1p' #l1-> last trade wo time, p->prev close
+    """
+    url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %ticker + '&f=o0' #l1-> last trade wo time, p->prev close
+    data=0.0
+    try:
+        days = str(urllib.request.urlopen(url).read() , encoding='utf8')  
+        data = days[:-2].split(',') 
+        return data[0]
+    except urllib.error.HTTPError as err:
+        print(err,ticker)
+    except urllib.error.URLError as err:
+        print(err,ticker)
+
+    #print(data[0])
+    return 0.0#data[0]
 
 class MiniStock:
     """
@@ -920,7 +943,8 @@ self.yearsSincePurchase() )
                 days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
                 data = days[:-2].split(',') 
             except urllib.error.HTTPError as err:
-                print(err)
+                print(err,self.ticker)
+                
 
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker: %7s" % self.ticker)
@@ -954,20 +978,21 @@ self.yearsSincePurchase() )
                 """
 
     def resultsIfInvestedInSP500(self):
-        """
-        I still need tofigure out why the numbers come out awful for the mutual funds.
-        """
+        currentSP500=-1
+        startSP500=-1
         currentSP500=float(getSharePrice("%5EGSPC"))
-#        startSP500 =float(get_historical_price("aapl",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
-        startSP500 =float(get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
-        avgAnnualReturn=1.10 #10% annual return
-        #            print(self.yearsSincePurchase(),self.totalpurchaseprice,avgAnnualReturn)
-        #        print(self.ticker,self.purchasedate)
-        #       print((currentSP500-startSP500)/startSP500)
 
-        #print("mutual funds calc is all wrong, does it have to do with indexing the result data. I assume the same data is returned as the stocks when it isn't ie. think am getting close when getting volume")
-        #return (self.totalpurchaseprice*(avgAnnualReturn**self.yearsSincePurchase())) #I'm not sure if this is completely accurate due to partial years etc. and avg daily rates possibly being diff. need to research this.
-
+        #we need to check if this is the first day for this security, as we can't get historical data if this is the first day
+        from datetime import date
+        today = date.today()
+        #print(self.purchasedate.day,today.day)
+        #print(self.purchasedate.month,today.month) 
+        #print(self.purchasedate.year,today.year)
+        if ( self.purchasedate.day == today.day  and self.purchasedate.month == today.month and self.purchasedate.year == today.year):
+            startSP500=float(getShareOpenPrice("^GSPC"))
+        else:
+            startSP500 =float(get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
+        #print(currentSP500,startSP500)
         if (startSP500 != 0):
 
             return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
@@ -1094,7 +1119,7 @@ class HTMLTable:
             portfolioStockDataList=[] #clear the list for the next portfolio
         input.close()
         output=open(outputfilename,'w')
-        output.write(createHTMLOutput(portfolioTabsList,portfolioTabContentsList))
+        output.write(createHTMLOutput(filename[0],portfolioTabsList,portfolioTabContentsList))
         output.close()
         print("Output written to ",outputfilename,".")
         
@@ -1155,14 +1180,15 @@ def tabContent(tabList):
         output+=startText+str(counter)+"\">"+item+endText
     return output
     
-def createHTMLOutput(portfolioNameList,portfolioContentList):
+def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     """
     create an html webpage from a list of portfolio names, and their performance data in html
     """
+    runDate=datetime.datetime.now()
     start="""<html lang="en"> 
     <head>
-    <meta charset="utf-8" />
-    <title>jQuery UI Tabs - Default functionality</title>
+    <meta HTTP-EQUIV="Refresh" CONTENT="300" charset="utf-8" />
+    <title> %s %s </title>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
     <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
     <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -1181,7 +1207,7 @@ def createHTMLOutput(portfolioNameList,portfolioContentList):
     </style>
     </head>
     <body>
-    """
+    """ % (portfolioName,runDate)
     end='</div></body></html>'
     tabs=jqueryUITabs(portfolioNameList)
     content=tabContent(portfolioContentList)
