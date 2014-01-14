@@ -734,8 +734,11 @@ self.yearsSincePurchase() )
         Calculate the annualized rate of return for this investment
         """
         ARR=0
-
-        if (self.yearsSincePurchase() > 0 and self.totalpurchaseprice !=0):
+        #print(self.yearsSincePurchase())
+        #print(self.totalpurchaseprice)
+        #print(self.dollarGain)
+        #I was encountering an overflow issue when the cash/prrxx was calculated
+        if (self.yearsSincePurchase() > 0 and self.totalpurchaseprice !=0 and self.ticker != 'prrxx'):
             ARR=(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
         return ARR #(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
 
@@ -938,9 +941,16 @@ self.yearsSincePurchase() )
         
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
-
+            print(url)
             try:
-                days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
+                #http://stackoverflow.com/questions/802134/changing-user-agent-on-urllib2-urlopen
+                #http://docs.python.org/3.3/library/urllib.request.html#module-urllib.request
+                headers= {'User-Agent' : 'Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11' }
+                myReq=urllib.request.build_opener()
+                myReq.addheaders = [('User-Agent','Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11')] # Request(url,data=b'None',headers)
+                myReq.addheaders = [('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0')]
+                days=str(myReq.open(url).read() , encoding='utf8')
+                # days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
                 data = days[:-2].split(',') 
             except urllib.error.HTTPError as err:
                 print(err,self.ticker)
