@@ -11,6 +11,7 @@ import os #for converting ~ -> users home directory
 import json
 #import pymongo #for mongodb
 import ast #for literal_eval for converting string to dict
+from socket import error as SocketError
 
 """
 Any note of 'tax' in this program uses tax algorithms for US taxes. For other countries adjust accordingly
@@ -942,19 +943,25 @@ self.yearsSincePurchase() )
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
             print(url)
-            try:
-                #http://stackoverflow.com/questions/802134/changing-user-agent-on-urllib2-urlopen
-                #http://docs.python.org/3.3/library/urllib.request.html#module-urllib.request
-                headers= {'User-Agent' : 'Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11' }
-                myReq=urllib.request.build_opener()
-                myReq.addheaders = [('User-Agent','Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11')] # Request(url,data=b'None',headers)
-                myReq.addheaders = [('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0')]
-                days=str(myReq.open(url).read() , encoding='utf8')
-                # days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
-                data = days[:-2].split(',') 
-            except urllib.error.HTTPError as err:
-                print(err,self.ticker)
-                
+            while True:
+                try:
+                    data=""
+                    #http://stackoverflow.com/questions/802134/changing-user-agent-on-urllib2-urlopen
+                    #http://docs.python.org/3.3/library/urllib.request.html#module-urllib.request
+                    headers= {'User-Agent' : 'Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11' }
+                    myReq=urllib.request.build_opener()
+                    myReq.addheaders = [('User-Agent','Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11')] # Request(url,data=b'None',headers)
+                    myReq.addheaders = [('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0')]
+                    days=str(myReq.open(url).read() , encoding='utf8')
+                    # days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
+                    data = days[:-2].split(',') 
+                except urllib.error.HTTPError as err:
+                    print(err,self.ticker)
+                    continue
+                except SocketError as e:
+                    print(e,self.ticker)
+                    continue
+                break
 
             if float(data[0])==0.0:
                 print("Uhh bad stock ticker: %7s" % self.ticker)
