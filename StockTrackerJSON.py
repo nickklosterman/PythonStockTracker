@@ -943,8 +943,10 @@ self.yearsSincePurchase() )
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
             print(url)
-            while True:
+            #while True:
+            for x in range(10):
                 try:
+                    print(x)
                     data=""
                     #http://stackoverflow.com/questions/802134/changing-user-agent-on-urllib2-urlopen
                     #http://docs.python.org/3.3/library/urllib.request.html#module-urllib.request
@@ -959,7 +961,11 @@ self.yearsSincePurchase() )
                     print(err,self.ticker)
                     continue
                 except SocketError as e:
+                    pass
                     print(e,self.ticker)
+                    continue
+                except:
+                    print('something else broke')
                     continue
                 break
 
