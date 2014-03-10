@@ -462,7 +462,7 @@ def getSharePrice(ticker):
         print(err,ticker)
 
     #print(data[0])
-    return 0.0#data[0]
+    return 0.0#data[0]  #it should never reach here.
 
 def getShareOpenPrice(ticker):
     """
@@ -1146,6 +1146,34 @@ class HTMLTable:
         output.close()
         print("Output written to ",outputfilename,".")
         
+class UniqueTickers:
+    """
+    This methoad traverses a portfolio and outputs the performance of each stock in the portfolio
+    as well as overall performance.
+    """
+    def __init__(self,inputfilename):
+        input=open(inputfilename)
+        tickerList=[]
+        tickerDict=dict()
+        tickerSet=set()
+        data_string=json.load(input)
+        for portfolio in data_string["portfolio"]:
+            if portfolio["display"] == "yes":
+                for data in portfolio["portfolioStocks"]:
+                    #print(data["ticker"])
+                    if data["ticker"] not in tickerSet:
+                        tickerSet.add(data["ticker"])
+                    if data["ticker"] not in tickerDict:
+                        key=data["ticker"]
+                        value=getSharePrice(key)
+                        tickerDict[key]=value
+                        #tickerDict.setdefault(data["ticker"],default) #https://wiki.python.org/moin/KeyError
+                        
+        input.close()
+        print(tickerDict)
+        print(tickerSet)
+        #return tickerList
+
 
 def createPortfolioTable(name,dataList,cumulativeData):
     """
@@ -1471,6 +1499,7 @@ PrintBanner(inputfilename)
 
 #this is super inefficient. I should go out and construct the data for each stock / portfolio and then run the stats, using those objects. I shouldn't go out and get the yahoo data for each function
 #TODO make this efficient. eliminate the unnecessary slow calls to yahoo
+UniqueTickers(inputfilename)
 if stocktableflag:
     StockTable(inputfilename)
 if comparisonflag:
