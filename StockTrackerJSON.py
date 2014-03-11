@@ -602,9 +602,12 @@ class Stock:
     annualizedgainloss=0.0
     shareopenprice=0.0
     shareprevcloseprice=0.0
+    share52wkhigh=0.1
+    share52wklow=0.001
+    trend=""
     taxbracket=0 
     filingstatus=""
-    def __init__(self, data): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell):
+    def __init__(self, data,shareprice): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell):
         """
         Stock Constructor
         """
@@ -621,7 +624,10 @@ class Stock:
             self.commission_to_sell=float(data["commissionToSell"])
         else:
             self.commission_to_sell=0
-        self.getSharePrice()
+        
+        self.currentshareprice = float(shareprice)
+        if self.currentshareprice ==0.0 :
+            self.getSharePrice()
         self.dollarGain=self.dollarGain_func()
         self.percentGain=self.percentGain_func()
         self.annualizedReturn=self.annualizedReturn_func()
@@ -978,6 +984,7 @@ self.yearsSincePurchase() )
             if data[2]!="N/A": 
                 self.shareprevcloseprice=float(data[2])
 
+            print(data[3])
             if data[3]!="\"N/A - N/A\"":
                 temp=data[3].split(" - ")
                 self.share52wklow=float(temp[0][1:])
@@ -1001,6 +1008,7 @@ self.yearsSincePurchase() )
                 """
 
     def resultsIfInvestedInSP500(self):
+        print("This needs to be redone such that a dict is created for the purchase dates and SP500 on that day")
         currentSP500=-1
         startSP500=-1
         currentSP500=float(getSharePrice("%5EGSPC"))
@@ -1081,6 +1089,7 @@ def StockTable(inputfilename):
     #as well as overall performance.
     """
     input=open(inputfilename)
+    UT=UniqueTickers(inputfilename)
     data_string=json.load(input)
     emailReportMsg=""
     htmlOutput=" "
@@ -1094,7 +1103,7 @@ def StockTable(inputfilename):
             cumulative=Accumulator()
             emailReportMsg+=portfolio["portfolioName"]
             for data in portfolio["portfolioStocks"]:
-                stock=Stock(data)
+                stock=Stock(data,UT.tickerDict[data["ticker"]])
                 cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
                 stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
                 message=stock.PrintForTxtMessage()
@@ -1147,6 +1156,8 @@ class HTMLTable:
         print("Output written to ",outputfilename,".")
         
 class UniqueTickers:
+    tickerDict=dict()
+    dateList=[] #used for the SP500 historical performance comparison
     """
     This methoad traverses a portfolio and outputs the performance of each stock in the portfolio
     as well as overall performance.
@@ -1154,7 +1165,6 @@ class UniqueTickers:
     def __init__(self,inputfilename):
         input=open(inputfilename)
         tickerList=[]
-        tickerDict=dict()
         tickerSet=set()
         data_string=json.load(input)
         for portfolio in data_string["portfolio"]:
@@ -1163,16 +1173,15 @@ class UniqueTickers:
                     #print(data["ticker"])
                     if data["ticker"] not in tickerSet:
                         tickerSet.add(data["ticker"])
-                    if data["ticker"] not in tickerDict:
+                    if data["ticker"] not in self.tickerDict:
                         key=data["ticker"]
                         value=getSharePrice(key)
-                        tickerDict[key]=value
+                        self.tickerDict[key]=value
                         #tickerDict.setdefault(data["ticker"],default) #https://wiki.python.org/moin/KeyError
-                        
+                    if data["purchaseDate"] not in self.dateList:
+                        self.dateList.append(data["purchaseDate"])
         input.close()
-        print(tickerDict)
         print(tickerSet)
-        #return tickerList
 
 
 def createPortfolioTable(name,dataList,cumulativeData):
@@ -1499,7 +1508,13 @@ PrintBanner(inputfilename)
 
 #this is super inefficient. I should go out and construct the data for each stock / portfolio and then run the stats, using those objects. I shouldn't go out and get the yahoo data for each function
 #TODO make this efficient. eliminate the unnecessary slow calls to yahoo
-UniqueTickers(inputfilename)
+UT=UniqueTickers(inputfilename)
+print("TickerDict")
+print(UT.tickerDict)
+print("DateList")
+print(UT.dateList)
+
+print("create a --compare-to flag which lets you compare the performance to any ticker, then append this compare to data to an auxiliary table. this will hold the historic values so that you aren't constantly looking these up. they arne't going to change so we should preprocess looking for this table and if not generate one and append it ")
 if stocktableflag:
     StockTable(inputfilename)
 if comparisonflag:
