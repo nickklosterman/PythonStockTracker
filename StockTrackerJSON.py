@@ -607,7 +607,7 @@ class Stock:
     trend=""
     taxbracket=0 
     filingstatus=""
-    def __init__(self, data,shareprice): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell):
+    def __init__(self, data,shareprice): #ticker,sharequantity,totalpurchaseprice,purchasedateyear,purchasedatemonth,purchasedateday,commission_to_buy,commission_to_sell,):
         """
         Stock Constructor
         """
