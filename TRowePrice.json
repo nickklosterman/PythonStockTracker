@@ -1,4 +1,9 @@
-{"portfolioName": "TRowePrice",
+{
+"portfolio":
+[	
+{	
+"portfolioName": "TRowePrice",
+		 "display":"yes",	
     "portfolioStocks":
     [
 	{
@@ -43,4 +48,6 @@
 	    "commission":19.95
 	}
     ]
+}
+]
 }
