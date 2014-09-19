@@ -624,7 +624,10 @@ class Stock:
             self.commission_to_sell=float(data["commissionToSell"])
         else:
             self.commission_to_sell=0
-        
+
+        if (shareprice=="0.01%"):  # prrxx returns 0.01% as price. assign value of $1/share
+            shareprice=1.0
+        self.getSharePrice() #needed so that prev and trends are populated.
         self.currentshareprice = float(shareprice)
         if self.currentshareprice ==0.0 :
             self.getSharePrice()
@@ -980,7 +983,7 @@ self.yearsSincePurchase() )
             self.currentshareprice=float(data[0])
             if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
                 self.shareopenprice=float(data[1])
-
+            print(data[2])
             if data[2]!="N/A": 
                 self.shareprevcloseprice=float(data[2])
 
@@ -1089,7 +1092,7 @@ def StockTable(inputfilename):
     #as well as overall performance.
     """
     input=open(inputfilename)
-    UT=UniqueTickers(inputfilename)
+    #UT=UniqueTickers(inputfilename)
     data_string=json.load(input)
     emailReportMsg=""
     htmlOutput=" "
@@ -1131,6 +1134,7 @@ class HTMLTable:
     """
     def __init__(self,inputfilename):
         input=open(inputfilename)
+        #UT=UniqueTickers(inputfilename)
         portfolioTabsList=[]
         portfolioStockDataList=[]
         portfolioTabContentsList=[]
@@ -1144,7 +1148,8 @@ class HTMLTable:
                 portfolioTabsList.append(portfolio["portfolioName"])
                 cumulative=Accumulator()
                 for data in portfolio["portfolioStocks"]:
-                    stock=Stock(data)
+                    print(UT.tickerDict[data["ticker"]])
+                    stock=Stock(data,UT.tickerDict[data["ticker"]])
                     cumulative.Add(stock.totalpurchaseprice, stock.commission_to_buy, stock.dollarGain,stock.dailyChange_func() ,stock.currentWorth_func() )
                     portfolioStockDataList.append(stock.htmlTableRowOutput())
                 portfolioTabContentsList.append(createPortfolioTable(portfolioName,portfolioStockDataList,cumulative.HTMLTableOutput())) 
@@ -1176,7 +1181,7 @@ class UniqueTickers:
                     if data["ticker"] not in self.tickerDict:
                         key=data["ticker"]
                         value=getSharePrice(key)
-                        self.tickerDict[key]=value
+                        self.tickerDict[key]=value #I need to also store the prev close price and other data otherwise this doesn't really fulfill its purpose; Really I need to make an object for the uniqueTickers and look up into a list of those.
                         #tickerDict.setdefault(data["ticker"],default) #https://wiki.python.org/moin/KeyError
                     if data["purchaseDate"] not in self.dateList:
                         self.dateList.append(data["purchaseDate"])
