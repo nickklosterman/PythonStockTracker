@@ -81,7 +81,22 @@ def htmlTableColorCode(value):
     elif value < 0:
         output="<span class=\"negative\"> {:03,.2f}</span>".format(value)
     else:
-        output=value
+        output="{:03,.2f}".format(value)
+    return output
+
+def htmlTableColorCodeDecimal(value):
+    """
+    apply a css class to  color text green if positive, red if negative
+    defaults to no color styling if not > or < 
+
+    This is used for the 52 wk hi/low
+    """
+    if value > 0.75:
+        output="<span class=\"positive\"> {:03,.2f}</span>".format(value)  #this formattting uses a comma as a separator for numbers, and outputs only two decimal places of the number
+    elif value < 0.25:
+        output="<span class=\"negative\"> {:03,.2f}</span>".format(value)
+    else:
+        output="{:03,.2f}".format(value)
     return output
 
 def htmlTableComparisonColorCode(value1,value2):
@@ -94,7 +109,7 @@ def htmlTableComparisonColorCode(value1,value2):
     elif value1 <value2:
         output="<span class=\"negative\"> {:03,.2f}</span>".format(value1)
     else:
-        output=value1
+        output="{:03,.2f}".format(value1)
     return output
 
 
@@ -648,7 +663,8 @@ class Stock:
         Create an html table row of the 17 fields we report
         """
         separator="</td><td>"
-        output="<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15:,.2f} {1} {16:} {1} {17:,.2f}</td></tr>".format(
+        #output="<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15:,.2f} {1} {16:} {1} {17:,.2f}</td></tr>".format(
+        output="<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f}</td></tr>".format(
 self.tickerLink(), 
 separator, 
 htmlTableColorCode(self.dollarGain), 
@@ -664,7 +680,8 @@ self.trend,
 self.stockSaleTakeHome_func(), 
 self.stockSaleTaxes_func(), 
 self.stockpriceDiscountedForTaxes_func(), 
-self.FiftyTwoWeekHighLowFactor(), 
+htmlTableColorCodeDecimal(self.FiftyTwoWeekHighLowFactor()),
+#self.FiftyTwoWeekHighLowFactor(),
 htmlTableComparisonColorCode(self.resultsIfInvestedInSP500(),self.currentWorth_func()  ),
 self.yearsSincePurchase() )
             # output="<tr><td>"+self.tickerLink()+separator + \
@@ -679,6 +696,7 @@ self.yearsSincePurchase() )
             # str(self.resultsIfInvestedInSP500()) + separator + \
             # str(self.yearsSincePurchase()) + \
             # "</td></tr>"
+        print(output)
         return output
 
     def getDictionary(self):
@@ -856,6 +874,7 @@ self.yearsSincePurchase() )
             if self.share52wklow==-1 and self.share52wkhigh==-1:
                 return 0
             else:
+                #print( " %s " % ((self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)))
                 return (self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)
         else:
             return 0
