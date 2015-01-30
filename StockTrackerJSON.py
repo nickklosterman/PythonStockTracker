@@ -90,15 +90,16 @@ def htmlTableColorCodeDecimal(value):
     defaults to no color styling if not > or < 
 
     This is used for the 52 wk hi/low
+    if the value is close to the 52 week high or low then apply a style to bring it to attention.
     """
-    # if value > 0.75:
-    #     output="<span class=\"positive\"> {:03,.2f}</span>".format(value)  #this formattting uses a comma as a separator for numbers, and outputs only two decimal places of the number
-    # elif value < 0.25:
-    #     output="<span class=\"negative\"> {:03,.2f}</span>".format(value)
-    # else:
-    #     output="<span class=\"middle\">{:03,.2f}</span>".format(value)
 
-    output="<span style=\"background-color:hsl({0:,.2f},100%,50%)\">{1:,.2f}</span>".format(120*value,value)
+    if value < 0.05:
+        output="<span class=\"newLow\">{0:,.2f}</span>".format(value)
+    elif value > 0.97:
+        output="<span class=\"newHigh\">{0:,.2f}</span>".format(value)
+    else:
+        #on ephedra and had a modeling contract
+        output="<span style=\"background-color:hsl({0:,.2f},100%,50%)\">{1:,.2f}</span>".format(120*value,value)
     return output
 
 def htmlTableComparisonColorCode(value1,value2):
@@ -1284,12 +1285,35 @@ def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     });
     </script>
     <style type="text/css">
+/* For simplicity's sake I keep all the styles in the file, otherwise if I have a shortcut, I would need to copy the style file over or point to it specifically (point to a style file that is symlinked to the file in the git repo) */
     .negative1 {color:red }
     .negative {background-color:red }
     .positive1 {color:green }
     .positive {background-color:green }
     .middle {background-color:yellow }
     td {text-align:right}
+/*Animation Prefs*/
+@-webkit-keyframes pulseHigh {
+      0%% {background-color:  hsl(80,100%%,50%%);}
+     25%% {background-color:  hsl(100,100%%,50%%);}
+     50%% {background-color:  hsl(120,100%%,50%%);}
+     75%% {background-color:  hsl(140,100%%,50%%);}
+     100%% {background-color: hsl(140,100%%,100%%);}
+}
+@-webkit-keyframes pulseLow {
+      0%% {background-color: hsl(320,100%%,50%%);}
+     25%% {background-color: hsl(340,100%%,50%%);}
+     50%% {background-color: hsl(360,100%%,50%%); }
+     75%% {background-color: hsl(000,100%%,50%%); }
+     100%% {background-color:hsl(000,100%%,0%%);}
+}
+.newHigh {
+-webkit-animation: pulseHigh 2s infinite alternate;
+}
+.newLow {
+-webkit-animation: pulseLow 2s infinite alternate;
+}
+
     </style>
     </head>
     <body>

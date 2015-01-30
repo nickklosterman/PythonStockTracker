@@ -91,3 +91,5 @@ pie chart of each portfolio into total worth and each individual portfolio broke
 Tue Oct 22 17:02:18 EDT 2013
 have some type of status message.
 For the last few days I've been running the script but emailing myself an old .html file because of invalid json. I didn't realize that I was emailing myself crappy stale data. 
+Fri Jan 30 15:23:47 EST 2015
+It would be nice if for the webpage (or in general) there was an indication if a stock is dangerously close to its 52wk low. I like the idea of a windowshade effect that is displayed at the top. It would have a green or red blinky showing that a stock is reaching a new high or a new low.
