@@ -91,12 +91,14 @@ def htmlTableColorCodeDecimal(value):
 
     This is used for the 52 wk hi/low
     """
-    if value > 0.75:
-        output="<span class=\"positive\"> {:03,.2f}</span>".format(value)  #this formattting uses a comma as a separator for numbers, and outputs only two decimal places of the number
-    elif value < 0.25:
-        output="<span class=\"negative\"> {:03,.2f}</span>".format(value)
-    else:
-        output="{:03,.2f}".format(value)
+    # if value > 0.75:
+    #     output="<span class=\"positive\"> {:03,.2f}</span>".format(value)  #this formattting uses a comma as a separator for numbers, and outputs only two decimal places of the number
+    # elif value < 0.25:
+    #     output="<span class=\"negative\"> {:03,.2f}</span>".format(value)
+    # else:
+    #     output="<span class=\"middle\">{:03,.2f}</span>".format(value)
+
+    output="<span style=\"background-color:hsl({0:,.2f},100%,50%)\">{1:,.2f}</span>".format(120*value,value)
     return output
 
 def htmlTableComparisonColorCode(value1,value2):
@@ -696,7 +698,6 @@ self.yearsSincePurchase() )
             # str(self.resultsIfInvestedInSP500()) + separator + \
             # str(self.yearsSincePurchase()) + \
             # "</td></tr>"
-        print(output)
         return output
 
     def getDictionary(self):
@@ -1287,6 +1288,7 @@ def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     .negative {background-color:red }
     .positive1 {color:green }
     .positive {background-color:green }
+    .middle {background-color:yellow }
     td {text-align:right}
     </style>
     </head>
