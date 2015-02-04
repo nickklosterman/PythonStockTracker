@@ -304,7 +304,7 @@ class Accumulator:
         used as prep to output portfolio / stock data  using createHTMLOutput()
         """
         separator="</th><td>"
-        endseparator="</td><td colspan=\"12\"><td></tr><tr><th colspan=\"4\">"
+        endseparator="</td><td colspan=\"12\"></tr><tr><th colspan=\"4\">"
         output="""<tr><th colspan=\"4\">Total Purchase Price {0} {2:,.2f} {1}             
         Total Commission Paid{0}{3:,.2f}{1}
             Total Gain/Loss{0}{4:,.2f}{1}
@@ -314,7 +314,7 @@ class Accumulator:
             Daily Gains{0}{8:,.2f}{1}
             Daily Change{0}{9:,.2f}{1}
             Daily % Change{0}{10:.2f}{1} 
-            Portfolio Worth{0}{11:,.2f} {1} </td><td colspan=\"12\"><td></tr>
+            Portfolio Worth{0}{11:,.2f} </td><td colspan=\"12\"></tr>
  """.format(separator,endseparator,
 self.totalpurchaseprice,
 self.totalcommission,
