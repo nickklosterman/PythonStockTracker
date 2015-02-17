@@ -685,7 +685,8 @@ self.stockSaleTaxes_func(),
 self.stockpriceDiscountedForTaxes_func(), 
 htmlTableColorCodeDecimal(self.FiftyTwoWeekHighLowFactor()),
 #self.FiftyTwoWeekHighLowFactor(),
-htmlTableComparisonColorCode(self.resultsIfInvestedInSP500(),self.currentWorth_func()  ),
+#htmlTableComparisonColorCode(self.resultsIfInvestedInSP500(),self.currentWorth_func()  ),
+htmlTableComparisonColorCode(self.resultsAlphaVsSP500(), 0 ),
 self.yearsSincePurchase() )
             # output="<tr><td>"+self.tickerLink()+separator + \
             # htmlTableColorCode(self.dollarGain)+ separator + \
@@ -1051,6 +1052,23 @@ self.yearsSincePurchase() )
         if (startSP500 != 0):
 
             return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
+        else:
+            return 0
+        
+    def resultsAlphaVsSP500(self):
+        print("This needs to be redone such that a dict is created for the purchase dates and SP500 on that day")
+        currentSP500=-1
+        startSP500=-1
+        currentSP500=float(getSharePrice("%5EGSPC"))
+
+        from datetime import date
+        today = date.today()
+        if ( self.purchasedate.day == today.day  and self.purchasedate.month == today.month and self.purchasedate.year == today.year):
+            startSP500=float(getShareOpenPrice("^GSPC"))
+        else:
+            startSP500 =float(get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
+        if (startSP500 != 0):
+            return (self.currentWorth_func()-(self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500)) ) / ( self.currentWorth_func() )*100  # this returns the percentage over/under (alpha) of the current investment when compared to the SP500 index.; negative values are bad, positive are good
         else:
             return 0
         
