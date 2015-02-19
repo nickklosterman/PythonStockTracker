@@ -93,3 +93,8 @@ have some type of status message.
 For the last few days I've been running the script but emailing myself an old .html file because of invalid json. I didn't realize that I was emailing myself crappy stale data. 
 Fri Jan 30 15:23:47 EST 2015
 It would be nice if for the webpage (or in general) there was an indication if a stock is dangerously close to its 52wk low. I like the idea of a windowshade effect that is displayed at the top. It would have a green or red blinky showing that a stock is reaching a new high or a new low.
+
+Wed Feb 18 12:28:59 EST 2015
+compute the percentage of the holding in relation to the whole portfolio
+measure trend and velocity of that change. (above or below 50day MA by a certain amount?)
+have additional details in a tooltip when you hover over the tr; have stock price...ummm other stuff. Hmm should this be a node app? then I can more easily have the desired level of detail present? Allow for navigating into more in depth data for a specific holding and then back out to the overall portfolio picture.

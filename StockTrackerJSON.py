@@ -1177,8 +1177,12 @@ class HTMLTable:
         portfolioTabsList=[]
         portfolioStockDataList=[]
         portfolioTabContentsList=[]
-        filename=inputfilename.split('.')
+        filenameWithPath=(inputfilename.split('/'))
+        print(filenameWithPath)
+        filename=(filenameWithPath[len(filenameWithPath)-1]).split('.')
+        print(filename)
         outputfilename=filename[0]+".html"
+        print(outputfilename)
         data_string=json.load(input)
         htmlOutput=" "
         for portfolio in data_string["portfolio"]:
@@ -1232,7 +1236,7 @@ def createPortfolioTable(name,dataList,cumulativeData):
     """
     Given a portfolio name, a list of stock data , and a list of cumulative portfolio data, create an html table to display the data
     """
-    startText='<table border="2"><caption>'
+    startText='<table border="2" class="hoverTable"><caption>'
     output=startText+name+"</caption>"
     header="""<tr><th>Ticker</th><th>
    $ gain</th><th>
@@ -1303,6 +1307,8 @@ def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     });
     </script>
     <style type="text/css">
+/*highlight when hover on table row*/
+.hoverTable tr:hover { background-color: #b8d1f3 }
 /* For simplicity's sake I keep all the styles in the file, otherwise if I have a shortcut, I would need to copy the style file over or point to it specifically (point to a style file that is symlinked to the file in the git repo) */
     .negative1 {color:red }
     .negative {background-color:red }
