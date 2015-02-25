@@ -253,6 +253,10 @@ class Accumulator:
         Calculate the daily percentage change of the portfolio up to that time
         
         """
+        # print(self.portfolioworth)
+        # print(self.dailytotallosses)
+        # print(self.dailytotalgains )
+        # print(self.portfolioworth-self.dailytotallosses-self.dailytotalgains )
         self.dailypercentchange=((self.dailytotalgains+self.dailytotallosses)/(self.portfolioworth-self.dailytotallosses-self.dailytotalgains)*100)
 
 
@@ -643,12 +647,21 @@ class Stock:
         else:
             self.commission_to_sell=0
 
+
         if (shareprice=="0.01%"):  # prrxx returns 0.01% as price. assign value of $1/share
             shareprice=1.0
         self.getSharePrice() #needed so that prev and trends are populated.
         self.currentshareprice = float(shareprice)
         if self.currentshareprice ==0.0 :
             self.getSharePrice()
+
+        if False:
+            if float(shareprice)<0:
+                self.currentshareprice = float(shareprice)
+
+
+  
+
         self.dollarGain=self.dollarGain_func()
         self.percentGain=self.percentGain_func()
         self.annualizedReturn=self.annualizedReturn_func()
@@ -968,9 +981,17 @@ self.yearsSincePurchase() )
             self.share52wklow=1.000001
             self.share52wkhigh=1.0
             self.trend="===="
-        elif (databaseflag):
-            self.currentshareprice=getSharePriceFromDatabase(self.ticker)
         
+        elif (databaseflag):
+            # I think this will have problmes bc it neeeds to set the other fields as wwell
+            self.currentshareprice=getSharePriceFromDatabase(self.ticker)
+        elif (self.currentshareprice != 0.0 ):
+            self.shareopenprice=1.0 #this then throws off the daily gains 
+            self.shareprevcloseprice=1.0
+            self.share52wklow=1.000001
+            self.share52wkhigh=1.0
+            self.trend="===="
+
         else:
             url = 'http://download.finance.yahoo.com/d/quotes.csv?s=%s' %self.ticker + '&f=l1opwt7'
             print(url)
@@ -1052,6 +1073,29 @@ self.yearsSincePurchase() )
         if (startSP500 != 0):
 
             return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
+        else:
+            return 0
+
+    def resultsIfInvestedInX(self):
+        print("This needs to be redone such that a dict is created for the purchase dates and TickerX on that day")
+        currentTickerX=-1
+        startTickerX=-1
+        currentTickerX=float(getSharePrice(self.comparisonticker))
+
+        #we need to check if this is the first day for this security, as we can't get historical data if this is the first day
+        from datetime import date
+        today = date.today()
+        #print(self.purchasedate.day,today.day)
+        #print(self.purchasedate.month,today.month) 
+        #print(self.purchasedate.year,today.year)
+        if ( self.purchasedate.day == today.day  and self.purchasedate.month == today.month and self.purchasedate.year == today.year):
+            startTickerX=float(getShareOpenPrice(self.comparisonticker))
+        else:
+            startTickerX =float(get_historical_price(self.comparisonticker,(self.purchasedate.strftime('%Y%m%d'))))
+        #print(currentTickerX,startTickerX)
+        if (startTickerX != 0):
+
+            return (self.totalpurchaseprice*(1+(currentTickerX-startTickerX)/startTickerX))
         else:
             return 0
         
@@ -1211,6 +1255,7 @@ class UniqueTickers:
     as well as overall performance.
     """
     def __init__(self,inputfilename):
+        print("To really be effective, UT needs to get the open,close,high,low,trend ...for a given ticker so that it fills in the 'blanks' that getSharePrice() does.")
         input=open(inputfilename)
         tickerList=[]
         tickerSet=set()
@@ -1505,7 +1550,7 @@ wrapper.width=190 #set text wrapping width manually otherwise if drag terminal t
 import getopt 
 import sys
 
-
+debugflag = False
 comparisonflag=False
 stocktableflag=False
 alertflag=False
@@ -1587,6 +1632,13 @@ print("TickerDict")
 print(UT.tickerDict)
 print("DateList")
 print(UT.dateList)
+
+if debugflag == True:
+    stocktableflag = False
+    comparisonflag = False
+    alertflag = False
+    htmltableflag = False
+    mongoflag = False
 
 print("create a --compare-to flag which lets you compare the performance to any ticker, then append this compare to data to an auxiliary table. this will hold the historic values so that you aren't constantly looking these up. they arne't going to change so we should preprocess looking for this table and if not generate one and append it ")
 if stocktableflag:

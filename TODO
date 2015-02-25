@@ -98,3 +98,8 @@ Wed Feb 18 12:28:59 EST 2015
 compute the percentage of the holding in relation to the whole portfolio
 measure trend and velocity of that change. (above or below 50day MA by a certain amount?)
 have additional details in a tooltip when you hover over the tr; have stock price...ummm other stuff. Hmm should this be a node app? then I can more easily have the desired level of detail present? Allow for navigating into more in depth data for a specific holding and then back out to the overall portfolio picture.
+
+Sat Feb 21 12:25:09 EST 2015
+Tooltip showing the percentage of holdings
+Allow grouping. I.e. for my brk-b. Even though they were bought at diff times it might be nice to view that as one investment.
+show graph in tooltip to see trend. just grab stock graph from yahoo?
