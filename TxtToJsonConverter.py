@@ -6,6 +6,8 @@ e.g.:
 aapl,142,1482.56,10/23/2000,31.50,7 --> {"ticker":"aapl","shares":142,"totalPurchasePrice":1482.56,"purchaseDate":"10/23/2000","commissionToBuy":31.50,"commissionToSell":7}
 these json strings can then be pasted into AllPortfolios.json for parsing by StockTrackerJSON.py
 
+
+I believe I originally set out using flat text files and I wrote this to convert to JSON files. I believe this utility is no longer needed unless output of a portfolio/retirement account is exported to txt and needs to be converted to JSON.
 '''
 def PrintStockFormat(keys,values,lastline):
     #print warning if data not long enough

@@ -3,7 +3,7 @@
 # python StockTrackerJSON.py -i AllPortfolios.json -a 8 #alerts if share price is 8% lower than when bought.
 # python StockTrackerJSON.py -i AllPortfolios.json -s
 # python StockTrackerJSON.py -i AllPortfolios.json -c
-
+# python3 ~/Repo/Github/PythonStockTracker/StockTrackerJSON.py --input ~/Repo/BB/configfiles/StockTrackerJSON/AllPortfolios.json --tax-bracket-file  ~/Repo/Github/PythonStockTracker/TaxBracket.txt -w -s
 import datetime
 import urllib.request, urllib.parse, urllib.error
 import smtplib #for emailing reports
@@ -17,6 +17,27 @@ from socket import error as SocketError
 Any note of 'tax' in this program uses tax algorithms for US taxes. For other countries adjust accordingly
 As tax laws constantly change, these calculations should be taken with a huge grain of salt.
 """
+
+
+def GetDate():
+    """
+    Return todays date in MM/DD/YYYY format
+    """
+    from datetime import date
+    dateresult = (date.today()).strftime('%x')
+    return (date.today()).strftime('%x') #dateresult #(((date.today()).strftime('%x'))
+
+def CreateOutputFilename(inputfilename,extension):
+    """
+    I feel like I could have that second argument be a list of things to append dot separated.
+    """
+    filenameWithPath=(inputfilename.split('/'))
+    print(filenameWithPath)
+    filename=(filenameWithPath[len(filenameWithPath)-1]).split('.')
+    print(filename)
+    outputfilename=filename[0]+extension
+    print(outputfilename)
+    return outputfilename
 
 
 """
@@ -214,7 +235,12 @@ def PrintBanner(input):
     print('                          ',input)
     print("#######################################################################")
 
-
+'''
+class PortfolioAccumulator:
+    def __init__(self):
+        self.
+hmm I suppose I could use an accumulator to accumulate for all teh individual portfolios
+'''
 
 class Accumulator:
     """
@@ -1137,7 +1163,33 @@ self.yearsSincePurchase() )
             daysinyear+=1
         daysDiff=(days2/daysinyear)
         return yearsElapsed+daysDiff
-
+    def CSV(self):
+        """
+        Output Stock data as a json object
+        """
+        separator=","
+        data="{0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f}".format(
+            self.ticker, 
+            separator, 
+            self.dollarGain, 
+            self.annualizedReturn, 
+            self.percentGain_func(), 
+            self.currentWorth_func(), 
+            self.dailyChange_func(), 
+            self.currentshareprice, 
+            self.shareprevcloseprice, 
+            self.share52wkhigh, 
+            self.share52wklow, 
+            self.trend, 
+            self.stockSaleTakeHome_func(), 
+            self.stockSaleTaxes_func(), 
+            self.stockpriceDiscountedForTaxes_func(), 
+            self.FiftyTwoWeekHighLowFactor(),
+            self.resultsAlphaVsSP500(),
+            self.yearsSincePurchase() )
+         #add in portfolio as last element and get rid of the overarching portfolioname structure. flatten data out this way. can group later via that portfolioname field?; would need to pass in the portfolioname then to accumulator object. 
+        return data
+        
     def JSON(self):
         """
         Output Stock data as a json object
@@ -1179,7 +1231,7 @@ def StockTable(inputfilename):
     data_string=json.load(input)
     emailReportMsg=""
     htmlOutput=" "
-    jsonOutput="{ \"portfolio\":["
+    jsonOutput="{ \"date\":\""+GetDate()+"\",\n \"portfolio\":["
     for portfolio in data_string["portfolio"]:
         if portfolio["display"] == "yes":
             jsonOutput+="{\"portfolioname\":\"" + portfolio["portfolioName"]+"\", \"portfolioStocks\":["
@@ -1641,6 +1693,11 @@ if debugflag == True:
     mongoflag = False
 
 print("create a --compare-to flag which lets you compare the performance to any ticker, then append this compare to data to an auxiliary table. this will hold the historic values so that you aren't constantly looking these up. they arne't going to change so we should preprocess looking for this table and if not generate one and append it ")
+
+#this is kinda awful as the outputs should be separated from the acutal objects themselves. if I do :
+#python3 ~/Repo/Github/PythonStockTracker/StockTrackerJSON.py --input ~/Repo/BB/configfiles/StockTrackerJSON/AllPortfolios.json --tax-bracket-file  ~/Repo/Github/PythonStockTracker/TaxBracket.txt -w -s
+# I'm doing double duty as the same data is downloaded and the same data is being recreated twice. :(
+
 if stocktableflag:
     StockTable(inputfilename)
 if comparisonflag:
@@ -1655,3 +1712,5 @@ if mongoflag:
 #    MongoSave("{ 'name':'bob', 'hair':'bald'}")#.JSONify())
 print("") #otherwise the prompt isn't on a new line
 
+
+            
