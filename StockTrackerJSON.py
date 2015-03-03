@@ -24,18 +24,28 @@ def GetDate():
     Return todays date in MM/DD/YYYY format
     """
     from datetime import date
-    dateresult = (date.today()).strftime('%x')
+    #dateresult = (date.today()).strftime('%x')
     return (date.today()).strftime('%x') #dateresult #(((date.today()).strftime('%x'))
+
+def GetDateTime():
+    from datetime import  datetime
+    dateTimeResult = (datetime.now()).strftime('%d/%m/%y %H:%M:%S')
+    return dateTimeResult
 
 def CreateOutputFilename(inputfilename,extension):
     """
+    Strip out the path and extract the base of the inputfilename for reuse as the base of the outputfilename
+
     I feel like I could have that second argument be a list of things to append dot separated.
     """
     filenameWithPath=(inputfilename.split('/'))
     print(filenameWithPath)
     filename=(filenameWithPath[len(filenameWithPath)-1]).split('.')
     print(filename)
-    outputfilename=filename[0]+extension
+    if (extension[0]=="."):
+        outputfilename=filename[0]+extension
+    else:
+        outputfilename=filename[0]+"."+extension
     print(outputfilename)
     return outputfilename
 
@@ -1168,7 +1178,7 @@ self.yearsSincePurchase() )
         Output Stock data as a json object
         """
         separator=","
-        data="{0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f}".format(
+        data="{0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f} {1} {18}".format(
             self.ticker, 
             separator, 
             self.dollarGain, 
@@ -1186,7 +1196,9 @@ self.yearsSincePurchase() )
             self.stockpriceDiscountedForTaxes_func(), 
             self.FiftyTwoWeekHighLowFactor(),
             self.resultsAlphaVsSP500(),
-            self.yearsSincePurchase() )
+            self.yearsSincePurchase(),
+            GetDateTime() #hmmm I might want a static time such that it isn't diff for each ouptut
+        )
          #add in portfolio as last element and get rid of the overarching portfolioname structure. flatten data out this way. can group later via that portfolioname field?; would need to pass in the portfolioname then to accumulator object. 
         return data
         
@@ -1232,6 +1244,7 @@ def StockTable(inputfilename):
     emailReportMsg=""
     htmlOutput=" "
     jsonOutput="{ \"date\":\""+GetDate()+"\",\n \"portfolio\":["
+    csvOutput=""
     for portfolio in data_string["portfolio"]:
         if portfolio["display"] == "yes":
             jsonOutput+="{\"portfolioname\":\"" + portfolio["portfolioName"]+"\", \"portfolioStocks\":["
@@ -1246,7 +1259,8 @@ def StockTable(inputfilename):
                 stock.PrintColorized3() #includes theoretical "what if" invested in SP500 instead
                 message=stock.PrintForTxtMessage()
                 emailReportMsg+=stock.JSON()
-                jsonOutput+=stock.JSON()+"," 
+                jsonOutput+=stock.JSON()+","
+                csvOutput+=stock.CSV()+"\n"
             jsonOutput=jsonOutput.rstrip(',') 
             jsonOutput+="],"
             jsonOutput+="\n" 
@@ -1257,11 +1271,19 @@ def StockTable(inputfilename):
     jsonOutput=jsonOutput.rstrip(',') 
     jsonOutput+="] }"
     input.close()
-    output=open("jsonoutput.txt",'w')
-    output.write(jsonOutput)
-    output.close()
+    WriteToDisk(CreateOutputFilename(inputfilename,".out.json"),jsonOutput,'w')
+    WriteToDisk(CreateOutputFilename(inputfilename,"csv"),csvOutput,'a')
+    #I need to push this writing to a function call
+    #output=open("jsonoutput.txt",'w')
+    #output.write(jsonOutput)
+    #output.close()
     return stock.getDictionary() #outputlist #emailReportMsg
 
+def WriteToDisk(filename,data,mode):
+    output=open(filename,mode)
+    output.write(data)
+    output.close()
+    
 class HTMLTable:
     """
     This methoad traverses a portfolio and outputs the performance of each stock in the portfolio
@@ -1613,6 +1635,7 @@ databaseflag=False
 mongoflag=False
 htmltableflag=False
 taxBracketFile="TaxBracket.txt"
+inputfilename=""
 print(sys.argv[1:])
 #pretty much straight from : http://docs.python.org/release/3.1.5/library/getopt.html
 #took me a while to catch that for py3k that you don't need the leading -- for the long options
@@ -1675,6 +1698,9 @@ for opt, arg in options:
 #     inputfilename=sys.argv[i]
 # i+=1
 usage()
+if (inputfilename==""):
+    sys.exit(2)
+    
 PrintBanner(inputfilename)
 
 #this is super inefficient. I should go out and construct the data for each stock / portfolio and then run the stats, using those objects. I shouldn't go out and get the yahoo data for each function
