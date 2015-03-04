@@ -417,7 +417,8 @@ self.yearsSincePurchase() )
                 self.shareprevcloseprice=float(data[2])
 
             print(data[3])
-            if data[3]!="\"N/A - N/A\"":
+            if data[3]!="\"N/A - N/A\"" and data[3]!="N/A":
+                print(data[3])
                 temp=data[3].split(" - ")
                 self.share52wklow=float(temp[0][1:])
                 self.share52wkhigh=float(temp[1][:-1])
