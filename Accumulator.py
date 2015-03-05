@@ -40,7 +40,10 @@ class Accumulator:
         # print(self.dailytotallosses)
         # print(self.dailytotalgains )
         # print(self.portfolioworth-self.dailytotallosses-self.dailytotalgains )
-        self.dailypercentchange=((self.dailytotalgains+self.dailytotallosses)/(self.portfolioworth-self.dailytotallosses-self.dailytotalgains)*100)
+        denominator = self.portfolioworth-self.dailytotallosses-self.dailytotalgains
+        #prevent division by zero
+        if denominator != 0:
+            self.dailypercentchange=((self.dailytotalgains+self.dailytotallosses)/denominator*100)
 
 
     def Print(self):

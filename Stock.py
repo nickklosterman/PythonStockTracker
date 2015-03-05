@@ -8,6 +8,7 @@ import TerminalColorCoding as TCC
 import DateTimeHelpers as DTH
 import StockHelper
 
+
 class Stock:
     """
     Base Stock class to use for calculating returns, gains losses etc.
@@ -532,11 +533,12 @@ self.yearsSincePurchase() )
         separator=","
         data="{0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f} {1} {18}".format(
             self.ticker, 
-            separator, 
+            separator,
+            #darn it I need to strip commas from prices for CSV
             self.dollarGain, 
             self.annualizedReturn, 
             self.percentGain_func(), 
-            self.currentWorth_func(), 
+            self.currentWorth_func(),
             self.dailyChange_func(), 
             self.currentshareprice, 
             self.shareprevcloseprice, 
