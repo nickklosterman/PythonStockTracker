@@ -21,6 +21,7 @@ else:
 
 f=open(filename,'r')
 for line in f:
+#this matches a comma followed by a set of three numbers.  The (?= is part of a lookahead. It only matches if the lookahead is matched, but the lookahead is not part of the regex to be replaced. So it matches a comma but only if it is followed by three numbers. 
     print(re.sub(',(?=[0-9]{3})','',line))
 
 f.close
