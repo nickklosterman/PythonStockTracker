@@ -245,7 +245,7 @@ self.yearsSincePurchase() )
     def calculateShortTermCapitalGains_func(self):
         return self.taxbracket
     def currentWorth_func(self):
-        return self.sharequantity*self.currentshareprice 
+        return self.sharequantity*self.currentshareprice
     def dailyChange_func(self):
         return   self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)
     def PrintData(self):
@@ -531,27 +531,27 @@ self.yearsSincePurchase() )
         Output Stock data as a json object
         """
         separator=","
-        data="{0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f} {1} {18}".format(
-            self.ticker, 
-            separator,
+        data="{0} {1} {2:.2f} {1} {3:.4f} {1} {4:.4f} {1} {5:.2f} {1} {6} {1} {7:.2f} {1} {8:.2f} {1} {9:.2f} {1} {10:.2f} {1} {11} {1} {12:.2f} {1} {13:.2f} {1} {14:.2f} {1} {15} {1} {16:} {1} {17:.2f} {1} {18}".format(
+            self.ticker, #0
+            separator, #1
             #darn it I need to strip commas from prices for CSV
-            self.dollarGain, 
-            self.annualizedReturn, 
-            self.percentGain_func(), 
-            self.currentWorth_func(),
-            self.dailyChange_func(), 
-            self.currentshareprice, 
-            self.shareprevcloseprice, 
-            self.share52wkhigh, 
-            self.share52wklow, 
-            self.trend, 
-            self.stockSaleTakeHome_func(), 
-            self.stockSaleTaxes_func(), 
-            self.stockpriceDiscountedForTaxes_func(), 
-            self.FiftyTwoWeekHighLowFactor(),
-            self.resultsAlphaVsSP500(),
-            self.yearsSincePurchase(),
-            DTH.GetDateTime() #hmmm I might want a static time such that it isn't diff for each ouptut
+            self.dollarGain,  #2
+            self.annualizedReturn,  #3
+            self.percentGain_func(),  #4
+            self.currentWorth_func(), #5
+            self.dailyChange_func(), #6
+            self.currentshareprice, #7
+            self.shareprevcloseprice, #8
+            self.share52wkhigh, #9
+            self.share52wklow, #10
+            self.trend, #11
+            self.stockSaleTakeHome_func(), #12
+            self.stockSaleTaxes_func(), #13
+            self.stockpriceDiscountedForTaxes_func(), #14
+            self.FiftyTwoWeekHighLowFactor(), #15
+            self.resultsAlphaVsSP500(), #16
+            self.yearsSincePurchase(), #7
+            DTH.GetDateTime() # 18 hmmm I might want a static time such that it isn't diff for each ouptut
         )
          #add in portfolio as last element and get rid of the overarching portfolioname structure. flatten data out this way. can group later via that portfolioname field?; would need to pass in the portfolioname then to accumulator object. 
         return data
