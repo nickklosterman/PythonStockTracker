@@ -497,7 +497,11 @@ self.yearsSincePurchase() )
         from datetime import date
         today = date.today()
         if ( self.purchasedate.day == today.day  and self.purchasedate.month == today.month and self.purchasedate.year == today.year):
-            startSP500=float(StockHelper.getShareOpenPrice("^GSPC"))
+            gspcOpenPrice=StockHelper.getShareOpenPrice("^GSPC")
+            if (gspcOpenPrice[0] != "N"): #check for na value, WEAK TEST could do a regex to see if the price contains a letter
+                startSP500=float(gspcOpenPrice)
+            else:
+                startSP500=0.1
         else:
             startSP500 =float(StockHelper.get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
         if (startSP500 != 0):
