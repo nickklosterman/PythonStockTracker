@@ -103,3 +103,8 @@ Sat Feb 21 12:25:09 EST 2015
 Tooltip showing the percentage of holdings
 Allow grouping. I.e. for my brk-b. Even though they were bought at diff times it might be nice to view that as one investment.
 show graph in tooltip to see trend. just grab stock graph from yahoo?
+
+Wed May 20 01:18:41 EDT 2015
+Add a "SaleDate" field and handle those entries making the calculation against benchmark cover the holding period.
+I could create a 'sales' portfolio showing my gains/losses.  Like a trading history. Lay bare my triumphs and follies.
+Do curve fitting and determine when sp500 started to catch up. or when ideal time would've been to sell to maximize profit.
