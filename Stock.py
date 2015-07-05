@@ -504,7 +504,7 @@ self.yearsSincePurchase() )
                 startSP500=0.1
         else:
             startSP500 =float(StockHelper.get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
-        if (startSP500 != 0):
+        if (startSP500 != 0 and self.totalpurchaseprice != 0):
             return (self.currentWorth_func()-(self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500)) ) / ( self.currentWorth_func() )*100  # this returns the percentage over/under (alpha) of the current investment when compared to the SP500 index.; negative values are bad, positive are good
         else:
             return 0
