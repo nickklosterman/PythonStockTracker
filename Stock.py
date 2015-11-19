@@ -76,7 +76,6 @@ class Stock:
         Create an html table row of the 17 fields we report
         """
         separator="</td><td>"
-        #output="<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15:,.2f} {1} {16:} {1} {17:,.2f}</td></tr>".format(
         output="<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f}</td></tr>".format(
 self.tickerLink(), 
 separator, 
@@ -94,8 +93,6 @@ self.stockSaleTakeHome_func(),
 self.stockSaleTaxes_func(), 
 self.stockpriceDiscountedForTaxes_func(), 
 HCC.htmlTableColorCodeDecimal(self.FiftyTwoWeekHighLowFactor()),
-#self.FiftyTwoWeekHighLowFactor(),
-#htmlTableComparisonColorCode(self.resultsIfInvestedInSP500(),self.currentWorth_func()  ),
 HCC.htmlTableComparisonColorCode(self.resultsAlphaVsSP500(), 0 ),
 self.yearsSincePurchase() )
     
@@ -114,7 +111,7 @@ self.yearsSincePurchase() )
         output['Percent Gain']=self.percentGain
         output['Dollar Gain']=self.dollarGain
         output['Annualized Return']=self.annualizedReturn
-        output['TimeStamp']=datetime.datetime.now() #.utcnow()# http://pleac.sourceforge.net/pleac_python/datesandtimes.html
+        output['TimeStamp']=datetime.datetime.now()
         return output
             
     def getTaxBracket_func(self):
@@ -164,13 +161,10 @@ self.yearsSincePurchase() )
         Calculate the annualized rate of return for this investment
         """
         ARR=0
-        #print(self.yearsSincePurchase())
-        #print(self.totalpurchaseprice)
-        #print(self.dollarGain)
         #I was encountering an overflow issue when the cash/prrxx was calculated
         if (self.yearsSincePurchase() > 0 and self.totalpurchaseprice !=0 and self.ticker != 'prrxx'):
             ARR=(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
-        return ARR #(((self.dollarGain/self.totalpurchaseprice+1)**(1/self.yearsSincePurchase()) -1 ) *100)
+        return ARR 
 
     def stockSaleTaxes_func(self): 
         """
@@ -276,7 +270,6 @@ self.yearsSincePurchase() )
             if self.share52wklow==-1 and self.share52wkhigh==-1:
                 return 0
             else:
-                #print( " %s " % ((self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)))
                 return (self.currentshareprice-self.share52wklow)/(self.share52wkhigh-self.share52wklow)
         else:
             return 0
@@ -306,8 +299,8 @@ self.yearsSincePurchase() )
         ColorCode10pt2f(self.annualizedReturn)
         ColorCode10pt2f(self.percentGain_func())
         print(("\033[49m \033[39m"), end=' ')
-        print(("%10.2f" % (self.currentWorth_func())), end=' ') #self.sharequantity*self.currentshareprice )),
-        ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
+        print(("%10.2f" % (self.currentWorth_func())), end=' ') 
+        ColorCode10pt2f(self.dailyChange_func()) 
         print(("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)), end=' ')
         print(("\033[49m \033[39m"), end=' ') #reset color to default
         print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)))
@@ -321,8 +314,8 @@ self.yearsSincePurchase() )
         TCC.ColorCode10pt2f(self.annualizedReturn)
         TCC.ColorCode10pt2f(self.percentGain_func())
         print(("\033[49m \033[39m"), end=' ')
-        print(("%10.2f" % (self.currentWorth_func())), end=' ') #self.sharequantity*self.currentshareprice )),
-        TCC.ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
+        print(("%10.2f" % (self.currentWorth_func())), end=' ') 
+        TCC.ColorCode10pt2f(self.dailyChange_func()) 
         print(("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)), end=' ')
         print(("\033[49m \033[39m"), end=' ') #reset color to default
         print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
@@ -337,8 +330,8 @@ self.yearsSincePurchase() )
         TCC.ColorCode10pt2f(self.annualizedReturn)
         TCC.ColorCode10pt2f(self.percentGain_func())
         print(("\033[49m \033[39m"), end=' ')
-        print(("%10.2f" % (self.currentWorth_func())), end=' ') #self.sharequantity*self.currentshareprice )),
-        TCC.ColorCode10pt2f(self.dailyChange_func()) #self.sharequantity*(self.currentshareprice - self.shareprevcloseprice)) #if today was an 'up' or 'down'  day for the stock let that color coding propagate to the next two fields
+        print(("%10.2f" % (self.currentWorth_func())), end=' ') 
+        TCC.ColorCode10pt2f(self.dailyChange_func()) 
         print(("%10.2f %10.2f" %(self.currentshareprice,self.shareprevcloseprice)), end=' ')
         print(("\033[49m \033[39m"), end=' ') #reset color to default
         print(("%10.2f %10.2f %6s" %(self.share52wkhigh,self.share52wklow,self.trend)), end=' ')
@@ -394,7 +387,6 @@ self.yearsSincePurchase() )
                     myReq.addheaders = [('User-Agent','Mozilla/5.0 (X11; U; Linux i686) Gecko/20071127 Firefox/2.0.0.11')] # Request(url,data=b'None',headers)
                     myReq.addheaders = [('User-Agent','Mozilla/5.0 (Windows NT 6.1; WOW64; rv:26.0) Gecko/20100101 Firefox/26.0')]
                     days=str(myReq.open(url).read() , encoding='utf8')
-                    # days = str(urllib.request.urlopen(url).read() , encoding='utf8')  #lines()
                     data = days[:-2].split(',') 
                 except urllib.error.HTTPError as err:
                     print(err,self.ticker)
@@ -450,15 +442,10 @@ self.yearsSincePurchase() )
         #we need to check if this is the first day for this security, as we can't get historical data if this is the first day
         from datetime import date
         today = date.today()
-        #print(self.purchasedate.day,today.day)
-        #print(self.purchasedate.month,today.month) 
-        #print(self.purchasedate.year,today.year)
         if ( self.purchasedate.day == today.day  and self.purchasedate.month == today.month and self.purchasedate.year == today.year):
             startSP500=float(StockHelper.getShareOpenPrice("^GSPC"))
         else:
             startSP500=float(StockHelper.get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d'))))
-            #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
-        #print(currentSP500,startSP500)
         if (startSP500 != 0):
 
             return (self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500))
@@ -474,14 +461,10 @@ self.yearsSincePurchase() )
         #we need to check if this is the first day for this security, as we can't get historical data if this is the first day
         from datetime import date
         today = date.today()
-        #print(self.purchasedate.day,today.day)
-        #print(self.purchasedate.month,today.month) 
-        #print(self.purchasedate.year,today.year)
         if ( self.purchasedate.day == today.day  and self.purchasedate.month == today.month and self.purchasedate.year == today.year):
             startTickerX=float(StockHelper.getShareOpenPrice(self.comparisonticker))
         else:
             startTickerX =float(StockHelper.get_historical_price(self.comparisonticker,(self.purchasedate.strftime('%Y%m%d'))))
-        #print(currentTickerX,startTickerX)
         if (startTickerX != 0):
 
             return (self.totalpurchaseprice*(1+(currentTickerX-startTickerX)/startTickerX))
@@ -581,10 +564,4 @@ self.yearsSincePurchase() )
             })
         return data
 
-        #just use FiftyTwoWeekHighLowFactor
-        # def get52WeekHighCheck(self):
-        #     return (self.currentshareprice-self.share52wklow) / (self.share52wkhigh-self.share52wklow);
-
-        # def get52WeekLowCheck(self):
-        #     return (self.currentshareprice - self.share52wkhigh ) / self.share52wkhigh;
 
