@@ -45,10 +45,16 @@ class Stock:
             
         self.taxBracketFile=data["taxBracketFile"]
 
-        if (shareprice=="0.01%"):  # prrxx returns 0.01% as price. assign value of $1/share
+        if (shareprice=="0.01%" or shareprice=='N/A'):  # prrxx returns 0.01% as price. assign value of $1/share
             shareprice=1.0
         self.getSharePrice() #needed so that prev and trends are populated.
-        self.currentshareprice = float(shareprice)
+        
+        try:
+            self.currentshareprice = float(shareprice)
+        except ValueError:
+            self.currentshareprice = 0
+        
+
         if self.currentshareprice ==0.0 :
             self.getSharePrice()
 
@@ -401,10 +407,16 @@ self.yearsSincePurchase() )
                     print('something else broke')
                     continue
                 break
-
-            if float(data[0])==0.0:
+            try:
+                tempSharePrice=float(data[0])
+            except ValueError:
+                tempSharePrice=0.0
+                
+            if tempSharePrice==0.0:
                 print("Uhh bad stock ticker: %7s" % self.ticker)
-            self.currentshareprice=float(data[0])
+                
+            self.currentshareprice=tempSharePrice
+
             if data[1]!="N/A": #not sure I even need the share open price. I don't do anything with it.
                 self.shareopenprice=float(data[1])
             print(data[2])
@@ -489,7 +501,7 @@ self.yearsSincePurchase() )
                 startSP500=0.1
         else:
             startSP500 =float(StockHelper.get_historical_price("^GSPC",(self.purchasedate.strftime('%Y%m%d')))) #"%EGSPC",(self.purchasedate.strftime('%Y%m%d')))
-        if (startSP500 != 0 and self.totalpurchaseprice != 0):
+        if (startSP500 != 0 and self.totalpurchaseprice != 0 and self.currentWorth_func() !=0):
             return (self.currentWorth_func()-(self.totalpurchaseprice*(1+(currentSP500-startSP500)/startSP500)) ) / ( self.currentWorth_func() )*100  # this returns the percentage over/under (alpha) of the current investment when compared to the SP500 index.; negative values are bad, positive are good
         else:
             return 0
