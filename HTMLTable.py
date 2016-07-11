@@ -94,9 +94,9 @@ def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
 .hoverTable tr:hover { background-color: #b8d1f3 }
 /* For simplicity's sake I keep all the styles in the file, otherwise if I have a shortcut, I would need to copy the style file over or point to it specifically (point to a style file that is symlinked to the file in the git repo) */
     .negative1 {color:red }
-    .negative {background-color:red }
-    .positive1 {color:green }
-    .positive {background-color:green }
+    .negative {background-color:tomato }
+    .positive1 {color:springgreen }
+    .positive {background-color:springgreen }
     .middle {background-color:yellow }
     td {text-align:right}
 /*Animation Prefs*/
