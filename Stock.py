@@ -73,7 +73,7 @@ class Stock:
         """
         Output a html link to the ticker's yahoo 1 yr chart
         """
-        output="<a href=\"http://finance.yahoo.com/echarts?s="+self.ticker+"+Interactive#symbol="+self.ticker+";range=1y\">"+self.ticker+"</a>"
+        output="<a href=\"http://finance.yahoo.com/quote/"+self.ticker+"\">"+self.ticker+"</a>"
         return output
 
         #number formatting documentation: http://docs.python.org/3.3/library/string.html#format-string-syntax , see the answer further down for specifying more than one format option http://stackoverflow.com/questions/1823058/how-to-print-number-with-commas-as-thousands-separators-in-python-2-x
