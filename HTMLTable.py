@@ -85,9 +85,34 @@ def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     <!-- <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script> uncomment this to go back to using the jquery tabs-->
     <link rel="stylesheet" href="/resources/demos/style.css" />
     <script>
-    $(function() {
+/*    $(function() {
     $( "#tabs" ).tabs();
-    });
+    });*/
+'use strict'
+var btnEl, initialize, imgElements;
+window.onload = (function() { initialize();});
+function bodyClickHandler (e) {
+console.log(e.target.className);
+changeImages(e.target.className);
+e.target.classList.toggle('none');
+e.target.classList.toggle('inline');
+switch(e.target.innerText) {
+case "Hide Images":
+e.target.innerText = 'Show Images'; break;
+case "Show Images":
+e.target.innerText = 'Hide Images'; break; 
+}
+};
+function changeImages(style) {
+console.log(style);
+for (var i = 0; i< imgElements.length; i++) {
+imgElements[i].style.display = style}};
+
+initialize = function() {
+ btnEl = document.getElementById('btn');
+imgElements = document.querySelectorAll('img');
+document.body.addEventListener('click',bodyClickHandler);
+};
     </script>
     <style type="text/css">
 /*highlight when hover on table row*/
@@ -124,6 +149,7 @@ def createHTMLOutput(portfolioName,portfolioNameList,portfolioContentList):
     </style>
     </head>
     <body>
+<button class='none' id='btn'>Hide Images</button>
     """ % (portfolioName,runDate)
     end='</div></body></html>'
     tabs=jqueryUITabs(portfolioNameList)
