@@ -84,7 +84,7 @@ class Stock:
         separator="</td><td>"
 
         #output="<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {11} {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15:,.2f} {1} {16:} {1} {17:,.2f}</td></tr>".format(
-        output='<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} <img src="http://ichart.finance.yahoo.com/z?s={11}&t=1y&q=l&l=on&z=s&p=m100,&a=&c=%5EGSPC&lang=en-US&region=US"> {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {15} {1} {16:} {1} {17:,.2f}</td></tr>'.format(
+        output='<tr><td> {0} {1} {2} {1} {3} {1} {4} {1} {5:,.2f} {1} {6} {1} {7:,.2f} {1} {8:,.2f} {1}  <img src="http://ichart.finance.yahoo.com/z?s={11}&t=1y&q=l&l=on&z=s&p=m100,&a=&c=%5EGSPC&lang=en-US&region=US"> {1} {12:,.2f} {1} {13:,.2f} {1} {14:,.2f} {1} {9:,.2f} {1} {10:,.2f} {1} {15} {1} {16:} {1} {17:,.2f}</td></tr>'.format(
 self.tickerLink(), 
 separator, 
 HCC.htmlTableColorCode(self.dollarGain), 

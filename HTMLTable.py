@@ -56,12 +56,12 @@ def createPortfolioTable(name,dataList,cumulativeData):
     Today chg $</th><th>
     Curr Price</th><th>
     Prev Close</th><th>
-    52 High</th><th>     
-    52 Low </th><th>
     Trend</th><th>
     Sale Tk Home</th><th> 
     Sale Taxes</th><th> 
     Disc4Taxes</th><th>
+    52 High</th><th>     
+    52 Low </th><th>
     HiLoPct</th><th>
     Value if invested in SP500</th><th> 
     Years Held </th></tr>"""
